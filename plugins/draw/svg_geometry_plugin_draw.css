@@ -1,0 +1,24 @@
+/**
+ * When svg editor is draged, the text must be selected.
+ * So, a class 'svg-geometry' is added during the dragging.
+ *
+ * If you want to cancel the text selection during the dragging,
+ * Use class '.svg-geometry' in the your Stylesheet.
+ */
+
+body.svg-geometry h1,
+body.svg-geometry h2,
+body.svg-geometry h3,
+body.svg-geometry h4,
+body.svg-geometry h5,
+body.svg-geometry h6,
+body.svg-geometry li,
+body.svg-geometry p,
+body.svg-geometry pre,
+body.svg-geometry button,
+body.svg-geometry input {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}

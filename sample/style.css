@@ -1,0 +1,62 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+svg {
+	border: 1px solid #ddd;
+	overflow: visible;
+	background-color: #fff;
+}
+
+svg text {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+svg text::selection {
+	background: none;
+}
+
+#wrapper {
+	width: 1000px;
+	margin: 0 auto;
+}
+
+#wrapper section {
+	width: 1000px;
+	margin: 20px 0;
+	padding: 20px;
+	border: solid 1px #ddd;
+	background-color: #f8f8f8;
+}
+
+#wrapper h1 {
+	margin-bottom: 20px;
+}
+
+#wrapper article {
+	width: 100%;
+	overflow: hidden;
+}
+
+#wrapper figure {
+	width: 500px;
+	height: 500px;
+	float: left;
+}
+
+#wrapper pre {
+	width: 450px;
+	height: 500px;
+	padding: 10px;
+	float: right;
+	background-color: #fff;
+	border: solid 1px #ddd;
+}
+
+pre {
+	overflow-y: auto;
+}
