@@ -3,26 +3,26 @@ function GeometryManager(){
   var elemCtrl = this.elementController;
   var funnyMath = this.funnyMath;
   var commonFunc = this.common;
-  var points = commonFunc.cloneObject(draw.options.points);
   var geometryManager = {
+    points: commonFunc.cloneObject(draw.options.points),
     isAllSelected: false,
     setPoints: function(points){
-      points = commonFunc.cloneObject(points);
+      geometryManager.points = commonFunc.cloneObject(points);
     },
     getPoints: function(){
-      return commonFunc.cloneObject(points);
+      return commonFunc.cloneObject(geometryManager.points);
     },
     getPointsLength: function(){
-      return points.length;
+      return geometryManager.points.length;
     },
     setAxis: function(index, x, y) {
-      points[index] = [x, y];
+      geometryManager.points[index] = [x, y];
     },
     appendAxis: function(index, x, y) {
-      points.splice(index, 0, [x, y]);
+      geometryManager.points.splice(index, 0, [x, y]);
     },
     getAxis: function(index) {
-      return points[index];
+      return geometryManager.points[index];
     },
     getAll: function() {
       return {
