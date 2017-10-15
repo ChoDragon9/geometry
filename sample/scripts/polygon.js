@@ -5,15 +5,17 @@ function Polygon(){
 
 	var draw = function(){
 		polygonObject = svgGeometry.draw({
-			color: '#ff9832',
-			selectedColor: '#ff5732',
+			fillColor: '#ff9832',
+			lineColor: '#ff9832',
+			pointColor: '#ff9832',
 			lineStrokeWidth: 5,
 			circleRadius: 8,
 			fill: true,
 			points: [
 				[48,214],[182,206],[215,116],[159,29],[76,50],[25,139]
 			],
-			textInCircle: '1',
+			minPoint: 2,
+			maxPoint: 8,
 			useEvent: true,
 			useCursor: true,
 			event: {
@@ -25,17 +27,18 @@ function Polygon(){
 		});
 		
 		polygonObject2 = svgGeometry.draw({
-			color: '#ff9832',
-			selectedColor: '#ff5732',
+			fillColor: '#ff9832',
+			lineColor: '#ff9832',
+			pointColor: '#ff9832',
 			lineStrokeWidth: 5,
 			circleRadius: 8,
 			fill: true,
-			fillOpacity: 0,
 			useEvent: true,
 			points: [
 				[303,469],[437,461],[475,374],[423,248],[291,270],[224,388],[219,472]
 			],
-			textInCircle: '2',
+			minPoint: 2,
+			maxPoint: 8,
 			event: {
 				mouseup: getPoints,
 				polygoncontextmenu: function(event){

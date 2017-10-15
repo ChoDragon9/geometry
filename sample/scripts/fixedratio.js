@@ -6,8 +6,9 @@ function FixedRatio(){
 	var draw = function(){
 		//Bule
 		kindSVGObj.push(svgGeometry.draw({
-			color: '#7fa9e3',
-			selectedColor: '#0054c7',
+			fillColor: '#7fa9e3',
+			lineColor: '#7fa9e3',
+			pointColor: '#7fa9e3',
 			lineStrokeWidth: 4,
 			circleRadius: 8,
 			useCursor: true,
@@ -24,8 +25,9 @@ function FixedRatio(){
 
 		//Red
 		kindSVGObj.push(svgGeometry.draw({
-			color: '#e38d7f',
-			selectedColor: '#c71d00',
+			fillColor: '#e38d7f',
+			lineColor: '#e38d7f',
+			pointColor: '#e38d7f',
 			lineStrokeWidth: 4,
 			circleRadius: 8,
 			useCursor: true,
@@ -42,8 +44,9 @@ function FixedRatio(){
 
 		//Green
 		kindSVGObj.push(svgGeometry.draw({
-			color: '#7fe3a8',
-			selectedColor: '#00c752',
+			fillColor: '#7fe3a8',
+			lineColor: '#7fe3a8',
+			pointColor: '#7fe3a8',
 			lineStrokeWidth: 4,
 			circleRadius: 8,
 			useCursor: true,
