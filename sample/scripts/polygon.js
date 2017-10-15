@@ -5,44 +5,31 @@ function Polygon(){
 
 	var draw = function(){
 		polygonObject = svgGeometry.draw({
-			fillColor: '#ff9832',
-			lineColor: '#ff9832',
-			pointColor: '#ff9832',
+			fillColor: '#ff6633',
+			lineColor: '#ff6633',
+			pointColor: '#ff6633',
 			lineStrokeWidth: 5,
-			circleRadius: 8,
+			circleRadius: 6,
 			fill: true,
 			points: [
-				[48,214],[182,206],[215,116],[159,29],[76,50],[25,139]
+				[156.5,370],
+				[239.5,304],
+				[321.5,366],
+				[286.5,271],
+				[370.5,220],
+				[271.5,221],
+				[238.5,125],
+				[210.5,222],
+				[114.5,225],
+				[197.5,272]
 			],
 			minPoint: 2,
-			maxPoint: 8,
+			maxPoint: 10,
 			useEvent: true,
 			useCursor: true,
 			event: {
 				mouseup: getPoints,
 				polygoncontextmenu: function(){
-					alert("polygoncontextmenu");
-				}
-			}
-		});
-		
-		polygonObject2 = svgGeometry.draw({
-			fillColor: '#ff9832',
-			lineColor: '#ff9832',
-			pointColor: '#ff9832',
-			lineStrokeWidth: 5,
-			circleRadius: 8,
-			fill: true,
-			useEvent: true,
-			points: [
-				[303,469],[437,461],[475,374],[423,248],[291,270],[224,388],[219,472]
-			],
-			minPoint: 2,
-			maxPoint: 8,
-			event: {
-				mouseup: getPoints,
-				polygoncontextmenu: function(event){
-					event.preventDefault();
 					alert("polygoncontextmenu");
 				}
 			}

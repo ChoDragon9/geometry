@@ -10,21 +10,8 @@ window.onload = function(){
 	fixedRatio.draw();
 	getElem("svg_fixed_ratio_btn").onclick = fixedRatio.alignCenter;
 
-	var peopleCounting = new PeopleCounting();
-	peopleCounting.draw();
-	getElem("svg_pc_get_point").onclick = peopleCounting.getPoints;
-
-	var lineCross = new LineCross();
-	lineCross.draw();
-	getElem("svg_line_cross_change_left").onclick = function(){
-		lineCross.changeArrow('L');
-	};
-	getElem("svg_line_cross_change_right").onclick = function(){
-		lineCross.changeArrow('R');
-	};
-	getElem("svg_line_cross_change_left_right").onclick = function(){
-		lineCross.changeArrow('LR');
-	};
+	var line = new Line();
+	line.draw();
 
 	var uwaPrivacyPolygon = new UWAPrivacyPolygon();
 	uwaPrivacyPolygon.init();
