@@ -162,12 +162,6 @@ function LineHelper() {
     var yAxis = null;
     var pointsLength = draw.geometryManager.getPointsLength();
 
-    //선택 되었을 때만 사용가능
-    if (draw.geometryManager.isAllSelected === false) {
-      // console.log("draw.geometryManager.isAllSelected === false return");
-      return;
-    }
-
     if (isPointsChanged() === false) {
       // console.log("isPointsChanged() === false return");
       return;
