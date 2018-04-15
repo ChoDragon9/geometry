@@ -1,242 +1,4 @@
 "use strict";
-
-/**
- * 플러그인 호출시 this로 사용할 객체
- *
- * @param {Object} svgTag svg tag
- */
-function SVGGeometryFactory(svgTag) {
-  this.PARENT_SVG_TAG = svgTag;
-  this.NS = {
-    SVG: "http://www.w3.org/2000/svg",
-    XLINK: "http://www.w3.org/1999/xlink"
-  };
-  this.CONFIG = {
-    ICON_HIDDEN_DELAY: 2000, //ms
-    CLICK_DETECION_TIME: 100 //ms
-  };
-
-  svgTag.setAttributeNS(null, 'draggable', false);
-
-  //Default style
-  svgTag.style.cursor = 'normal';
-
-  svgTag.style.userSelect = 'none';
-  svgTag.style.mozUserSelect = 'none';
-  svgTag.style.webkitUserSelect = 'none';
-  svgTag.style.msUserSelect = 'none';
-
-  this.eventController = new EventController(svgTag)
-  this.elementController = new ElementController(svgTag, this.NS)
-  this.funnyMath = new FunnyMath()
-  this.common = new CommonUtils(svgTag)
-}
-
-/**
- * 공통 함수 객체
- */
-function CommonUtils (PARENT_SVG_TAG) {
-  this.PARENT_SVG_TAG = PARENT_SVG_TAG
-}
-CommonUtils.prototype = {
-  getBodyScroll: function () {
-    var scroll = false;
-    var body = document.body;
-    var html = document.documentElement;
-
-    if (body.scrollTop !== 0 || body.scrollLeft !== 0) {
-      //For Chrome, Safari, Opera
-      scroll = {
-        left: body.scrollLeft,
-        top: body.scrollTop
-      };
-    } else if (html.scrollTop !== 0 || html.scrollLeft !== 0) {
-      //Firefox, IE
-      scroll = {
-        left: html.scrollLeft,
-        top: html.scrollTop
-      };
-    }
-
-    return scroll;
-  },
-  getPageAxis: function (event) {
-    var offset = this.parentOffset();
-    var xAxis = event.pageX - offset.left;
-    var yAxis = event.pageY - offset.top;
-    var scroll = this.getBodyScroll();
-
-    if (scroll) {
-      xAxis -= scroll.left;
-      yAxis -= scroll.top;
-    }
-
-    return [xAxis, yAxis];
-  },
-  cloneObject: function (obj) {
-    if (obj === null || typeof(obj) !== 'object') {
-      return obj;
-    }
-
-    var copiedObj = obj.constructor();
-
-    for (var attr in obj) {
-      if (obj.hasOwnProperty(attr)) {
-        copiedObj[attr] = this.cloneObject(obj[attr]);
-      }
-    }
-
-    return copiedObj;
-  },
-  parentOffset: function () {
-    var offset = this.PARENT_SVG_TAG.getBoundingClientRect();
-    return {
-      top: offset.top,
-      left: offset.left,
-      width: offset.width,
-      height: offset.height
-    };
-  },
-  getOptions: function (defaultOptions, _options) {
-    var keyName = '';
-    var newOptions = {};
-    var options = this.cloneObject(_options);
-
-    for (keyName in defaultOptions) {
-      newOptions[keyName] =
-        typeof options[keyName] === "undefined" ?
-          defaultOptions[keyName] :
-          options[keyName];
-    }
-
-    return newOptions;
-  }
-}
-
-/**
- * 이벤트 조작 객체
- */
-function EventController (PARENT_SVG_TAG) {
-  this.PARENT_SVG_TAG = PARENT_SVG_TAG
-}
-
-EventController.prototype = {
-  bindParentEvent: function (name, callback) {
-    this.PARENT_SVG_TAG.addEventListener(name, callback);
-  },
-  unbindParentEvent: function (name, callback) {
-    this.PARENT_SVG_TAG.removeEventListener(name, callback);
-  },
-  bindBodyEvent: function (name, callback) {
-    document.body.addEventListener(name, callback);
-  },
-  unbindBodyEvent: function (name, callback) {
-    document.body.removeEventListener(name, callback);
-  }
-}
-
-/**
- * DOM 조작 객체
- */
-function ElementController (PARENT_SVG_TAG, NS) {
-  this.PARENT_SVG_TAG = PARENT_SVG_TAG
-  this.NS = NS
-}
-
-ElementController.prototype = {
-  getParentSvg: function () {
-    return this.PARENT_SVG_TAG;
-  },
-  setParentSvgAttr: function (attrName, val) {
-    return this.setAttr(
-      this.PARENT_SVG_TAG,
-      attrName,
-      val
-    );
-  },
-  getParentSvgAttr: function (attrName) {
-    return this.getAttr(
-      this.PARENT_SVG_TAG,
-      attrName
-    );
-  },
-  setAttr: function (element, attrName, val, ns) {
-    var ns = typeof ns === "undefined" ? null : ns;
-    element.setAttributeNS(ns, attrName, val);
-  },
-  getAttr: function (element, attrName) {
-    return element.getAttributeNS(null, attrName);
-  },
-  removeParentChild: function (childrenElement) {
-    this.PARENT_SVG_TAG.removeChild(childrenElement);
-  },
-  removeChild: function (parentElement, childrenElement) {
-    parentElement.removeChild(childrenElement);
-  },
-  appendParentChild: function (childrenElement) {
-    this.PARENT_SVG_TAG.appendChild(childrenElement);
-  },
-  appendChild: function (parentElement, childrenElement) {
-    parentElement.appendChild(childrenElement);
-  },
-  createLine: function (strokeWidth) {
-    var line = document.createElementNS(this.NS.SVG, "line");
-    line.setAttributeNS(null, 'stroke-width', strokeWidth);
-    line.setAttributeNS(null, 'draggable', false);
-
-    return line;
-  },
-  createCircle: function (circleRadius) {
-    var circle = document.createElementNS(this.NS.SVG, "circle");
-    circle.setAttributeNS(null, "r", circleRadius);
-    circle.setAttributeNS(null, 'draggable', false);
-
-    return circle;
-  },
-  createRect: function (width, height) {
-    var rectangle = document.createElementNS(this.NS.SVG, "rect");
-    rectangle.setAttributeNS(null, "width", width);
-    rectangle.setAttributeNS(null, "height", height);
-    rectangle.setAttributeNS(null, 'draggable', false);
-
-    return rectangle;
-  },
-  createText: function (txt) {
-    var textTag = document.createElementNS(this.NS.SVG, 'text');
-    textTag.textContent = txt;
-    textTag.setAttributeNS(null, 'draggable', false);
-
-    return textTag;
-  },
-  createGroup: function () {
-    var group = document.createElementNS(this.NS.SVG, 'g');
-    return group;
-  },
-  createImage: function (imagePath, width, height) {
-    var imageContainner = this.createGroup();
-    var image = document.createElementNS(this.NS.SVG, 'image');
-
-    image.setAttributeNS(this.NS.XLINK, 'href', imagePath);
-    image.setAttributeNS(null, 'width', width);
-    image.setAttributeNS(null, 'height', height);
-    image.setAttributeNS(null, 'draggable', false);
-
-    imageContainner.appendChild(image);
-
-    return [image, imageContainner];
-  },
-  createPolygon: function () {
-    var polygon = document.createElementNS(this.NS.SVG, "polygon");
-    polygon.setAttributeNS(null, 'draggable', false);
-
-    return polygon;
-  },
-  createUse: function () {
-    var use = document.createElementNS(this.NS.SVG, 'use');
-    return use;
-  }
-}
-
 /**
  * 수학함수 객체
  */
@@ -342,5 +104,241 @@ FunnyMath.prototype = {
     centerY = (longY - shortY) / 2 + shortY;
 
     return [centerX, centerY];
+  }
+}
+
+/**
+ * 이벤트 조작 객체
+ */
+function EventController () { }
+
+EventController.prototype = {
+  bindEvent: function (element, name, callback) {
+    element.addEventListener(name, callback);
+  },
+  unbindEvent: function (element, name, callback) {
+    element.removeEventListener(name, callback);
+  },
+  bindBodyEvent: function (name, callback) {
+    document.body.addEventListener(name, callback);
+  },
+  unbindBodyEvent: function (name, callback) {
+    document.body.removeEventListener(name, callback);
+  }
+}
+
+/**
+ * 플러그인 호출시 this로 사용할 객체
+ *
+ * @param {Object} svgTag svg tag
+ */
+function SVGGeometryFactory(svgTag) {
+  this.PARENT_SVG_TAG = svgTag;
+  this.NS = {
+    SVG: "http://www.w3.org/2000/svg",
+    XLINK: "http://www.w3.org/1999/xlink"
+  };
+  this.CONFIG = {
+    ICON_HIDDEN_DELAY: 2000, //ms
+    CLICK_DETECION_TIME: 100 //ms
+  };
+
+  svgTag.setAttributeNS(null, 'draggable', false);
+
+  //Default style
+  svgTag.style.cursor = 'normal';
+
+  svgTag.style.userSelect = 'none';
+  svgTag.style.mozUserSelect = 'none';
+  svgTag.style.webkitUserSelect = 'none';
+  svgTag.style.msUserSelect = 'none';
+
+  this.elementController = new ElementController(svgTag, this.NS)
+  this.common = new CommonUtils(svgTag)
+}
+
+SVGGeometryFactory.prototype.funnyMath = new FunnyMath()
+SVGGeometryFactory.prototype.eventController = new EventController()
+
+/**
+ * 공통 함수 객체
+ */
+function CommonUtils (PARENT_SVG_TAG) {
+  this.PARENT_SVG_TAG = PARENT_SVG_TAG
+}
+CommonUtils.prototype = {
+  getBodyScroll: function () {
+    var scroll = false;
+    var body = document.body;
+    var html = document.documentElement;
+
+    if (body.scrollTop !== 0 || body.scrollLeft !== 0) {
+      //For Chrome, Safari, Opera
+      scroll = {
+        left: body.scrollLeft,
+        top: body.scrollTop
+      };
+    } else if (html.scrollTop !== 0 || html.scrollLeft !== 0) {
+      //Firefox, IE
+      scroll = {
+        left: html.scrollLeft,
+        top: html.scrollTop
+      };
+    }
+
+    return scroll;
+  },
+  getPageAxis: function (event) {
+    var offset = this.parentOffset();
+    var xAxis = event.pageX - offset.left;
+    var yAxis = event.pageY - offset.top;
+    var scroll = this.getBodyScroll();
+
+    if (scroll) {
+      xAxis -= scroll.left;
+      yAxis -= scroll.top;
+    }
+
+    return [xAxis, yAxis];
+  },
+  cloneObject: function (obj) {
+    if (obj === null || typeof(obj) !== 'object') {
+      return obj;
+    }
+
+    var copiedObj = obj.constructor();
+
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) {
+        copiedObj[attr] = this.cloneObject(obj[attr]);
+      }
+    }
+
+    return copiedObj;
+  },
+  parentOffset: function () {
+    var offset = this.PARENT_SVG_TAG.getBoundingClientRect();
+    return {
+      top: offset.top,
+      left: offset.left,
+      width: offset.width,
+      height: offset.height
+    };
+  },
+  getOptions: function (defaultOptions, _options) {
+    var keyName = '';
+    var newOptions = {};
+    var options = this.cloneObject(_options);
+
+    for (keyName in defaultOptions) {
+      newOptions[keyName] =
+        typeof options[keyName] === "undefined" ?
+          defaultOptions[keyName] :
+          options[keyName];
+    }
+
+    return newOptions;
+  }
+}
+
+/**
+ * DOM 조작 객체
+ */
+function ElementController (PARENT_SVG_TAG, NS) {
+  this.PARENT_SVG_TAG = PARENT_SVG_TAG
+  this.NS = NS
+}
+
+ElementController.prototype = {
+  getParentSvg: function () {
+    return this.PARENT_SVG_TAG;
+  },
+  setParentSvgAttr: function (attrName, val) {
+    return this.setAttr(
+      this.PARENT_SVG_TAG,
+      attrName,
+      val
+    );
+  },
+  getParentSvgAttr: function (attrName) {
+    return this.getAttr(
+      this.PARENT_SVG_TAG,
+      attrName
+    );
+  },
+  setAttr: function (element, attrName, val, ns) {
+    var ns = typeof ns === "undefined" ? null : ns;
+    element.setAttributeNS(ns, attrName, val);
+  },
+  getAttr: function (element, attrName) {
+    return element.getAttributeNS(null, attrName);
+  },
+  removeParentChild: function (childrenElement) {
+    this.PARENT_SVG_TAG.removeChild(childrenElement);
+  },
+  removeChild: function (parentElement, childrenElement) {
+    parentElement.removeChild(childrenElement);
+  },
+  appendParentChild: function (childrenElement) {
+    this.PARENT_SVG_TAG.appendChild(childrenElement);
+  },
+  appendChild: function (parentElement, childrenElement) {
+    parentElement.appendChild(childrenElement);
+  },
+  createLine: function (strokeWidth) {
+    var line = document.createElementNS(this.NS.SVG, "line");
+    line.setAttributeNS(null, 'stroke-width', strokeWidth);
+    line.setAttributeNS(null, 'draggable', false);
+
+    return line;
+  },
+  createCircle: function (circleRadius) {
+    var circle = document.createElementNS(this.NS.SVG, "circle");
+    circle.setAttributeNS(null, "r", circleRadius);
+    circle.setAttributeNS(null, 'draggable', false);
+
+    return circle;
+  },
+  createRect: function (width, height) {
+    var rectangle = document.createElementNS(this.NS.SVG, "rect");
+    rectangle.setAttributeNS(null, "width", width);
+    rectangle.setAttributeNS(null, "height", height);
+    rectangle.setAttributeNS(null, 'draggable', false);
+
+    return rectangle;
+  },
+  createText: function (txt) {
+    var textTag = document.createElementNS(this.NS.SVG, 'text');
+    textTag.textContent = txt;
+    textTag.setAttributeNS(null, 'draggable', false);
+
+    return textTag;
+  },
+  createGroup: function () {
+    var group = document.createElementNS(this.NS.SVG, 'g');
+    return group;
+  },
+  createImage: function (imagePath, width, height) {
+    var imageContainner = this.createGroup();
+    var image = document.createElementNS(this.NS.SVG, 'image');
+
+    image.setAttributeNS(this.NS.XLINK, 'href', imagePath);
+    image.setAttributeNS(null, 'width', width);
+    image.setAttributeNS(null, 'height', height);
+    image.setAttributeNS(null, 'draggable', false);
+
+    imageContainner.appendChild(image);
+
+    return [image, imageContainner];
+  },
+  createPolygon: function () {
+    var polygon = document.createElementNS(this.NS.SVG, "polygon");
+    polygon.setAttributeNS(null, 'draggable', false);
+
+    return polygon;
+  },
+  createUse: function () {
+    var use = document.createElementNS(this.NS.SVG, 'use');
+    return use;
   }
 }

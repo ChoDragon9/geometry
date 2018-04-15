@@ -2,7 +2,12 @@
 /* globals SVGGeometry */
 function customEditor (_options) {
   var parentSvgMovedAttr = 'is-moved';
-  var options = this.common.getOptions({
+  var self = this;
+  var eventCtrl = self.eventController;
+  var elemCtrl = self.elementController;
+  var commonFunc = self.common;
+  var funnyMath = self.funnyMath;
+  var options = commonFunc.getOptions({
     minPoint: 4,
     event: null,
     fixedRatio: false,
@@ -15,11 +20,6 @@ function customEditor (_options) {
   var svgObj = [];
   var currentSvgObjIndex = 0;
   var isDrawing = false;
-
-  var eventCtrl = this.eventController;
-  var elemCtrl = this.elementController;
-  var commonFunc = this.common;
-  var funnyMath = this.funnyMath;
 
   var svgGeometry = new SVGGeometry(elemCtrl.getParentSvg());
 
@@ -96,7 +96,7 @@ function customEditor (_options) {
           if (options.minSize === false) {
             options.points = [
               axis, [axis[0], axis[1] + options.ratio[1]],
-              [axis[0] + options.ratio[0], axis[1] + options.ratio[1]],
+              [axis[0] + options.ratio[0], axis[1] + option.sratio[1]],
               [axis[0] + options.ratio[0], axis[1]]
             ];
           } else {
@@ -149,11 +149,11 @@ function customEditor (_options) {
   bindEvent();
 
   function unbindEvent() {
-    eventCtrl.unbindParentEvent('click', parentSVGClickHandle);
+    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'click', parentSVGClickHandle);
   }
 
   function bindEvent() {
-    eventCtrl.bindParentEvent('click', parentSVGClickHandle);
+    eventCtrl.bindEvent(self.PARENT_SVG_TAG, 'click', parentSVGClickHandle);
   }
 
   function handleESCKey(event) {
@@ -163,11 +163,11 @@ function customEditor (_options) {
   }
 
   function bindContextMenu() {
-    eventCtrl.bindParentEvent("contextmenu", removeDrawingGeometry);
+    eventCtrl.bindEvent(self.PARENT_SVG_TAG, "contextmenu", removeDrawingGeometry);
   }
 
   function unbindContextMenu() {
-    eventCtrl.unbindParentEvent("contextmenu", removeDrawingGeometry);
+    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, "contextmenu", removeDrawingGeometry);
   }
 
   function bindESCkeyEvent() {

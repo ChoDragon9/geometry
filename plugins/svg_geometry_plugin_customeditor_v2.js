@@ -3,7 +3,12 @@
 function customEditorV2 (_options) {
   var parentSvgMovedAttr = 'is-moved';
   var DEFAULT_OBJECT_SIZE = 30;
-  var options = this.common.getOptions({
+  var self = this;
+  var eventCtrl = self.eventController;
+  var elemCtrl = self.elementController;
+  var commonFunc = self.common;
+  var funnyMath = self.funnyMath;
+  var options = commonFunc.getOptions({
     minPoint: 4,
     event: null,
     fixedRatio: false,
@@ -18,13 +23,7 @@ function customEditorV2 (_options) {
   var isDrawing = false;
   var mouseDownTimer = null;
 
-  var self = this;
-  var eventCtrl = self.eventController;
-  var elemCtrl = self.elementController;
-  var commonFunc = self.common;
-  var funnyMath = self.funnyMath;
-
-  var svgGeometry = new SVGGeometry(elemCtrl.getParentSvg());
+  var svgGeometry = new SVGGeometry(self.PARENT_SVG_TAG);
 
   options.customDraw = true;
 
@@ -36,10 +35,10 @@ function customEditorV2 (_options) {
       mouseDownTimer = null;
 
       parentSVGClickHandle(event);
-      eventCtrl.unbindParentEvent('mousedown', parentSVGMouseDownHandle);
-      eventCtrl.unbindParentEvent('mouseup', parentSVGMouseUpHandle);
+      eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'mousedown', parentSVGMouseDownHandle);
+      eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'mouseup', parentSVGMouseUpHandle);
 
-      eventCtrl.bindParentEvent('click', parentSVGClickHandle);
+      eventCtrl.bindEvent(self.PARENT_SVG_TAG, 'click', parentSVGClickHandle);
       return;
     }
 
@@ -214,24 +213,24 @@ function customEditorV2 (_options) {
   }
 
   function unbindEvent() {
-    eventCtrl.unbindParentEvent('click', parentSVGClickHandle);
+    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'click', parentSVGClickHandle);
 
-    eventCtrl.unbindParentEvent('mousedown', parentSVGMouseDownHandle);
+    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'mousedown', parentSVGMouseDownHandle);
     eventCtrl.unbindBodyEvent('mouseup', parentSVGMouseUpHandle);
   }
 
   function bindEvent() {
-    eventCtrl.bindParentEvent('mousedown', parentSVGMouseDownHandle);
-    eventCtrl.bindParentEvent('mouseup', parentSVGMouseUpHandle);
+    eventCtrl.bindEvent(self.PARENT_SVG_TAG, 'mousedown', parentSVGMouseDownHandle);
+    eventCtrl.bindEvent(self.PARENT_SVG_TAG, 'mouseup', parentSVGMouseUpHandle);
   }
 
   function bindCancelEvent() {
-    eventCtrl.bindParentEvent("contextmenu", removeDrawingGeometry);
+    eventCtrl.bindEvent(self.PARENT_SVG_TAG, "contextmenu", removeDrawingGeometry);
     document.addEventListener('keyup', handleESCKey);
   }
 
   function unbindCancelEvent() {
-    eventCtrl.unbindParentEvent("contextmenu", removeDrawingGeometry);
+    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, "contextmenu", removeDrawingGeometry);
     document.removeEventListener('keyup', handleESCKey);
   }
 
