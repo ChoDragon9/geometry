@@ -1,5 +1,5 @@
 "use strict";
-/* globals SVGGeometryFactory */
+/* globals SVGGeometryProduct */
 /**
  * SVG를 사용한 Drawing 툴 모듈이다.
  * Plugin 중 'draw'를 통해서 영역을 조작한다.
@@ -8,7 +8,7 @@
  * @param {Object} svgTag svg tag
  * @example
 <caption>HTML Resource</caption>
-<script src="./svg_drawing/modules/svg_geometry_factory.js"></script>
+<script src="./svg_drawing/modules/svg_geometry_product.js"></script>
 <script src="./svg_drawing/modules/svg_geometry.js"></script>
 
 <script src="./svg_drawing/plugins/draw/arrow-image-helper.js"></script>
@@ -79,6 +79,6 @@ svgGeometry.draw(1);
  */
 SVGGeometry.addPlugin = function(name, callback) {
   SVGGeometry.prototype[name] = function() {
-    return callback.apply(new SVGGeometryFactory(this.svgTag), arguments);
+    return callback.apply(new SVGGeometryProduct(this.svgTag), arguments);
   };
 };

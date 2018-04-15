@@ -271,7 +271,7 @@ ElementController.prototype = {
  *
  * @param {Object} svgTag svg tag
  */
-function SVGGeometryFactory(svgTag) {
+function SVGGeometryProduct(svgTag) {
   this.PARENT_SVG_TAG = svgTag;
   this.CONFIG = {
     ICON_HIDDEN_DELAY: 2000, //ms
@@ -290,11 +290,11 @@ function SVGGeometryFactory(svgTag) {
   svgTag.style.msUserSelect = 'none';
 }
 
-SVGGeometryFactory.prototype.funnyMath = new FunnyMath()
-SVGGeometryFactory.prototype.eventController = new EventController()
-SVGGeometryFactory.prototype.common = new CommonUtils()
-SVGGeometryFactory.prototype.elementController = new ElementController()
-SVGGeometryFactory.prototype.getPageAxis = function (event) {
+SVGGeometryProduct.prototype.funnyMath = new FunnyMath()
+SVGGeometryProduct.prototype.eventController = new EventController()
+SVGGeometryProduct.prototype.common = new CommonUtils()
+SVGGeometryProduct.prototype.elementController = new ElementController()
+SVGGeometryProduct.prototype.getPageAxis = function (event) {
   var offset = this.parentOffset();
   var xAxis = event.pageX - offset.left;
   var yAxis = event.pageY - offset.top;
@@ -307,7 +307,7 @@ SVGGeometryFactory.prototype.getPageAxis = function (event) {
 
   return [xAxis, yAxis];
 };
-SVGGeometryFactory.prototype.parentOffset = function () {
+SVGGeometryProduct.prototype.parentOffset = function () {
   var offset = this.PARENT_SVG_TAG.getBoundingClientRect();
   return {
     top: offset.top,
@@ -317,25 +317,25 @@ SVGGeometryFactory.prototype.parentOffset = function () {
   };
 };
 
-SVGGeometryFactory.prototype.getParentSvg = function () {
+SVGGeometryProduct.prototype.getParentSvg = function () {
   return this.PARENT_SVG_TAG;
 };
-SVGGeometryFactory.prototype.setParentSvgAttr = function (attrName, val) {
+SVGGeometryProduct.prototype.setParentSvgAttr = function (attrName, val) {
   return this.elementController.setAttr(
     this.PARENT_SVG_TAG,
     attrName,
     val
   );
 };
-SVGGeometryFactory.prototype.getParentSvgAttr = function (attrName) {
+SVGGeometryProduct.prototype.getParentSvgAttr = function (attrName) {
   return this.elementController.getAttr(
     this.PARENT_SVG_TAG,
     attrName
   );
 };
-SVGGeometryFactory.prototype.removeParentChild = function (childrenElement) {
+SVGGeometryProduct.prototype.removeParentChild = function (childrenElement) {
   this.elementController.removeChild(this.PARENT_SVG_TAG, childrenElement)
 };
-SVGGeometryFactory.prototype.appendParentChild = function (childrenElement) {
+SVGGeometryProduct.prototype.appendParentChild = function (childrenElement) {
   this.elementController.appendChild(this.PARENT_SVG_TAG, childrenElement)
 };
