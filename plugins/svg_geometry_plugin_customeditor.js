@@ -30,7 +30,7 @@ function customEditor (_options) {
 
   var parentSVGClickHandle = function(event) {
     if (
-      self.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
+      self.getParentSvgAttr(self.getParentMovedAttr()) === "true"
     ) {
       return;
     }
@@ -148,11 +148,11 @@ function customEditor (_options) {
   bindEvent();
 
   function unbindEvent() {
-    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'click', parentSVGClickHandle);
+    eventCtrl.unbindEvent(self.getParentSvg(), 'click', parentSVGClickHandle);
   }
 
   function bindEvent() {
-    eventCtrl.bindEvent(self.PARENT_SVG_TAG, 'click', parentSVGClickHandle);
+    eventCtrl.bindEvent(self.getParentSvg(), 'click', parentSVGClickHandle);
   }
 
   function handleESCKey(event) {
@@ -162,11 +162,11 @@ function customEditor (_options) {
   }
 
   function bindContextMenu() {
-    eventCtrl.bindEvent(self.PARENT_SVG_TAG, "contextmenu", removeDrawingGeometry);
+    eventCtrl.bindEvent(self.getParentSvg(), "contextmenu", removeDrawingGeometry);
   }
 
   function unbindContextMenu() {
-    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, "contextmenu", removeDrawingGeometry);
+    eventCtrl.unbindEvent(self.getParentSvg(), "contextmenu", removeDrawingGeometry);
   }
 
   function bindESCkeyEvent() {

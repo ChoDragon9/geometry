@@ -245,7 +245,7 @@ function draw (options) {
 
   function resetParentSvgAttr() {
     setTimeout(function() {
-      draw.setParentSvgAttr(draw.PARENT_SVG_MOVED_ATTRIBUTE, false);
+      draw.setParentSvgAttr(draw.getParentMovedAttr(), false);
     }, 100);
   }
 
@@ -341,7 +341,7 @@ function draw (options) {
       draw.selectedLineIndex !== null ||
       selectedPolygon !== null
     ) {
-      draw.setParentSvgAttr(draw.PARENT_SVG_MOVED_ATTRIBUTE, true);
+      draw.setParentSvgAttr(draw.getParentMovedAttr(), true);
       toggleDraggingStatus(true);
     }
   }

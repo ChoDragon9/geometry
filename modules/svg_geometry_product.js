@@ -3,7 +3,6 @@
  * 수학함수 객체
  */
 function FunnyMath () { }
-
 FunnyMath.prototype = {
   getRadian: function (angle) {
     return angle * (Math.PI / 180);
@@ -184,20 +183,14 @@ CommonUtils.prototype = {
 /**
  * DOM 조작 객체
  */
-function ElementController () {
-  this.NS = {
-    SVG: "http://www.w3.org/2000/svg",
-    XLINK: "http://www.w3.org/1999/xlink"
-  };
-}
-
+function ElementController () { }
 ElementController.prototype = {
   setAttr: function (element, attrName, val, ns) {
     var ns = typeof ns === "undefined" ? null : ns;
     element.setAttributeNS(ns, attrName, val);
   },
   setHrefAttr: function(element, val) {
-    this.setAttr(element, 'href', val, this.NS.XLINK)
+    this.setAttr(element, 'href', val, "http://www.w3.org/1999/xlink")
   },
   getAttr: function (element, attrName) {
     return element.getAttributeNS(null, attrName);
@@ -208,22 +201,25 @@ ElementController.prototype = {
   appendChild: function (parentElement, childrenElement) {
     parentElement.appendChild(childrenElement);
   },
+  createSVGElement: function(name) {
+    return document.createElementNS("http://www.w3.org/2000/svg", name);
+  },
   createLine: function (strokeWidth) {
-    var line = document.createElementNS(this.NS.SVG, "line");
+    var line = this.createSVGElement("line");
     line.setAttributeNS(null, 'stroke-width', strokeWidth);
     line.setAttributeNS(null, 'draggable', false);
 
     return line;
   },
   createCircle: function (circleRadius) {
-    var circle = document.createElementNS(this.NS.SVG, "circle");
+    var circle = this.createSVGElement("circle");
     circle.setAttributeNS(null, "r", circleRadius);
     circle.setAttributeNS(null, 'draggable', false);
 
     return circle;
   },
   createRect: function (width, height) {
-    var rectangle = document.createElementNS(this.NS.SVG, "rect");
+    var rectangle = this.createSVGElement("rect");
     rectangle.setAttributeNS(null, "width", width);
     rectangle.setAttributeNS(null, "height", height);
     rectangle.setAttributeNS(null, 'draggable', false);
@@ -231,19 +227,18 @@ ElementController.prototype = {
     return rectangle;
   },
   createText: function (txt) {
-    var textTag = document.createElementNS(this.NS.SVG, 'text');
+    var textTag = this.createSVGElement('text');
     textTag.textContent = txt;
     textTag.setAttributeNS(null, 'draggable', false);
 
     return textTag;
   },
   createGroup: function () {
-    var group = document.createElementNS(this.NS.SVG, 'g');
-    return group;
+    return this.createSVGElement('g');
   },
   createImage: function (imagePath, width, height) {
     var imageContainner = this.createGroup();
-    var image = document.createElementNS(this.NS.SVG, 'image');
+    var image = this.createSVGElement('image');
 
     this.setHrefAttr(image, imagePath)
     image.setAttributeNS(null, 'width', width);
@@ -255,14 +250,13 @@ ElementController.prototype = {
     return [image, imageContainner];
   },
   createPolygon: function () {
-    var polygon = document.createElementNS(this.NS.SVG, "polygon");
+    var polygon = this.createSVGElement("polygon");
     polygon.setAttributeNS(null, 'draggable', false);
 
     return polygon;
   },
   createUse: function () {
-    var use = document.createElementNS(this.NS.SVG, 'use');
-    return use;
+    return this.createSVGElement('use');
   }
 }
 
@@ -272,13 +266,6 @@ ElementController.prototype = {
  * @param {Object} svgTag svg tag
  */
 function SVGGeometryProduct(svgTag) {
-  this.PARENT_SVG_TAG = svgTag;
-  this.CONFIG = {
-    ICON_HIDDEN_DELAY: 2000, //ms
-    CLICK_DETECION_TIME: 100 //ms
-  };
-  this.PARENT_SVG_MOVED_ATTRIBUTE = 'is-moved';
-
   svgTag.setAttributeNS(null, 'draggable', false);
 
   //Default style
@@ -288,54 +275,66 @@ function SVGGeometryProduct(svgTag) {
   svgTag.style.mozUserSelect = 'none';
   svgTag.style.webkitUserSelect = 'none';
   svgTag.style.msUserSelect = 'none';
+
+
+  this.getParentSvg = function () {
+    return svgTag;
+  };
 }
 
-SVGGeometryProduct.prototype.funnyMath = new FunnyMath()
-SVGGeometryProduct.prototype.eventController = new EventController()
-SVGGeometryProduct.prototype.common = new CommonUtils()
-SVGGeometryProduct.prototype.elementController = new ElementController()
-SVGGeometryProduct.prototype.getPageAxis = function (event) {
-  var offset = this.parentOffset();
-  var xAxis = event.pageX - offset.left;
-  var yAxis = event.pageY - offset.top;
-  var scroll = this.common.getBodyScroll();
+SVGGeometryProduct.prototype = {
+  funnyMath: new FunnyMath(),
+  eventController: new EventController(),
+  common: new CommonUtils(),
+  elementController: new ElementController(),
+  getParentMovedAttr: function () {
+    return 'is-moved'
+  },
+  getIconHiddenDelay: function () {
+    return 2000 //ms
+  },
+  getClickDetectionTime: function () {
+    return 100 //ms
+  },
+  getPageAxis: function (event) {
+    var offset = this.parentOffset();
+    var xAxis = event.pageX - offset.left;
+    var yAxis = event.pageY - offset.top;
+    var scroll = this.common.getBodyScroll();
 
-  if (scroll) {
-    xAxis -= scroll.left;
-    yAxis -= scroll.top;
+    if (scroll) {
+      xAxis -= scroll.left;
+      yAxis -= scroll.top;
+    }
+
+    return [xAxis, yAxis];
+  },
+  parentOffset: function () {
+    var offset = this.getParentSvg().getBoundingClientRect();
+    return {
+      top: offset.top,
+      left: offset.left,
+      width: offset.width,
+      height: offset.height
+    };
+  },
+  setParentSvgAttr: function (attrName, val) {
+    return this.elementController.setAttr(
+      this.getParentSvg(),
+      attrName,
+      val
+    );
+  },
+  getParentSvgAttr: function (attrName) {
+    return this.elementController.getAttr(
+      this.getParentSvg(),
+      attrName
+    );
+  },
+  removeParentChild: function (childrenElement) {
+    this.elementController.removeChild(this.getParentSvg(), childrenElement)
+  },
+  appendParentChild: function (childrenElement) {
+    this.elementController.appendChild(this.getParentSvg(), childrenElement)
   }
-
-  return [xAxis, yAxis];
-};
-SVGGeometryProduct.prototype.parentOffset = function () {
-  var offset = this.PARENT_SVG_TAG.getBoundingClientRect();
-  return {
-    top: offset.top,
-    left: offset.left,
-    width: offset.width,
-    height: offset.height
-  };
-};
-
-SVGGeometryProduct.prototype.getParentSvg = function () {
-  return this.PARENT_SVG_TAG;
-};
-SVGGeometryProduct.prototype.setParentSvgAttr = function (attrName, val) {
-  return this.elementController.setAttr(
-    this.PARENT_SVG_TAG,
-    attrName,
-    val
-  );
-};
-SVGGeometryProduct.prototype.getParentSvgAttr = function (attrName) {
-  return this.elementController.getAttr(
-    this.PARENT_SVG_TAG,
-    attrName
-  );
-};
-SVGGeometryProduct.prototype.removeParentChild = function (childrenElement) {
-  this.elementController.removeChild(this.PARENT_SVG_TAG, childrenElement)
-};
-SVGGeometryProduct.prototype.appendParentChild = function (childrenElement) {
-  this.elementController.appendChild(this.PARENT_SVG_TAG, childrenElement)
 };

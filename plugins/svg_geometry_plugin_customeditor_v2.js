@@ -22,7 +22,7 @@ function customEditorV2 (_options) {
   var isDrawing = false;
   var mouseDownTimer = null;
 
-  var svgGeometry = new SVGGeometry(self.PARENT_SVG_TAG);
+  var svgGeometry = new SVGGeometry(self.getParentSvg());
 
   options.customDraw = true;
 
@@ -34,10 +34,10 @@ function customEditorV2 (_options) {
       mouseDownTimer = null;
 
       parentSVGClickHandle(event);
-      eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'mousedown', parentSVGMouseDownHandle);
-      eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'mouseup', parentSVGMouseUpHandle);
+      eventCtrl.unbindEvent(self.getParentSvg(), 'mousedown', parentSVGMouseDownHandle);
+      eventCtrl.unbindEvent(self.getParentSvg(), 'mouseup', parentSVGMouseUpHandle);
 
-      eventCtrl.bindEvent(self.PARENT_SVG_TAG, 'click', parentSVGClickHandle);
+      eventCtrl.bindEvent(self.getParentSvg(), 'click', parentSVGClickHandle);
       return;
     }
 
@@ -46,7 +46,7 @@ function customEditorV2 (_options) {
     }
 
     if (
-      self.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true" ||
+      self.getParentSvgAttr(self.getParentMovedAttr()) === "true" ||
       typeof svgObj[currentSvgObjIndex] === "undefined"
     ) {
       return;
@@ -62,7 +62,7 @@ function customEditorV2 (_options) {
     if (
       event.buttons === 2 ||
       event.currentTarget !== event.target ||
-      self.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
+      self.getParentSvgAttr(self.getParentMovedAttr()) === "true"
     ) {
       return;
     }
@@ -83,12 +83,12 @@ function customEditorV2 (_options) {
       svgObj[currentSvgObjIndex] = svgGeometry.draw(options);
       currentPoint++;
       callStartEvent();
-    }, self.CONFIG.CLICK_DETECION_TIME, axis, options);
+    }, self.getClickDetectionTime(), axis, options);
   }
 
   function parentSVGClickHandle(event) {
     if (
-      self.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
+      self.getParentSvgAttr(self.getParentMovedAttr()) === "true"
     ) {
       return;
     }
@@ -212,24 +212,24 @@ function customEditorV2 (_options) {
   }
 
   function unbindEvent() {
-    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'click', parentSVGClickHandle);
+    eventCtrl.unbindEvent(self.getParentSvg(), 'click', parentSVGClickHandle);
 
-    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, 'mousedown', parentSVGMouseDownHandle);
+    eventCtrl.unbindEvent(self.getParentSvg(), 'mousedown', parentSVGMouseDownHandle);
     eventCtrl.unbindBodyEvent('mouseup', parentSVGMouseUpHandle);
   }
 
   function bindEvent() {
-    eventCtrl.bindEvent(self.PARENT_SVG_TAG, 'mousedown', parentSVGMouseDownHandle);
-    eventCtrl.bindEvent(self.PARENT_SVG_TAG, 'mouseup', parentSVGMouseUpHandle);
+    eventCtrl.bindEvent(self.getParentSvg(), 'mousedown', parentSVGMouseDownHandle);
+    eventCtrl.bindEvent(self.getParentSvg(), 'mouseup', parentSVGMouseUpHandle);
   }
 
   function bindCancelEvent() {
-    eventCtrl.bindEvent(self.PARENT_SVG_TAG, "contextmenu", removeDrawingGeometry);
+    eventCtrl.bindEvent(self.getParentSvg(), "contextmenu", removeDrawingGeometry);
     document.addEventListener('keyup', handleESCKey);
   }
 
   function unbindCancelEvent() {
-    eventCtrl.unbindEvent(self.PARENT_SVG_TAG, "contextmenu", removeDrawingGeometry);
+    eventCtrl.unbindEvent(self.getParentSvg(), "contextmenu", removeDrawingGeometry);
     document.removeEventListener('keyup', handleESCKey);
   }
 

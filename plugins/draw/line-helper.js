@@ -122,7 +122,7 @@ function LineHelper(draw) {
 
     iconHelperTimer = setTimeout(function(){
       iconHelper.hide();
-    }, draw.CONFIG.ICON_HIDDEN_DELAY);
+    }, draw.getIconHiddenDelay());
   }
 
   function mouseUpHandler() {

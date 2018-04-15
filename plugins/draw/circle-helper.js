@@ -101,7 +101,7 @@ function CircleHelper(draw) {
     clearTimeout(iconHelperTimer);
     iconHelperTimer = setTimeout(function() {
       iconHelper.hide();
-    }, draw.CONFIG.ICON_HIDDEN_DELAY);
+    }, draw.getIconHiddenDelay());
   }
 
   function update() {
