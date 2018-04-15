@@ -226,15 +226,12 @@ CommonUtils.prototype = {
     };
   },
   getOptions: function (defaultOptions, _options) {
-    var keyName = '';
-    var newOptions = {};
-    var options = this.cloneObject(_options);
+    var newOptions = this.cloneObject(_options);
 
-    for (keyName in defaultOptions) {
-      newOptions[keyName] =
-        typeof options[keyName] === "undefined" ?
-          defaultOptions[keyName] :
-          options[keyName];
+    for (var keyName in defaultOptions) {
+      if (typeof newOptions[keyName] === 'undefined') {
+        newOptions[keyName] = defaultOptions[keyName]
+      }
     }
 
     return newOptions;
