@@ -38,7 +38,6 @@ function Polygon(){
 
 	var addPoint = function(){
 		polygonObject.addPoint();
-		polygonObject2.addPoint();
 	};
 
 	function getPoints(){
