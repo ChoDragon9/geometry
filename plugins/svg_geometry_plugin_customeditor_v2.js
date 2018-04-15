@@ -9,7 +9,7 @@ function customEditorV2 (_options) {
   var funnyMath = self.funnyMath;
   var options = commonFunc.getOptions({
     minPoint: 4,
-    event: null,
+    event: {},
     fixedRatio: false,
     useOnlyRectangle: false,
     ratio: false,

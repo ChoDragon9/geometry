@@ -1,8 +1,7 @@
 /**
  * Polygon과 Line 꼭지점 Helper
  */
-function CircleHelper() {
-  var draw = this;
+function CircleHelper(draw) {
   var elemCtrl = draw.elementController;
   var parentSvg = elemCtrl.getParentSvg();
   var isLeave = false;

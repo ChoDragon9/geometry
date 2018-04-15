@@ -1,8 +1,7 @@
 /**
  * Text 태그 헬퍼
  */
-function TextTagHelper() {
-  var draw = this;
+function TextTagHelper(draw) {
   var elemCtrl = draw.elementController;
   var textTag = null;
   function addText() {

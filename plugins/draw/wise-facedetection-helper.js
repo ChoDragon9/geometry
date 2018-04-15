@@ -1,9 +1,9 @@
 /**
  * Wise Face Detection 헬퍼
  */
-function WiseFaceDetectionHelper() {
+function WiseFaceDetectionHelper(draw) {
     var wiseFaceDetectionCircle = null;
-    var wiseFaceDetection = this.options.wiseFaceDetection;
+    var wiseFaceDetection = draw.options.wiseFaceDetection;
 
     function changeFillColor(fillColor){
       wiseFaceDetectionCircle.style.color = fillColor;

@@ -1,9 +1,8 @@
 /**
  * Line 태그 Helper
  */
-function LineHelper() {
+function LineHelper(draw) {
   "use strict";
-  var draw = this;
   var elemCtrl = draw.elementController;
   var funnyMath = draw.funnyMath;
   var commonFunc = draw.common;

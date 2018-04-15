@@ -3,12 +3,12 @@
 /**
  * Group 태그 Helper
  */
-function GroupHelper(){
+function GroupHelper(draw){
   var groupId = null;
   var groupTag = null;
-  var elemCtrl = this.elementController;
+  var elemCtrl = draw.elementController;
   var parentSvg = elemCtrl.getParentSvg();
-  var notUseMoveTopLayer = this.options.notUseMoveTopLayer;
+  var notUseMoveTopLayer = draw.options.notUseMoveTopLayer;
 
   return {
     add: function() {

@@ -1,8 +1,7 @@
-function GeometryManager(){
-  var draw = this; 
-  var elemCtrl = this.elementController;
-  var funnyMath = this.funnyMath;
-  var commonFunc = this.common;
+function GeometryManager(draw){
+  var elemCtrl = draw.elementController;
+  var funnyMath = draw.funnyMath;
+  var commonFunc = draw.common;
   var geometryManager = {
     points: commonFunc.cloneObject(draw.options.points),
     isAllSelected: false,

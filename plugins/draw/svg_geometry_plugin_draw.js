@@ -70,7 +70,7 @@ function draw (options) {
       fillOpacity: .5,
       fixedRatio: false,
       ratio: false,
-      event: null,
+      event: {},
       customDraw: false,
       minSize: {
         width: 30,
@@ -110,14 +110,14 @@ function draw (options) {
     draw.options.fixedRatio = true;
   }
 
-  draw.geometryManager = GeometryManager.apply(draw);
-  draw.groupHelper = GroupHelper.apply(draw);
-  draw.wiseFaceDetectionHelper = WiseFaceDetectionHelper.apply(draw);
-  draw.lineHelper = LineHelper.apply(draw);
-  draw.circleHelper = CircleHelper.apply(draw);
-  draw.textTagHelper = TextTagHelper.apply(draw);
-  draw.polygonHelper = PolygonHelper.apply(draw);
-  draw.arrowImageHelper = ArrowImageHelper.apply(draw);
+  draw.geometryManager = new GeometryManager(draw);
+  draw.groupHelper = new GroupHelper(draw);
+  draw.wiseFaceDetectionHelper = new WiseFaceDetectionHelper(draw);
+  draw.lineHelper = new LineHelper(draw);
+  draw.circleHelper = new CircleHelper(draw);
+  draw.textTagHelper = new TextTagHelper(draw);
+  draw.polygonHelper = new PolygonHelper(draw);
+  draw.arrowImageHelper = new ArrowImageHelper(draw);
 
   init();
 
