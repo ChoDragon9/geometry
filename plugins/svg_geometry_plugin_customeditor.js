@@ -1,16 +1,16 @@
 "use strict";
 /* globals SVGGeometry */
-SVGGeometry.addPlugin('customEditor', function(_options) {
+function customEditor (_options) {
   var parentSvgMovedAttr = 'is-moved';
-  var options = this.common.cloneObject(_options);
-  var minPoint = typeof options.minPoint === "undefined" ? 4 : options.minPoint;
-  //custom 함수에서는 start, end 이벤트만 사용한다.
-  var customEvent = typeof options.event === "undefined" ? null : options.event;
-  var fixedRatio = typeof options.fixedRatio === "undefined" ? false : options.fixedRatio;
-  var useOnlyRectangle = typeof options.useOnlyRectangle === "undefined" ? false : options.useOnlyRectangle;
-  var ratio = typeof options.ratio === "undefined" ? false : options.ratio;
-  var minLineLength = typeof options.minLineLength === "undefined" ? 20 : options.minLineLength;
-  var minSize = typeof options.minSize === "undefined" ? false : options.minSize;
+  var options = this.common.getOptions({
+    minPoint: 4,
+    event: null,
+    fixedRatio: false,
+    useOnlyRectangle: false,
+    ratio: false,
+    minLineLength: 20,
+    minSize: false
+  }, _options);
   var currentPoint = 0;
   var svgObj = [];
   var currentSvgObjIndex = 0;
@@ -23,8 +23,8 @@ SVGGeometry.addPlugin('customEditor', function(_options) {
 
   var svgGeometry = new SVGGeometry(elemCtrl.getParentSvg());
 
-  if (fixedRatio === true) {
-    useOnlyRectangle = true;
+  if (options.fixedRatio === true) {
+    options.useOnlyRectangle = true;
   }
 
   options.customDraw = true;
@@ -46,8 +46,8 @@ SVGGeometry.addPlugin('customEditor', function(_options) {
       bindContextMenu();
       bindESCkeyEvent();
       isDrawing = true;
-      if ("start" in customEvent) {
-        customEvent.start(svgObj[currentSvgObjIndex]);
+      if ("start" in options.event) {
+        options.event.start(svgObj[currentSvgObjIndex]);
       }
     };
 
@@ -55,8 +55,8 @@ SVGGeometry.addPlugin('customEditor', function(_options) {
       unbindContextMenu();
       unbindESCkeyEvent();
       isDrawing = false;
-      if ("end" in customEvent) {
-        customEvent.end(svgObj[currentSvgObjIndex]);
+      if ("end" in options.event) {
+        options.event.end(svgObj[currentSvgObjIndex]);
       }
     };
 
@@ -71,7 +71,7 @@ SVGGeometry.addPlugin('customEditor', function(_options) {
       var points = svgObj[currentSvgObjIndex].getData().points;
       var returnVal = true;
 
-      if (minLineLength !== false) {
+      if (options.minLineLength !== false) {
         for (var i = 0, ii = points.length; i < ii; i++) {
           var startAxis = points[i];
           var endAxis = i === ii - 1 ? points[0] : points[i + 1];
@@ -80,7 +80,7 @@ SVGGeometry.addPlugin('customEditor', function(_options) {
               startAxis[0],
               startAxis[1],
               endAxis[0],
-              endAxis[1]) < minLineLength) {
+              endAxis[1]) < options.minLineLength) {
             returnVal = false;
           }
         }
@@ -89,23 +89,23 @@ SVGGeometry.addPlugin('customEditor', function(_options) {
       return returnVal;
     };
 
-    if (useOnlyRectangle === true) {
+    if (options.useOnlyRectangle === true) {
       //처음 클릭을 할 때
       if (currentPoint === 0) {
-        if (fixedRatio === true) {
-          if (minSize === false) {
+        if (options.fixedRatio === true) {
+          if (options.minSize === false) {
             options.points = [
-              axis, [axis[0], axis[1] + ratio[1]],
-              [axis[0] + ratio[0], axis[1] + ratio[1]],
-              [axis[0] + ratio[0], axis[1]]
+              axis, [axis[0], axis[1] + options.ratio[1]],
+              [axis[0] + options.ratio[0], axis[1] + options.ratio[1]],
+              [axis[0] + options.ratio[0], axis[1]]
             ];
           } else {
             //영상 영역을 넘는 이슈로 0,0를 초기로 설정
             axis = [0, 0];
             options.points = [
-              axis, [axis[0], axis[1] + minSize.height],
-              [axis[0] + minSize.width, axis[1] + minSize.height],
-              [axis[0] + minSize.width, axis[1]]
+              axis, [axis[0], axis[1] + options.minSize.height],
+              [axis[0] + options.minSize.width, axis[1] + options.minSize.height],
+              [axis[0] + options.minSize.width, axis[1]]
             ];
           }
         } else {
@@ -123,7 +123,7 @@ SVGGeometry.addPlugin('customEditor', function(_options) {
         svgObj[currentSvgObjIndex] = svgGeometry.draw(options);
         currentPoint = 2;
         callStartEvent();
-      } else if (minPoint === currentPoint) {
+      } else if (options.minPoint === currentPoint) {
         if (validateAllAxis() === false || svgObj[currentSvgObjIndex].validateStabilization() === false) {
           return;
         }
@@ -193,4 +193,6 @@ SVGGeometry.addPlugin('customEditor', function(_options) {
     start: bindEvent,
     removeDrawingGeometry: removeDrawingGeometry
   }
-});
+}
+
+SVGGeometry.addPlugin('customEditor', customEditor);

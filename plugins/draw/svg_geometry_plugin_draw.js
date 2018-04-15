@@ -31,7 +31,7 @@ svgGeometry.draw({
   ]
 });
  */
-SVGGeometry.addPlugin('draw', function(options) {
+function draw (options) {
   var PARENT_SVG_MOVED_ATTRIBUTE = 'is-moved';
   var MINIMUM_ANGLE = 1;
   var TEXT_POINT_RADIUS = 1.5;
@@ -88,7 +88,7 @@ SVGGeometry.addPlugin('draw', function(options) {
     },
     options
   );
-  
+
   draw.reset = reset;
   draw.setCursor = setCursor;
   draw.callCustomEvent = callCustomEvent;
@@ -333,8 +333,8 @@ SVGGeometry.addPlugin('draw', function(options) {
     if (draw.options.customDraw === true) {
       draw.selectedCircleIndex =
         (draw.options.useOnlyRectangle === true || draw.options.useRectangleForCustomDraw === true) ?
-        2 :
-        circles.length - 1;
+          2 :
+          circles.length - 1;
       toggleDraggingStatus(true);
     } else if (
       (draw.options.customDraw === false) &&
@@ -994,4 +994,6 @@ SVGGeometry.addPlugin('draw', function(options) {
   };
 
   return drawObj;
-});
+}
+
+SVGGeometry.addPlugin('draw', draw);
