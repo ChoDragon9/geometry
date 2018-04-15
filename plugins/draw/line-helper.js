@@ -1,11 +1,10 @@
 /**
  * Line 태그 Helper
  */
-function LineHelper(draw) {
+function LineHelper(draw, product) {
   "use strict";
-  var elemCtrl = draw.elementController;
-  var funnyMath = draw.funnyMath;
-  var commonFunc = draw.common;
+  var elemCtrl = product.elementController;
+  var funnyMath = product.funnyMath;
 
   var parentSvgMovedAttr = 'is-moved';
   var lines = [];
@@ -91,13 +90,13 @@ function LineHelper(draw) {
     var pointsLength = draw.geometryManager.points.length;
     clearTimeout(iconHelperTimer);
     if (
-      draw.getParentSvgAttr(parentSvgMovedAttr) === 'true' || //폴리건 드래그를 하고 있을 때
+      product.getParentSvgAttr(parentSvgMovedAttr) === 'true' || //폴리건 드래그를 하고 있을 때
       draw.selectedLineIndex !== null || //드래그를 하고 있을 때
       this.style.opacity === hideOpacity || //선택된 오브젝트가 아닐 때
       pointsLength >= draw.options.maxPoint) { //최대 포인트일 때
       return;
     }
-    var pageAxis = draw.getPageAxis(event);
+    var pageAxis = product.getPageAxis(event);
     var xAxis = pageAxis[0];
     var yAxis = pageAxis[1];
     var leftAxis = null;
@@ -122,7 +121,7 @@ function LineHelper(draw) {
 
     iconHelperTimer = setTimeout(function(){
       iconHelper.hide();
-    }, draw.getIconHiddenDelay());
+    }, product.getIconHiddenDelay());
   }
 
   function mouseUpHandler() {
@@ -171,7 +170,7 @@ function LineHelper(draw) {
       return;
     }
 
-    pageAxis = draw.getPageAxis(event);
+    pageAxis = product.getPageAxis(event);
     xAxis = pageAxis[0];
     yAxis = pageAxis[1];
 

@@ -1,7 +1,7 @@
-function GeometryManager(draw){
-  var elemCtrl = draw.elementController;
-  var funnyMath = draw.funnyMath;
-  var commonFunc = draw.common;
+function GeometryManager(draw, product){
+  var elemCtrl = product.elementController;
+  var funnyMath = product.funnyMath;
+  var commonFunc = product.common;
   var geometryManager = {
     points: commonFunc.cloneObject(draw.options.points),
     isAllSelected: false,
@@ -33,7 +33,7 @@ function GeometryManager(draw){
       var lastPoint = null;
       var newPoint = null;
 
-      var offset = draw.parentOffset();
+      var offset = product.parentOffset();
 
       var pointsLength = geometryManager.getPointsLength();
 
@@ -68,7 +68,7 @@ function GeometryManager(draw){
       pointsLength++;
     },
     validateAxis: function(xAxis, yAxis) {
-      var offset = draw.parentOffset();
+      var offset = product.parentOffset();
       var returnVal = true;
 
       if (

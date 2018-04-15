@@ -1,9 +1,9 @@
 /**
  * Polygon과 Line 꼭지점 Helper
  */
-function CircleHelper(draw) {
-  var elemCtrl = draw.elementController;
-  var parentSvg = draw.getParentSvg();
+function CircleHelper(draw, product) {
+  var elemCtrl = product.elementController;
+  var parentSvg = product.getParentSvg();
   var isLeave = false;
   var iconHelper = new IconHelper(elemCtrl, draw.groupHelper);
   var iconHelperTimer = null;
@@ -101,7 +101,7 @@ function CircleHelper(draw) {
     clearTimeout(iconHelperTimer);
     iconHelperTimer = setTimeout(function() {
       iconHelper.hide();
-    }, draw.getIconHiddenDelay());
+    }, product.getIconHiddenDelay());
   }
 
   function update() {

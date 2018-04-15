@@ -31,20 +31,18 @@ svgGeometry.draw({
   ]
 });
  */
-function draw (options) {
+function draw (product, options) {
   var MINIMUM_ANGLE = 1;
   var TEXT_POINT_RADIUS = 1.5;
 
   var draw = this;
-  var elemCtrl = draw.elementController;
-  var eventCtrl = draw.eventController;
-  var funnyMath = draw.funnyMath;
-  var commonFunc = draw.common;
+  var eventCtrl = product.eventController;
+  var funnyMath = product.funnyMath;
+  var commonFunc = product.common;
 
-  var parentSvg = draw.getParentSvg();
+  var parentSvg = product.getParentSvg();
 
   var selectedPolygon = null;
-  var drawObj = {};
 
   /**
    * Set Options
@@ -92,7 +90,6 @@ function draw (options) {
   draw.setCursor = setCursor;
   draw.callCustomEvent = callCustomEvent;
   draw.init = init;
-  draw.changeActiveStatus = changeActiveStatus;
   draw.addPoint = addPoint;
 
   draw.rectangleIndex = getRectangleIndex();
@@ -110,14 +107,18 @@ function draw (options) {
     draw.options.fixedRatio = true;
   }
 
-  draw.geometryManager = new GeometryManager(draw);
-  draw.groupHelper = new GroupHelper(draw);
-  draw.wiseFaceDetectionHelper = new WiseFaceDetectionHelper(draw);
-  draw.lineHelper = new LineHelper(draw);
-  draw.circleHelper = new CircleHelper(draw);
-  draw.textTagHelper = new TextTagHelper(draw);
-  draw.polygonHelper = new PolygonHelper(draw);
-  draw.arrowImageHelper = new ArrowImageHelper(draw);
+  /**
+   * @todo
+   * 서브 클래스들 prototype으로 변경
+   */
+  draw.geometryManager = new GeometryManager(draw, product);
+  draw.groupHelper = new GroupHelper(draw, product);
+  draw.wiseFaceDetectionHelper = new WiseFaceDetectionHelper(draw, product);
+  draw.lineHelper = new LineHelper(draw, product);
+  draw.circleHelper = new CircleHelper(draw, product);
+  draw.textTagHelper = new TextTagHelper(draw, product);
+  draw.polygonHelper = new PolygonHelper(draw, product);
+  draw.arrowImageHelper = new ArrowImageHelper(draw, product);
 
   init();
 
@@ -245,7 +246,7 @@ function draw (options) {
 
   function resetParentSvgAttr() {
     setTimeout(function() {
-      draw.setParentSvgAttr(draw.getParentMovedAttr(), false);
+      product.setParentSvgAttr(product.getParentMovedAttr(), false);
     }, 100);
   }
 
@@ -259,7 +260,7 @@ function draw (options) {
     ) {
       if (eventName in draw.options.event) {
         method = Array.isArray(arg) === true ? "apply" : "call";
-        draw.options.event[eventName][method](drawObj, arg);
+        draw.options.event[eventName][method](draw, arg);
       }
     }
   }
@@ -294,7 +295,7 @@ function draw (options) {
     var lines = draw.lineHelper.getLines();
     var polygon = draw.polygonHelper.getPolygon();
 
-    parentSvg.startAxis = draw.getPageAxis(event);
+    parentSvg.startAxis = product.getPageAxis(event);
 
     for (idx = 0, len = circles.length; idx < len; idx++) {
       if (circles[idx].isSelected === true) {
@@ -341,7 +342,7 @@ function draw (options) {
       draw.selectedLineIndex !== null ||
       selectedPolygon !== null
     ) {
-      draw.setParentSvgAttr(draw.getParentMovedAttr(), true);
+      product.setParentSvgAttr(product.getParentMovedAttr(), true);
       toggleDraggingStatus(true);
     }
   }
@@ -360,15 +361,15 @@ function draw (options) {
       return;
     }
 
-    var pageAxis = draw.getPageAxis(event);
+    var pageAxis = product.getPageAxis(event);
     var xAxis = pageAxis[0];
     var yAxis = pageAxis[1];
 
     var movedXAxis = xAxis - parentSvg.startAxis[0];
     var movedYAxis = yAxis - parentSvg.startAxis[1];
 
-    var offsetWidth = draw.parentOffset().width;
-    var offsetHeight = draw.parentOffset().height;
+    var offsetWidth = product.parentOffset().width;
+    var offsetHeight = product.parentOffset().height;
 
     var firstPoint = draw.geometryManager.getAxis(draw.rectangleIndex[0]);
     var thirdPoint = draw.geometryManager.getAxis(draw.rectangleIndex[2]);
@@ -732,7 +733,7 @@ function draw (options) {
 
     var firstPoint = draw.geometryManager.getAxis(0);
     var thirdPoint = draw.geometryManager.getAxis(2);
-    var offset = draw.parentOffset();
+    var offset = product.parentOffset();
     var changedX1 = 0;
     var changedX3 = 0;
     var changedY1 = 0;
@@ -774,8 +775,8 @@ function draw (options) {
   }
 
   function alignCenter() {
-    var parentSvgWidth = draw.getParentSvgAttr('width');
-    var parentSvgHeight = draw.getParentSvgAttr('height');
+    var parentSvgWidth = product.getParentSvgAttr('width');
+    var parentSvgHeight = product.getParentSvgAttr('height');
     var firstPoint = draw.geometryManager.getAxis(0);
     var thirdPoint = draw.geometryManager.getAxis(2);
     var geometryWidth = thirdPoint[0] - firstPoint[0];
@@ -960,39 +961,35 @@ function draw (options) {
     draw.geometryManager.changeAxis();
   }
 
-  drawObj = {
-    hide: removeAllElement,
-    show: appendDom,
-    active: changeActiveStatus,
-    normal: changeNormalStatus,
+  draw.hide = removeAllElement;
+  draw.show = appendDom;
+  draw.active = changeActiveStatus;
+  draw.normal = changeNormalStatus;
 
-    addPoint: addPoint,
-    getData: draw.geometryManager.getAll,
-    destroy: reset,
-    endDraw: endDraw,
+  draw.addPoint = addPoint;
+  draw.getData = draw.geometryManager.getAll;
+  draw.destroy = reset;
+  draw.endDraw = endDraw;
 
-    createArrow: createArrow,
-    changeArrow: draw.arrowImageHelper.changeArrow,
-    changeMinSizeOption: changeMinSizeOption,
-    changeMaxSizeOption: changeMaxSizeOption,
-    changeRectangleToSize: changeRectangleToSize,
-    modifyPoints: modifyPoints,
-    alignCenter: alignCenter,
+  draw.createArrow = createArrow;
+  draw.changeArrow = draw.arrowImageHelper.changeArrow;
+  draw.changeMinSizeOption = changeMinSizeOption;
+  draw.changeMaxSizeOption = changeMaxSizeOption;
+  draw.changeRectangleToSize = changeRectangleToSize;
+  draw.modifyPoints = modifyPoints;
+  draw.alignCenter = alignCenter;
 
-    validateAxis: draw.geometryManager.validateAxis,
-    validateStabilization: validateStabilization,
-    validateIntersection: validateIntersection,
-    validateMinimumAngle: validateMinimumAngle,
+  draw.validateAxis = draw.geometryManager.validateAxis;
+  draw.validateStabilization = validateStabilization;
+  draw.validateIntersection = validateIntersection;
+  draw.validateMinimumAngle = validateMinimumAngle;
 
-    stopEvent: unbindEvent,
-    startEvent: bindEvent,
+  draw.stopEvent = unbindEvent;
+  draw.startEvent = bindEvent;
 
-    moveTopLayer: draw.groupHelper.moveTopLayer,
+  draw.moveTopLayer = draw.groupHelper.moveTopLayer;
 
-    changeWFDFillColor: draw.wiseFaceDetectionHelper.changeFillColor
-  };
-
-  return drawObj;
+  draw.changeWFDFillColor = draw.wiseFaceDetectionHelper.changeFillColor;
 }
 
 SVGGeometry.addPlugin('draw', draw);

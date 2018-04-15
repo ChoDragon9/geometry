@@ -1,10 +1,10 @@
 /**
  * 화살표 이미지 Helper
  */
-function ArrowImageHelper(draw) {
+function ArrowImageHelper(draw, product) {
   "use strict";
-  var elemCtrl = draw.elementController;
-  var funnyMath = draw.funnyMath;
+  var elemCtrl = product.elementController;
+  var funnyMath = product.funnyMath;
 
   var IMAGE_WIDTH = 25;
   var IMAGE_HEIGHT = 33;

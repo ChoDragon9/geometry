@@ -1,11 +1,9 @@
 "use strict";
 /* globals SVGGeometry */
-function customEditor (_options) {
-  var self = this;
-  var eventCtrl = self.eventController;
-  var elemCtrl = self.elementController;
-  var commonFunc = self.common;
-  var funnyMath = self.funnyMath;
+function customEditor (product, _options) {
+  var eventCtrl = product.eventController;
+  var commonFunc = product.common;
+  var funnyMath = product.funnyMath;
   var options = commonFunc.getOptions({
     minPoint: 4,
     event: {},
@@ -20,7 +18,7 @@ function customEditor (_options) {
   var currentSvgObjIndex = 0;
   var isDrawing = false;
 
-  var svgGeometry = new SVGGeometry(self.getParentSvg());
+  var svgGeometry = new SVGGeometry(product.getParentSvg());
 
   if (options.fixedRatio === true) {
     options.useOnlyRectangle = true;
@@ -30,12 +28,12 @@ function customEditor (_options) {
 
   var parentSVGClickHandle = function(event) {
     if (
-      self.getParentSvgAttr(self.getParentMovedAttr()) === "true"
+      product.getParentSvgAttr(product.getParentMovedAttr()) === "true"
     ) {
       return;
     }
 
-    var axis = self.getPageAxis(event);
+    var axis = product.getPageAxis(event);
 
     var addPoint = function() {
       svgObj[currentSvgObjIndex].addPoint(axis[0], axis[1]);
@@ -148,11 +146,11 @@ function customEditor (_options) {
   bindEvent();
 
   function unbindEvent() {
-    eventCtrl.unbindEvent(self.getParentSvg(), 'click', parentSVGClickHandle);
+    eventCtrl.unbindEvent(product.getParentSvg(), 'click', parentSVGClickHandle);
   }
 
   function bindEvent() {
-    eventCtrl.bindEvent(self.getParentSvg(), 'click', parentSVGClickHandle);
+    eventCtrl.bindEvent(product.getParentSvg(), 'click', parentSVGClickHandle);
   }
 
   function handleESCKey(event) {
@@ -162,11 +160,11 @@ function customEditor (_options) {
   }
 
   function bindContextMenu() {
-    eventCtrl.bindEvent(self.getParentSvg(), "contextmenu", removeDrawingGeometry);
+    eventCtrl.bindEvent(product.getParentSvg(), "contextmenu", removeDrawingGeometry);
   }
 
   function unbindContextMenu() {
-    eventCtrl.unbindEvent(self.getParentSvg(), "contextmenu", removeDrawingGeometry);
+    eventCtrl.unbindEvent(product.getParentSvg(), "contextmenu", removeDrawingGeometry);
   }
 
   function bindESCkeyEvent() {
@@ -186,12 +184,10 @@ function customEditor (_options) {
     }
   }
 
-  return {
-    destroy: unbindEvent,
-    stop: unbindEvent,
-    start: bindEvent,
-    removeDrawingGeometry: removeDrawingGeometry
-  }
+  this.destroy = unbindEvent;
+  this.stop = unbindEvent;
+  this.start = bindEvent;
+  this.removeDrawingGeometry = removeDrawingGeometry;
 }
 
 SVGGeometry.addPlugin('customEditor', customEditor);

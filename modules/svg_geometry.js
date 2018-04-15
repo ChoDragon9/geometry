@@ -78,7 +78,7 @@ svgGeometry.draw(0);
 svgGeometry.draw(1);
  */
 SVGGeometry.addPlugin = function(name, callback) {
-  SVGGeometry.prototype[name] = function() {
-    return callback.apply(new SVGGeometryProduct(this.svgTag), arguments);
+  SVGGeometry.prototype[name] = function(options) {
+    return new callback(new SVGGeometryProduct(this.svgTag), options)
   };
 };

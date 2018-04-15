@@ -1,8 +1,8 @@
 /**
  * Text 태그 헬퍼
  */
-function TextTagHelper(draw) {
-  var elemCtrl = draw.elementController;
+function TextTagHelper(draw, product) {
+  var elemCtrl = product.elementController;
   var textTag = null;
   function addText() {
     if (draw.options.textInCircle !== null) {

@@ -3,11 +3,11 @@
 /**
  * Group 태그 Helper
  */
-function GroupHelper(draw){
+function GroupHelper(draw, product){
   var groupId = null;
   var groupTag = null;
-  var elemCtrl = draw.elementController;
-  var parentSvg = draw.getParentSvg();
+  var elemCtrl = product.elementController;
+  var parentSvg = product.getParentSvg();
   var notUseMoveTopLayer = draw.options.notUseMoveTopLayer;
 
   return {
@@ -17,7 +17,7 @@ function GroupHelper(draw){
       elemCtrl.setAttr(groupTag, 'id', groupId);
     },
     remove: function() {
-      draw.removeParentChild(groupTag);
+      product.removeParentChild(groupTag);
     },
     moveTopLayer: function() {
       if (notUseMoveTopLayer === true) {
@@ -33,7 +33,7 @@ function GroupHelper(draw){
       }
     },
     append: function() {
-      draw.appendParentChild(groupTag);
+      product.appendParentChild(groupTag);
     },
     appendChild: function(child) {
       elemCtrl.appendChild(groupTag, child);

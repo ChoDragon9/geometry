@@ -1,9 +1,9 @@
 /**
  * Polygon 태그 헬퍼
  */
-function PolygonHelper(draw) {
+function PolygonHelper(draw, product) {
   "use strict";
-  var elemCtrl = draw.elementController;
+  var elemCtrl = product.elementController;
   var polygon = null;
   function addPolygon() {
     polygon = elemCtrl.createPolygon();
