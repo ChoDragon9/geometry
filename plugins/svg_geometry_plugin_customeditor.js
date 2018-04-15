@@ -184,6 +184,10 @@ function customEditor (product, _options) {
     }
   }
 
+  /**
+   * @todo
+   * prototype으로 변경
+   */
   this.destroy = unbindEvent;
   this.stop = unbindEvent;
   this.start = bindEvent;
