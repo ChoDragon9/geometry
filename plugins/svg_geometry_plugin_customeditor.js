@@ -35,7 +35,7 @@ function customEditor (_options) {
       return;
     }
 
-    var axis = commonFunc.getPageAxis(event);
+    var axis = self.getPageAxis(event);
 
     var addPoint = function() {
       svgObj[currentSvgObjIndex].addPoint(axis[0], axis[1]);

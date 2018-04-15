@@ -128,6 +128,60 @@ EventController.prototype = {
 }
 
 /**
+ * 공통 함수 객체
+ */
+function CommonUtils () { }
+CommonUtils.prototype = {
+  getBodyScroll: function () {
+    var scroll = false;
+    var body = document.body;
+    var html = document.documentElement;
+
+    if (body.scrollTop !== 0 || body.scrollLeft !== 0) {
+      //For Chrome, Safari, Opera
+      scroll = {
+        left: body.scrollLeft,
+        top: body.scrollTop
+      };
+    } else if (html.scrollTop !== 0 || html.scrollLeft !== 0) {
+      //Firefox, IE
+      scroll = {
+        left: html.scrollLeft,
+        top: html.scrollTop
+      };
+    }
+
+    return scroll;
+  },
+  cloneObject: function (obj) {
+    if (obj === null || typeof(obj) !== 'object') {
+      return obj;
+    }
+
+    var copiedObj = obj.constructor();
+
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) {
+        copiedObj[attr] = this.cloneObject(obj[attr]);
+      }
+    }
+
+    return copiedObj;
+  },
+  getOptions: function (defaultOptions, _options) {
+    var newOptions = this.cloneObject(_options);
+
+    for (var keyName in defaultOptions) {
+      if (typeof newOptions[keyName] === 'undefined') {
+        newOptions[keyName] = defaultOptions[keyName]
+      }
+    }
+
+    return newOptions;
+  }
+}
+
+/**
  * 플러그인 호출시 this로 사용할 객체
  *
  * @param {Object} svgTag svg tag
@@ -155,89 +209,33 @@ function SVGGeometryFactory(svgTag) {
   svgTag.style.msUserSelect = 'none';
 
   this.elementController = new ElementController(svgTag, this.NS)
-  this.common = new CommonUtils(svgTag)
 }
 
 SVGGeometryFactory.prototype.funnyMath = new FunnyMath()
 SVGGeometryFactory.prototype.eventController = new EventController()
+SVGGeometryFactory.prototype.common = new CommonUtils()
+SVGGeometryFactory.prototype.getPageAxis = function (event) {
+  var offset = this.parentOffset();
+  var xAxis = event.pageX - offset.left;
+  var yAxis = event.pageY - offset.top;
+  var scroll = this.common.getBodyScroll();
 
-/**
- * 공통 함수 객체
- */
-function CommonUtils (PARENT_SVG_TAG) {
-  this.PARENT_SVG_TAG = PARENT_SVG_TAG
-}
-CommonUtils.prototype = {
-  getBodyScroll: function () {
-    var scroll = false;
-    var body = document.body;
-    var html = document.documentElement;
-
-    if (body.scrollTop !== 0 || body.scrollLeft !== 0) {
-      //For Chrome, Safari, Opera
-      scroll = {
-        left: body.scrollLeft,
-        top: body.scrollTop
-      };
-    } else if (html.scrollTop !== 0 || html.scrollLeft !== 0) {
-      //Firefox, IE
-      scroll = {
-        left: html.scrollLeft,
-        top: html.scrollTop
-      };
-    }
-
-    return scroll;
-  },
-  getPageAxis: function (event) {
-    var offset = this.parentOffset();
-    var xAxis = event.pageX - offset.left;
-    var yAxis = event.pageY - offset.top;
-    var scroll = this.getBodyScroll();
-
-    if (scroll) {
-      xAxis -= scroll.left;
-      yAxis -= scroll.top;
-    }
-
-    return [xAxis, yAxis];
-  },
-  cloneObject: function (obj) {
-    if (obj === null || typeof(obj) !== 'object') {
-      return obj;
-    }
-
-    var copiedObj = obj.constructor();
-
-    for (var attr in obj) {
-      if (obj.hasOwnProperty(attr)) {
-        copiedObj[attr] = this.cloneObject(obj[attr]);
-      }
-    }
-
-    return copiedObj;
-  },
-  parentOffset: function () {
-    var offset = this.PARENT_SVG_TAG.getBoundingClientRect();
-    return {
-      top: offset.top,
-      left: offset.left,
-      width: offset.width,
-      height: offset.height
-    };
-  },
-  getOptions: function (defaultOptions, _options) {
-    var newOptions = this.cloneObject(_options);
-
-    for (var keyName in defaultOptions) {
-      if (typeof newOptions[keyName] === 'undefined') {
-        newOptions[keyName] = defaultOptions[keyName]
-      }
-    }
-
-    return newOptions;
+  if (scroll) {
+    xAxis -= scroll.left;
+    yAxis -= scroll.top;
   }
-}
+
+  return [xAxis, yAxis];
+};
+SVGGeometryFactory.prototype.parentOffset = function () {
+  var offset = this.PARENT_SVG_TAG.getBoundingClientRect();
+  return {
+    top: offset.top,
+    left: offset.left,
+    width: offset.width,
+    height: offset.height
+  };
+};
 
 /**
  * DOM 조작 객체

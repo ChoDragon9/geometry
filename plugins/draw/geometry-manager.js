@@ -33,7 +33,7 @@ function GeometryManager(draw){
       var lastPoint = null;
       var newPoint = null;
 
-      var offset = commonFunc.parentOffset();
+      var offset = draw.parentOffset();
 
       var pointsLength = geometryManager.getPointsLength();
 
@@ -68,7 +68,7 @@ function GeometryManager(draw){
       pointsLength++;
     },
     validateAxis: function(xAxis, yAxis) {
-      var offset = commonFunc.parentOffset();
+      var offset = draw.parentOffset();
       var returnVal = true;
 
       if (

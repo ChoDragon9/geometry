@@ -294,7 +294,7 @@ function draw (options) {
     var lines = draw.lineHelper.getLines();
     var polygon = draw.polygonHelper.getPolygon();
 
-    parentSvg.startAxis = commonFunc.getPageAxis(event);
+    parentSvg.startAxis = draw.getPageAxis(event);
 
     for (idx = 0, len = circles.length; idx < len; idx++) {
       if (circles[idx].isSelected === true) {
@@ -360,15 +360,15 @@ function draw (options) {
       return;
     }
 
-    var pageAxis = commonFunc.getPageAxis(event);
+    var pageAxis = draw.getPageAxis(event);
     var xAxis = pageAxis[0];
     var yAxis = pageAxis[1];
 
     var movedXAxis = xAxis - parentSvg.startAxis[0];
     var movedYAxis = yAxis - parentSvg.startAxis[1];
 
-    var offsetWidth = commonFunc.parentOffset().width;
-    var offsetHeight = commonFunc.parentOffset().height;
+    var offsetWidth = draw.parentOffset().width;
+    var offsetHeight = draw.parentOffset().height;
 
     var firstPoint = draw.geometryManager.getAxis(draw.rectangleIndex[0]);
     var thirdPoint = draw.geometryManager.getAxis(draw.rectangleIndex[2]);
@@ -732,7 +732,7 @@ function draw (options) {
 
     var firstPoint = draw.geometryManager.getAxis(0);
     var thirdPoint = draw.geometryManager.getAxis(2);
-    var offset = commonFunc.parentOffset();
+    var offset = draw.parentOffset();
     var changedX1 = 0;
     var changedX3 = 0;
     var changedY1 = 0;

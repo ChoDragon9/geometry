@@ -97,7 +97,7 @@ function LineHelper(draw) {
       pointsLength >= draw.options.maxPoint) { //최대 포인트일 때
       return;
     }
-    var pageAxis = commonFunc.getPageAxis(event);
+    var pageAxis = draw.getPageAxis(event);
     var xAxis = pageAxis[0];
     var yAxis = pageAxis[1];
     var leftAxis = null;
@@ -171,7 +171,7 @@ function LineHelper(draw) {
       return;
     }
 
-    pageAxis = commonFunc.getPageAxis(event);
+    pageAxis = draw.getPageAxis(event);
     xAxis = pageAxis[0];
     yAxis = pageAxis[1];
 
