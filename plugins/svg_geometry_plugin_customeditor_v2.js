@@ -1,7 +1,6 @@
 "use strict";
 /* globals SVGGeometry */
 function customEditorV2 (_options) {
-  var parentSvgMovedAttr = 'is-moved';
   var DEFAULT_OBJECT_SIZE = 30;
   var self = this;
   var eventCtrl = self.eventController;
@@ -47,7 +46,7 @@ function customEditorV2 (_options) {
     }
 
     if (
-      elemCtrl.getParentSvgAttr(parentSvgMovedAttr) === "true" ||
+      elemCtrl.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true" ||
       typeof svgObj[currentSvgObjIndex] === "undefined"
     ) {
       return;
@@ -63,7 +62,7 @@ function customEditorV2 (_options) {
     if (
       event.buttons === 2 ||
       event.currentTarget !== event.target ||
-      elemCtrl.getParentSvgAttr(parentSvgMovedAttr) === "true"
+      elemCtrl.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
     ) {
       return;
     }
@@ -89,7 +88,7 @@ function customEditorV2 (_options) {
 
   function parentSVGClickHandle(event) {
     if (
-      elemCtrl.getParentSvgAttr(parentSvgMovedAttr) === "true"
+      elemCtrl.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
     ) {
       return;
     }

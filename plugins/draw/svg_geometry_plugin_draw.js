@@ -32,7 +32,6 @@ svgGeometry.draw({
 });
  */
 function draw (options) {
-  var PARENT_SVG_MOVED_ATTRIBUTE = 'is-moved';
   var MINIMUM_ANGLE = 1;
   var TEXT_POINT_RADIUS = 1.5;
 
@@ -246,7 +245,7 @@ function draw (options) {
 
   function resetParentSvgAttr() {
     setTimeout(function() {
-      elemCtrl.setParentSvgAttr(PARENT_SVG_MOVED_ATTRIBUTE, false);
+      elemCtrl.setParentSvgAttr(draw.PARENT_SVG_MOVED_ATTRIBUTE, false);
     }, 100);
   }
 
@@ -342,7 +341,7 @@ function draw (options) {
       draw.selectedLineIndex !== null ||
       selectedPolygon !== null
     ) {
-      elemCtrl.setParentSvgAttr(PARENT_SVG_MOVED_ATTRIBUTE, true);
+      elemCtrl.setParentSvgAttr(draw.PARENT_SVG_MOVED_ATTRIBUTE, true);
       toggleDraggingStatus(true);
     }
   }

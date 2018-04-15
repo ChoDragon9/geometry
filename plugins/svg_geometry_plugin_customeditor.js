@@ -1,7 +1,6 @@
 "use strict";
 /* globals SVGGeometry */
 function customEditor (_options) {
-  var parentSvgMovedAttr = 'is-moved';
   var self = this;
   var eventCtrl = self.eventController;
   var elemCtrl = self.elementController;
@@ -31,7 +30,7 @@ function customEditor (_options) {
 
   var parentSVGClickHandle = function(event) {
     if (
-      elemCtrl.getParentSvgAttr(parentSvgMovedAttr) === "true"
+      elemCtrl.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
     ) {
       return;
     }

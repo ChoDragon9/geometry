@@ -142,6 +142,7 @@ function SVGGeometryFactory(svgTag) {
     ICON_HIDDEN_DELAY: 2000, //ms
     CLICK_DETECION_TIME: 100 //ms
   };
+  this.PARENT_SVG_MOVED_ATTRIBUTE = 'is-moved';
 
   svgTag.setAttributeNS(null, 'draggable', false);
 
