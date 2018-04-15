@@ -7,7 +7,7 @@ function GroupHelper(draw){
   var groupId = null;
   var groupTag = null;
   var elemCtrl = draw.elementController;
-  var parentSvg = elemCtrl.getParentSvg();
+  var parentSvg = draw.getParentSvg();
   var notUseMoveTopLayer = draw.options.notUseMoveTopLayer;
 
   return {
@@ -17,7 +17,7 @@ function GroupHelper(draw){
       elemCtrl.setAttr(groupTag, 'id', groupId);
     },
     remove: function() {
-      elemCtrl.removeParentChild(groupTag);
+      draw.removeParentChild(groupTag);
     },
     moveTopLayer: function() {
       if (notUseMoveTopLayer === true) {
@@ -33,7 +33,7 @@ function GroupHelper(draw){
       }
     },
     append: function() {
-      elemCtrl.appendParentChild(groupTag);
+      draw.appendParentChild(groupTag);
     },
     appendChild: function(child) {
       elemCtrl.appendChild(groupTag, child);

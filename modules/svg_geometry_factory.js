@@ -182,101 +182,28 @@ CommonUtils.prototype = {
 }
 
 /**
- * 플러그인 호출시 this로 사용할 객체
- *
- * @param {Object} svgTag svg tag
+ * DOM 조작 객체
  */
-function SVGGeometryFactory(svgTag) {
-  this.PARENT_SVG_TAG = svgTag;
+function ElementController () {
   this.NS = {
     SVG: "http://www.w3.org/2000/svg",
     XLINK: "http://www.w3.org/1999/xlink"
   };
-  this.CONFIG = {
-    ICON_HIDDEN_DELAY: 2000, //ms
-    CLICK_DETECION_TIME: 100 //ms
-  };
-  this.PARENT_SVG_MOVED_ATTRIBUTE = 'is-moved';
-
-  svgTag.setAttributeNS(null, 'draggable', false);
-
-  //Default style
-  svgTag.style.cursor = 'normal';
-
-  svgTag.style.userSelect = 'none';
-  svgTag.style.mozUserSelect = 'none';
-  svgTag.style.webkitUserSelect = 'none';
-  svgTag.style.msUserSelect = 'none';
-
-  this.elementController = new ElementController(svgTag, this.NS)
-}
-
-SVGGeometryFactory.prototype.funnyMath = new FunnyMath()
-SVGGeometryFactory.prototype.eventController = new EventController()
-SVGGeometryFactory.prototype.common = new CommonUtils()
-SVGGeometryFactory.prototype.getPageAxis = function (event) {
-  var offset = this.parentOffset();
-  var xAxis = event.pageX - offset.left;
-  var yAxis = event.pageY - offset.top;
-  var scroll = this.common.getBodyScroll();
-
-  if (scroll) {
-    xAxis -= scroll.left;
-    yAxis -= scroll.top;
-  }
-
-  return [xAxis, yAxis];
-};
-SVGGeometryFactory.prototype.parentOffset = function () {
-  var offset = this.PARENT_SVG_TAG.getBoundingClientRect();
-  return {
-    top: offset.top,
-    left: offset.left,
-    width: offset.width,
-    height: offset.height
-  };
-};
-
-/**
- * DOM 조작 객체
- */
-function ElementController (PARENT_SVG_TAG, NS) {
-  this.PARENT_SVG_TAG = PARENT_SVG_TAG
-  this.NS = NS
 }
 
 ElementController.prototype = {
-  getParentSvg: function () {
-    return this.PARENT_SVG_TAG;
-  },
-  setParentSvgAttr: function (attrName, val) {
-    return this.setAttr(
-      this.PARENT_SVG_TAG,
-      attrName,
-      val
-    );
-  },
-  getParentSvgAttr: function (attrName) {
-    return this.getAttr(
-      this.PARENT_SVG_TAG,
-      attrName
-    );
-  },
   setAttr: function (element, attrName, val, ns) {
     var ns = typeof ns === "undefined" ? null : ns;
     element.setAttributeNS(ns, attrName, val);
   },
+  setHrefAttr: function(element, val) {
+    this.setAttr(element, 'href', val, this.NS.XLINK)
+  },
   getAttr: function (element, attrName) {
     return element.getAttributeNS(null, attrName);
   },
-  removeParentChild: function (childrenElement) {
-    this.PARENT_SVG_TAG.removeChild(childrenElement);
-  },
   removeChild: function (parentElement, childrenElement) {
     parentElement.removeChild(childrenElement);
-  },
-  appendParentChild: function (childrenElement) {
-    this.PARENT_SVG_TAG.appendChild(childrenElement);
   },
   appendChild: function (parentElement, childrenElement) {
     parentElement.appendChild(childrenElement);
@@ -318,7 +245,7 @@ ElementController.prototype = {
     var imageContainner = this.createGroup();
     var image = document.createElementNS(this.NS.SVG, 'image');
 
-    image.setAttributeNS(this.NS.XLINK, 'href', imagePath);
+    this.setHrefAttr(image, imagePath)
     image.setAttributeNS(null, 'width', width);
     image.setAttributeNS(null, 'height', height);
     image.setAttributeNS(null, 'draggable', false);
@@ -338,3 +265,77 @@ ElementController.prototype = {
     return use;
   }
 }
+
+/**
+ * 플러그인 호출시 this로 사용할 객체
+ *
+ * @param {Object} svgTag svg tag
+ */
+function SVGGeometryFactory(svgTag) {
+  this.PARENT_SVG_TAG = svgTag;
+  this.CONFIG = {
+    ICON_HIDDEN_DELAY: 2000, //ms
+    CLICK_DETECION_TIME: 100 //ms
+  };
+  this.PARENT_SVG_MOVED_ATTRIBUTE = 'is-moved';
+
+  svgTag.setAttributeNS(null, 'draggable', false);
+
+  //Default style
+  svgTag.style.cursor = 'normal';
+
+  svgTag.style.userSelect = 'none';
+  svgTag.style.mozUserSelect = 'none';
+  svgTag.style.webkitUserSelect = 'none';
+  svgTag.style.msUserSelect = 'none';
+}
+
+SVGGeometryFactory.prototype.funnyMath = new FunnyMath()
+SVGGeometryFactory.prototype.eventController = new EventController()
+SVGGeometryFactory.prototype.common = new CommonUtils()
+SVGGeometryFactory.prototype.elementController = new ElementController()
+SVGGeometryFactory.prototype.getPageAxis = function (event) {
+  var offset = this.parentOffset();
+  var xAxis = event.pageX - offset.left;
+  var yAxis = event.pageY - offset.top;
+  var scroll = this.common.getBodyScroll();
+
+  if (scroll) {
+    xAxis -= scroll.left;
+    yAxis -= scroll.top;
+  }
+
+  return [xAxis, yAxis];
+};
+SVGGeometryFactory.prototype.parentOffset = function () {
+  var offset = this.PARENT_SVG_TAG.getBoundingClientRect();
+  return {
+    top: offset.top,
+    left: offset.left,
+    width: offset.width,
+    height: offset.height
+  };
+};
+
+SVGGeometryFactory.prototype.getParentSvg = function () {
+  return this.PARENT_SVG_TAG;
+};
+SVGGeometryFactory.prototype.setParentSvgAttr = function (attrName, val) {
+  return this.elementController.setAttr(
+    this.PARENT_SVG_TAG,
+    attrName,
+    val
+  );
+};
+SVGGeometryFactory.prototype.getParentSvgAttr = function (attrName) {
+  return this.elementController.getAttr(
+    this.PARENT_SVG_TAG,
+    attrName
+  );
+};
+SVGGeometryFactory.prototype.removeParentChild = function (childrenElement) {
+  this.elementController.removeChild(this.PARENT_SVG_TAG, childrenElement)
+};
+SVGGeometryFactory.prototype.appendParentChild = function (childrenElement) {
+  this.elementController.appendChild(this.PARENT_SVG_TAG, childrenElement)
+};

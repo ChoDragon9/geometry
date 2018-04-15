@@ -170,7 +170,7 @@ function ArrowImageHelper(draw) {
 
   function changeArrowImagePath() {
     var imagePath = currentArrow === arrowQueue[arrowQueueLength - 1] ? NORMAL_ALL_IMAGE : NORMAL_IMAGE;
-    elemCtrl.setAttr(arrowImage, 'href', imagePath, NS.XLINK);
+    elemCtrl.setHrefAttr(arrowImage, imagePath);
   }
 
   function bindEvent() {
@@ -185,7 +185,7 @@ function ArrowImageHelper(draw) {
         var imagePath = currentArrow === arrowQueue[arrowQueueLength - 1] ? PRESS_ALL_IMAGE : PRESS_IMAGE;
 
         arrowImage.isSelected = true;
-        elemCtrl.setAttr(arrowImage, 'href', imagePath, NS.XLINK);
+        elemCtrl.setHrefAttr(arrowImage, imagePath);
       };
 
       arrowImage.onmouseup = function(event) {

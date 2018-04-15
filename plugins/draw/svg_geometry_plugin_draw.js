@@ -41,7 +41,7 @@ function draw (options) {
   var funnyMath = draw.funnyMath;
   var commonFunc = draw.common;
 
-  var parentSvg = elemCtrl.getParentSvg();
+  var parentSvg = draw.getParentSvg();
 
   var selectedPolygon = null;
   var drawObj = {};
@@ -245,7 +245,7 @@ function draw (options) {
 
   function resetParentSvgAttr() {
     setTimeout(function() {
-      elemCtrl.setParentSvgAttr(draw.PARENT_SVG_MOVED_ATTRIBUTE, false);
+      draw.setParentSvgAttr(draw.PARENT_SVG_MOVED_ATTRIBUTE, false);
     }, 100);
   }
 
@@ -341,7 +341,7 @@ function draw (options) {
       draw.selectedLineIndex !== null ||
       selectedPolygon !== null
     ) {
-      elemCtrl.setParentSvgAttr(draw.PARENT_SVG_MOVED_ATTRIBUTE, true);
+      draw.setParentSvgAttr(draw.PARENT_SVG_MOVED_ATTRIBUTE, true);
       toggleDraggingStatus(true);
     }
   }
@@ -774,8 +774,8 @@ function draw (options) {
   }
 
   function alignCenter() {
-    var parentSvgWidth = elemCtrl.getParentSvgAttr('width');
-    var parentSvgHeight = elemCtrl.getParentSvgAttr('height');
+    var parentSvgWidth = draw.getParentSvgAttr('width');
+    var parentSvgHeight = draw.getParentSvgAttr('height');
     var firstPoint = draw.geometryManager.getAxis(0);
     var thirdPoint = draw.geometryManager.getAxis(2);
     var geometryWidth = thirdPoint[0] - firstPoint[0];

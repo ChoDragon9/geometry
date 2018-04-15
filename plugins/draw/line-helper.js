@@ -91,7 +91,7 @@ function LineHelper(draw) {
     var pointsLength = draw.geometryManager.points.length;
     clearTimeout(iconHelperTimer);
     if (
-      elemCtrl.getParentSvgAttr(parentSvgMovedAttr) === 'true' || //폴리건 드래그를 하고 있을 때
+      draw.getParentSvgAttr(parentSvgMovedAttr) === 'true' || //폴리건 드래그를 하고 있을 때
       draw.selectedLineIndex !== null || //드래그를 하고 있을 때
       this.style.opacity === hideOpacity || //선택된 오브젝트가 아닐 때
       pointsLength >= draw.options.maxPoint) { //최대 포인트일 때

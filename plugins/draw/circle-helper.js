@@ -3,7 +3,7 @@
  */
 function CircleHelper(draw) {
   var elemCtrl = draw.elementController;
-  var parentSvg = elemCtrl.getParentSvg();
+  var parentSvg = draw.getParentSvg();
   var isLeave = false;
   var iconHelper = new IconHelper(elemCtrl, draw.groupHelper);
   var iconHelperTimer = null;

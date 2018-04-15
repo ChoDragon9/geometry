@@ -20,7 +20,7 @@ function customEditor (_options) {
   var currentSvgObjIndex = 0;
   var isDrawing = false;
 
-  var svgGeometry = new SVGGeometry(elemCtrl.getParentSvg());
+  var svgGeometry = new SVGGeometry(self.getParentSvg());
 
   if (options.fixedRatio === true) {
     options.useOnlyRectangle = true;
@@ -30,7 +30,7 @@ function customEditor (_options) {
 
   var parentSVGClickHandle = function(event) {
     if (
-      elemCtrl.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
+      self.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
     ) {
       return;
     }

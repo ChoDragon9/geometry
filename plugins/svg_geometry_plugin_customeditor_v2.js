@@ -46,7 +46,7 @@ function customEditorV2 (_options) {
     }
 
     if (
-      elemCtrl.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true" ||
+      self.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true" ||
       typeof svgObj[currentSvgObjIndex] === "undefined"
     ) {
       return;
@@ -62,7 +62,7 @@ function customEditorV2 (_options) {
     if (
       event.buttons === 2 ||
       event.currentTarget !== event.target ||
-      elemCtrl.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
+      self.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
     ) {
       return;
     }
@@ -88,7 +88,7 @@ function customEditorV2 (_options) {
 
   function parentSVGClickHandle(event) {
     if (
-      elemCtrl.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
+      self.getParentSvgAttr(self.PARENT_SVG_MOVED_ATTRIBUTE) === "true"
     ) {
       return;
     }
