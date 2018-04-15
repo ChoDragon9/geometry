@@ -120,10 +120,10 @@ EventController.prototype = {
     element.removeEventListener(name, callback);
   },
   bindBodyEvent: function (name, callback) {
-    document.body.addEventListener(name, callback);
+    this.bindEvent(document.body, name, callback);
   },
   unbindBodyEvent: function (name, callback) {
-    document.body.removeEventListener(name, callback);
+    this.unbindEvent(document.body, name, callback);
   }
 }
 
