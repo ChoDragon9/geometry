@@ -1,5 +1,9 @@
 "use strict";
 /* globals SVGGeometry */
+/**
+ * @todo
+ * customEditor 상속해서 사용하기
+ */
 function customEditorV2 (product, _options) {
   var DEFAULT_OBJECT_SIZE = 30;
   var eventCtrl = product.eventController;
@@ -84,6 +88,39 @@ function customEditorV2 (product, _options) {
     }, product.getClickDetectionTime(), axis, options);
   }
 
+  var endDraw = function() {
+    svgObj[currentSvgObjIndex].endDraw();
+    callEndEvent();
+    currentPoint = 0;
+    currentSvgObjIndex++;
+  };
+
+  var addPoint = function(x, y) {
+    svgObj[currentSvgObjIndex].addPoint();
+  };
+
+  var validateAllAxis = function() {
+    var points = svgObj[currentSvgObjIndex].getData().points;
+    var returnVal = true;
+
+    if (options.minLineLength !== false) {
+      for (var i = 0, ii = points.length; i < ii; i++) {
+        var startAxis = points[i];
+        var endAxis = i === ii - 1 ? points[0] : points[i + 1];
+
+        if (funnyMath.pythagoreanTheorem(
+            startAxis[0],
+            startAxis[1],
+            endAxis[0],
+            endAxis[1]) < options.minLineLength) {
+          returnVal = false;
+        }
+      }
+    }
+
+    return returnVal;
+  };
+
   function parentSVGClickHandle(event) {
     if (
       product.getParentSvgAttr(product.getParentMovedAttr()) === "true"
@@ -92,39 +129,6 @@ function customEditorV2 (product, _options) {
     }
 
     var axis = product.getPageAxis(event);
-
-    var addPoint = function() {
-      svgObj[currentSvgObjIndex].addPoint(axis[0], axis[1]);
-    };
-
-    var endDraw = function() {
-      svgObj[currentSvgObjIndex].endDraw();
-      callEndEvent();
-      currentPoint = 0;
-      currentSvgObjIndex++;
-    };
-
-    var validateAllAxis = function() {
-      var points = svgObj[currentSvgObjIndex].getData().points;
-      var returnVal = true;
-
-      if (options.minLineLength !== false) {
-        for (var i = 0, ii = points.length; i < ii; i++) {
-          var startAxis = points[i];
-          var endAxis = i === ii - 1 ? points[0] : points[i + 1];
-
-          if (funnyMath.pythagoreanTheorem(
-              startAxis[0],
-              startAxis[1],
-              endAxis[0],
-              endAxis[1]) < options.minLineLength) {
-            returnVal = false;
-          }
-        }
-      }
-
-      return returnVal;
-    };
 
     options.useRectangleForCustomDraw = false;
 
@@ -179,7 +183,7 @@ function customEditorV2 (product, _options) {
           }
         }
 
-        addPoint();
+        addPoint(axis[0], axis[1]);
         currentPoint++;
       }
     }

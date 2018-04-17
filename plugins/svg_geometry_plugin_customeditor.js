@@ -1,9 +1,7 @@
 "use strict";
 /* globals SVGGeometry */
-function customEditor (product, _options) {
-  var eventCtrl = product.eventController;
+function CustomEditor (product, _options) {
   var commonFunc = product.common;
-  var funnyMath = product.funnyMath;
   var options = commonFunc.getOptions({
     minPoint: 4,
     event: {},
@@ -14,9 +12,8 @@ function customEditor (product, _options) {
     minSize: false
   }, _options);
   var currentPoint = 0;
-  var svgObj = [];
-  var currentSvgObjIndex = 0;
-  var isDrawing = false;
+  var svgObj = null;
+  var self = this
 
   var svgGeometry = new SVGGeometry(product.getParentSvg());
 
@@ -26,7 +23,62 @@ function customEditor (product, _options) {
 
   options.customDraw = true;
 
-  var parentSVGClickHandle = function(event) {
+  /**
+   * @todo
+   * options에 따라 초기에 어떤 모양의 객체를 만들지 결정이남
+   * 초기에 옵션을 분기하여 state에 객체를 설정함
+   * 객체의 인터페이스를 동일하게 사용
+   */
+  /*
+  if (options.useOnlyRectangle) {
+    // 사각형일 때
+    if (currentPoint === 0) {
+      // start() : 처음 클릭할 때
+
+      // getDefaultAxis()
+      if (options.fixedRatio) {
+        // 고정비 사각형일때
+        if (options.minSize) {
+          // 최소 사이즈 옵션을 적용했을 때
+        } else {
+          // 비율데로 사이즈를 적용
+        }
+      } else {
+        // 그냥 사각형일 때
+      }
+      // createSvgObj()
+      // bindCancelEvnet()
+      // callStartEvent()
+      // startDrawing() : 첫번째 클릭으로 드로윙을 시작했다는 표시
+    } else {
+      // end()
+    }
+  } else {
+    // 라인일 때
+    if (currentPoint === 0) {
+      // start() : 첫번째 클릭일 때
+      // getDefaultAxis()
+      // createSvgObj()
+      // bindCancelEvnet()
+      // callStartEvent()
+      // startDrawing() : 첫번째 클릭으로 드로윙을 시작했다는 표시
+    } else if (options.minPoint === currentPoint) {
+      // validateAllAxis()
+      // validateStabilization()
+      // end()
+    } else {
+      // validateAllAxis()
+      // 삼각형부터 안정성 테스트
+      if (currentPoint > 2) {
+        // validateStabilization()
+      }
+      // addPoint()
+      // 포인트 증가 표시
+    }
+  }
+  */
+
+  this.parentSVGClickHandle = function(event) {
     if (
       product.getParentSvgAttr(product.getParentMovedAttr()) === "true"
     ) {
@@ -35,163 +87,179 @@ function customEditor (product, _options) {
 
     var axis = product.getPageAxis(event);
 
-    var addPoint = function() {
-      svgObj[currentSvgObjIndex].addPoint(axis[0], axis[1]);
-    };
-
-    var callStartEvent = function() {
-      bindContextMenu();
-      bindESCkeyEvent();
-      isDrawing = true;
-      if ("start" in options.event) {
-        options.event.start(svgObj[currentSvgObjIndex]);
-      }
-    };
-
-    var callEndEvent = function() {
-      unbindContextMenu();
-      unbindESCkeyEvent();
-      isDrawing = false;
-      if ("end" in options.event) {
-        options.event.end(svgObj[currentSvgObjIndex]);
-      }
-    };
-
-    var endDraw = function() {
-      svgObj[currentSvgObjIndex].endDraw();
-      callEndEvent();
-      currentPoint = 0;
-      currentSvgObjIndex++;
-    };
-
-    var validateAllAxis = function() {
-      var points = svgObj[currentSvgObjIndex].getData().points;
-      var returnVal = true;
-
-      if (options.minLineLength !== false) {
-        for (var i = 0, ii = points.length; i < ii; i++) {
-          var startAxis = points[i];
-          var endAxis = i === ii - 1 ? points[0] : points[i + 1];
-
-          if (funnyMath.pythagoreanTheorem(
-              startAxis[0],
-              startAxis[1],
-              endAxis[0],
-              endAxis[1]) < options.minLineLength) {
-            returnVal = false;
-          }
-        }
-      }
-
-      return returnVal;
-    };
-
     if (options.useOnlyRectangle === true) {
       //처음 클릭을 할 때
       if (currentPoint === 0) {
         if (options.fixedRatio === true) {
           if (options.minSize === false) {
-            options.points = [
-              axis, [axis[0], axis[1] + options.ratio[1]],
-              [axis[0] + options.ratio[0], axis[1] + option.sratio[1]],
-              [axis[0] + options.ratio[0], axis[1]]
-            ];
+            options.points = this.convertRectanglePoints(
+              axis[0], axis[1],
+              axis[0] + options.ratio[0], axis[1] + option.ratio[1]
+            )
           } else {
             //영상 영역을 넘는 이슈로 0,0를 초기로 설정
             axis = [0, 0];
-            options.points = [
-              axis, [axis[0], axis[1] + options.minSize.height],
-              [axis[0] + options.minSize.width, axis[1] + options.minSize.height],
-              [axis[0] + options.minSize.width, axis[1]]
-            ];
+            options.points = this.convertRectanglePoints(
+              axis[0], axis[1],
+              axis[0] + options.minSize.width, axis[1] + options.minSize.height
+            );
           }
         } else {
-          options.points = [axis, axis, axis, axis];
+          options.points = this.convertRectanglePoints(axis[0], axis[1], axis[0], axis[1])
         }
-        svgObj[currentSvgObjIndex] = svgGeometry.draw(options);
+        this.setSvgObj(svgGeometry.draw(options));
         currentPoint++;
-        callStartEvent();
+        this.bindContextMenu();
+        this.bindESCkeyEvent();
+        this.callStartEvent(options.event);
       } else {
-        endDraw();
+        this.endDraw();
       }
     } else {
       if (currentPoint === 0) {
         options.points = [axis, axis];
-        svgObj[currentSvgObjIndex] = svgGeometry.draw(options);
+        this.setSvgObj(svgGeometry.draw(options));
         currentPoint = 2;
-        callStartEvent();
+        this.bindContextMenu();
+        this.bindESCkeyEvent();
+        this.callStartEvent(options.event);
       } else if (options.minPoint === currentPoint) {
-        if (validateAllAxis() === false || svgObj[currentSvgObjIndex].validateStabilization() === false) {
+        if (this.validateAllAxis(options.minLineLength) === false || this.getSvgObj().validateStabilization() === false) {
           return;
         }
 
-        endDraw();
+        this.endDraw();
       } else {
-        if (validateAllAxis() === false) {
+        if (this.validateAllAxis(options.minLineLength) === false) {
           return;
         }
 
         if (currentPoint > 2) {
-          if (svgObj[currentSvgObjIndex].validateStabilization() === false) {
+          if (this.getSvgObj().validateStabilization() === false) {
             return;
           }
         }
 
-        addPoint();
+        this.addPoint(axis[0], axis[1]);
         currentPoint++;
       }
     }
+  }
+
+  this.parentSVGClickHandleProxy = function (event) {
+    self.parentSVGClickHandle(event)
   };
 
-  bindEvent();
+  this.eventCtrl = product.eventController;
+  this.funnyMath = product.funnyMath;
 
-  function unbindEvent() {
-    eventCtrl.unbindEvent(product.getParentSvg(), 'click', parentSVGClickHandle);
+  this.getSvgObj = function() {
+    return svgObj
+  };
+  this.setSvgObj = function (obj) {
+    svgObj = obj
+  };
+  this.setCurrentPoint = function (point) {
+    currentPoint = point
+  };
+  this.isDrawing = function () {
+    return svgObj !== null
+  };
+  this.getParentSvg = function () {
+    return product.getParentSvg()
+  }
+  this.getEventOption = function () {
+    return options.event
   }
 
-  function bindEvent() {
-    eventCtrl.bindEvent(product.getParentSvg(), 'click', parentSVGClickHandle);
-  }
-
-  function handleESCKey(event) {
-    if (event.keyCode === 27) {
-      removeDrawingGeometry();
-    }
-  }
-
-  function bindContextMenu() {
-    eventCtrl.bindEvent(product.getParentSvg(), "contextmenu", removeDrawingGeometry);
-  }
-
-  function unbindContextMenu() {
-    eventCtrl.unbindEvent(product.getParentSvg(), "contextmenu", removeDrawingGeometry);
-  }
-
-  function bindESCkeyEvent() {
-    document.addEventListener('keyup', handleESCKey);
-  }
-
-  function unbindESCkeyEvent() {
-    document.removeEventListener('keyup', handleESCKey);
-  }
-
-  function removeDrawingGeometry() {
-    if (isDrawing) {
-      svgObj[currentSvgObjIndex].destroy();
-      unbindESCkeyEvent();
-      unbindContextMenu();
-      currentPoint = 0;
-    }
-  }
-
-  /**
-   * @todo
-   * prototype으로 변경
-   */
-  this.destroy = unbindEvent;
-  this.stop = unbindEvent;
-  this.start = bindEvent;
-  this.removeDrawingGeometry = removeDrawingGeometry;
+  this.bindEvent();
 }
 
-SVGGeometry.addPlugin('customEditor', customEditor);
+CustomEditor.prototype = {
+  convertRectanglePoints: function (x1, y1, x2, y2) {
+    return [
+      [x1, y1], [x1, y2], [x2, y2], [x2, y1]
+    ]
+  },
+  addPoint: function(x, y) {
+    this.getSvgObj().addPoint(x, y);
+  },
+  destroy: function () {
+    this.unbindEvent();
+  },
+  stop: function () {
+    this.unbindEvent();
+  },
+  start: function () {
+    this.bindEvent();
+  },
+  unbindEvent: function () {
+    this.eventCtrl.unbindEvent(this.getParentSvg(), 'click', this.parentSVGClickHandleProxy);
+  },
+  bindEvent: function () {
+    this.eventCtrl.bindEvent(this.getParentSvg(), 'click', this.parentSVGClickHandleProxy);
+  },
+  handleESCKey: function (event) {
+    if (event.keyCode === 27) {
+      this.removeDrawingGeometry();
+    }
+  },
+  bindContextMenu: function() {
+    this.eventCtrl.bindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometry.bind(this));
+  },
+  unbindContextMenu: function () {
+    this.eventCtrl.unbindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometry.bind(this));
+  },
+  bindESCkeyEvent: function () {
+    document.addEventListener('keyup', this.handleESCKey.bind(this));
+  },
+  unbindESCkeyEvent: function () {
+    document.removeEventListener('keyup', this.handleESCKey.bind(this));
+  },
+  removeDrawingGeometry: function () {
+    if (this.isDrawing()) {
+      this.getSvgObj().destroy();
+      this.unbindESCkeyEvent();
+      this.unbindContextMenu();
+      this.setCurrentPoint(0);
+    }
+  },
+  endDraw: function() {
+    this.unbindContextMenu();
+    this.unbindESCkeyEvent();
+    this.getSvgObj().endDraw();
+    this.callEndEvent(this.getEventOption());
+    this.setSvgObj(null);
+    this.setCurrentPoint(0)
+  },
+  callStartEvent: function(eventOption) {
+    if ("start" in eventOption) {
+      eventOption.start(this.getSvgObj());
+    }
+  },
+  callEndEvent: function(eventOption) {
+    if ("end" in eventOption) {
+      eventOption.end(this.getSvgObj());
+    }
+  },
+  validateAllAxis: function(minLineLength) {
+    var points = this.getSvgObj().getData().points;
+
+    for (var i = 0, ii = points.length; i < ii; i++) {
+      var startAxis = points[i];
+      var endAxis = i === ii - 1 ? points[0] : points[i + 1];
+
+      if (this.funnyMath.pythagoreanTheorem(
+          startAxis[0],
+          startAxis[1],
+          endAxis[0],
+          endAxis[1]) < minLineLength) {
+        return false
+      }
+    }
+
+    return true
+  }
+}
+
+SVGGeometry.addPlugin('customEditor', CustomEditor);
