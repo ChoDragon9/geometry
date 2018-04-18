@@ -1,5 +1,10 @@
 "use strict";
 /* globals SVGGeometry */
+/**
+ * @todo
+ * Drawing 할 객체가 option을 설정하면 하나로 되어
+ * 모양을 변경을 못하기 때문에 모양을 변경할 수 있게해야 함
+ */
 function CustomEditor (product, _options) {
   var commonFunc = product.common;
   var options = commonFunc.getOptions({
@@ -14,6 +19,10 @@ function CustomEditor (product, _options) {
   var currentPoint = 0;
   var svgObj = null;
   var self = this
+  var strategy = function () {}
+  var setStrategy = function (_strategy) {
+    strategy = _strategy.bind(self)
+  }
 
   var svgGeometry = new SVGGeometry(product.getParentSvg());
 
@@ -23,60 +32,35 @@ function CustomEditor (product, _options) {
 
   options.customDraw = true;
 
-  /**
-   * @todo
-   * options에 따라 초기에 어떤 모양의 객체를 만들지 결정이남
-   * 초기에 옵션을 분기하여 state에 객체를 설정함
-   * 객체의 인터페이스를 동일하게 사용
-   */
-  /*
-  if (options.useOnlyRectangle) {
-    // 사각형일 때
-    if (currentPoint === 0) {
-      // start() : 처음 클릭할 때
-
-      // getDefaultAxis()
-      if (options.fixedRatio) {
-        // 고정비 사각형일때
-        if (options.minSize) {
-          // 최소 사이즈 옵션을 적용했을 때
-        } else {
-          // 비율데로 사이즈를 적용
-        }
+  if (options.useOnlyRectangle === true) {
+    if (options.fixedRatio === true) {
+      if (options.minSize === false) {
+        setStrategy(function (axis) {
+          return this.convertRectanglePoints(
+            axis[0], axis[1],
+            axis[0] + options.ratio[0], axis[1] + option.ratio[1]
+          )
+        })
       } else {
-        // 그냥 사각형일 때
+        setStrategy(function (axis) {
+          //영상 영역을 넘는 이슈로 0,0를 초기로 설정
+          axis = [0, 0];
+          return this.convertRectanglePoints(
+            axis[0], axis[1],
+            axis[0] + options.minSize.width, axis[1] + options.minSize.height
+          );
+        })
       }
-      // createSvgObj()
-      // bindCancelEvnet()
-      // callStartEvent()
-      // startDrawing() : 첫번째 클릭으로 드로윙을 시작했다는 표시
     } else {
-      // end()
+      setStrategy(function (axis) {
+        return this.convertRectanglePoints(axis[0], axis[1], axis[0], axis[1])
+      })
     }
   } else {
-    // 라인일 때
-    if (currentPoint === 0) {
-      // start() : 첫번째 클릭일 때
-      // getDefaultAxis()
-      // createSvgObj()
-      // bindCancelEvnet()
-      // callStartEvent()
-      // startDrawing() : 첫번째 클릭으로 드로윙을 시작했다는 표시
-    } else if (options.minPoint === currentPoint) {
-      // validateAllAxis()
-      // validateStabilization()
-      // end()
-    } else {
-      // validateAllAxis()
-      // 삼각형부터 안정성 테스트
-      if (currentPoint > 2) {
-        // validateStabilization()
-      }
-      // addPoint()
-      // 포인트 증가 표시
-    }
+    setStrategy(function (axis) {
+      return [axis, axis]
+    })
   }
-  */
 
   this.parentSVGClickHandle = function(event) {
     if (
@@ -87,42 +71,21 @@ function CustomEditor (product, _options) {
 
     var axis = product.getPageAxis(event);
 
-    if (options.useOnlyRectangle === true) {
-      //처음 클릭을 할 때
-      if (currentPoint === 0) {
-        if (options.fixedRatio === true) {
-          if (options.minSize === false) {
-            options.points = this.convertRectanglePoints(
-              axis[0], axis[1],
-              axis[0] + options.ratio[0], axis[1] + option.ratio[1]
-            )
-          } else {
-            //영상 영역을 넘는 이슈로 0,0를 초기로 설정
-            axis = [0, 0];
-            options.points = this.convertRectanglePoints(
-              axis[0], axis[1],
-              axis[0] + options.minSize.width, axis[1] + options.minSize.height
-            );
-          }
-        } else {
-          options.points = this.convertRectanglePoints(axis[0], axis[1], axis[0], axis[1])
-        }
-        this.setSvgObj(svgGeometry.draw(options));
-        currentPoint++;
-        this.bindContextMenu();
-        this.bindESCkeyEvent();
-        this.callStartEvent(options.event);
+    if (currentPoint === 0) {
+      options.points = this.getDefaultPoint(axis)
+      this.setSvgObj(svgGeometry.draw(options));
+      this.bindContextMenu();
+      this.bindESCkeyEvent();
+      this.callStartEvent(options.event);
+
+      if(options.useOnlyRectangle === true) {
+        this.setCurrentPoint(++currentPoint)
       } else {
-        this.endDraw();
+        this.setCurrentPoint(2)
       }
     } else {
-      if (currentPoint === 0) {
-        options.points = [axis, axis];
-        this.setSvgObj(svgGeometry.draw(options));
-        currentPoint = 2;
-        this.bindContextMenu();
-        this.bindESCkeyEvent();
-        this.callStartEvent(options.event);
+      if(options.useOnlyRectangle === true) {
+        this.endDraw();
       } else if (options.minPoint === currentPoint) {
         if (this.validateAllAxis(options.minLineLength) === false || this.getSvgObj().validateStabilization() === false) {
           return;
@@ -170,6 +133,9 @@ function CustomEditor (product, _options) {
   }
   this.getEventOption = function () {
     return options.event
+  }
+  this.getDefaultPoint = function (axis) {
+    return strategy(axis)
   }
 
   this.bindEvent();
