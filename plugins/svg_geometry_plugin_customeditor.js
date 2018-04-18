@@ -5,61 +5,199 @@
  * Drawing 할 객체가 option을 설정하면 하나로 되어
  * 모양을 변경을 못하기 때문에 모양을 변경할 수 있게해야 함
  */
+function State (svgGeometry) {
+  this._svgGeometry = svgGeometry
+  this._obj = null
+  this._currentPoint = 0
+  this._options = null
+}
+State.prototype = {
+  start: function (options, axis) {
+    this._options = options
+    this._obj = this._svgGeometry.draw(options)
+    this._currentPoint++
+  },
+  end: function () {
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
+  },
+  add: function () {},
+  isFirst: function () {},
+  isLast: function () {}
+}
+
+function FixedRatio (svgGeometry) {
+  this._svgGeometry = svgGeometry
+  this._obj = null
+  this._currentPoint = 0
+  this._options = null
+}
+FixedRatio.prototype = {
+  start: function (options, axis) {
+    var points = []
+    if (options.minSize === false) {
+      points = CustomEditor.prototype.convertRectanglePoints(
+        axis[0], axis[1],
+        axis[0] + options.ratio[0], axis[1] + option.ratio[1]
+      )
+    } else {
+      points = CustomEditor.prototype.convertRectanglePoints(
+        axis[0], axis[1],
+        axis[0] + options.minSize.width, axis[1] + options.minSize.height
+      )
+    }
+    options.points = points
+    this._options = options
+    this._obj = this._svgGeometry.draw(options)
+    this._currentPoint++
+  },
+  end: function () {
+    this._obj.endDraw()
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
+  },
+  add: function () {},
+  isFirst: function () {
+    return this._currentPoint === 0
+  },
+  isLast: function () {
+    return this._currentPoint !== 0
+  }
+}
+
+function Rectangle (svgGeometry) {
+  this._svgGeometry = svgGeometry
+  this._obj = null
+  this._currentPoint = 0
+  this._options = null
+}
+Rectangle.prototype = {
+  start: function (options, axis) {
+    options.points = CustomEditor.prototype.convertRectanglePoints(axis[0], axis[1], axis[0], axis[1])
+    this._options = options
+    this._obj = this._svgGeometry.draw(options)
+    this._currentPoint++
+  },
+  end: function () {
+    this._obj.endDraw()
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
+  },
+  add: function () {},
+  isFirst: function () {
+    return this._currentPoint === 0
+  },
+  isLast: function () {
+    return this._currentPoint !== 0
+  }
+}
+
+function Line (svgGeometry) {
+  this._svgGeometry = svgGeometry
+  this._obj = null
+  this._currentPoint = 0
+  this._options = null
+}
+Rectangle.prototype = {
+  start: function (options, axis) {
+    options.points = [axis, axis]
+    this._options = options
+    this._obj = this._svgGeometry.draw(options)
+    this._currentPoint = 2
+  },
+  end: function () {
+    this._obj.endDraw()
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
+  },
+  add: function (axis) {
+    if (this.validateAllAxis(this._options.minLineLength) === false) {
+      return
+    }
+
+    if (this._currentPoint > 2) {
+      if (this._obj.validateStabilization() === false) {
+        return
+      }
+    }
+
+    this._obj.addPoint(axis[0], axis[1])
+    this._currentPoint++
+  },
+  isFirst: function () {
+    return this._currentPoint === 0
+  },
+  isLast: function () {
+    if (this._currentPoint == this._options.minPoint) {
+      if (this.validateAllAxis(this._options.minLineLength) === false || this._obj.validateStabilization() === false) {
+        return false
+      }
+      return true
+    }
+    return false
+  },
+  validateAllAxis: function() {
+    var points = this._obj.getData().points;
+    var pythagoreanTheorem = new FunnyMath().pythagoreanTheorem
+
+    for (var i = 0, ii = points.length; i < ii; i++) {
+      var startAxis = points[i];
+      var endAxis = i === ii - 1 ? points[0] : points[i + 1];
+
+      if (pythagoreanTheorem(
+          startAxis[0],
+          startAxis[1],
+          endAxis[0],
+          endAxis[1]) < this._options.minLineLength) {
+        return false
+      }
+    }
+
+    return true
+  }
+}
+
+
 function CustomEditor (product, _options) {
   var commonFunc = product.common;
-  var options = commonFunc.getOptions({
-    minPoint: 4,
-    event: {},
-    fixedRatio: false,
-    useOnlyRectangle: false,
-    ratio: false,
-    minLineLength: 20,
-    minSize: false
-  }, _options);
+  var options = {}
   var currentPoint = 0;
   var svgObj = null;
   var self = this
-  var strategy = function () {}
-  var setStrategy = function (_strategy) {
-    strategy = _strategy.bind(self)
-  }
+  this.state = null
 
   var svgGeometry = new SVGGeometry(product.getParentSvg());
 
-  if (options.fixedRatio === true) {
-    options.useOnlyRectangle = true;
-  }
+  this.setOptions = function (_options) {
+    options = commonFunc.getOptions({
+      minPoint: 4,
+      event: {},
+      fixedRatio: false,
+      useOnlyRectangle: false,
+      ratio: false,
+      minLineLength: 20,
+      minSize: false
+    }, _options);
 
-  options.customDraw = true;
-
-  if (options.useOnlyRectangle === true) {
     if (options.fixedRatio === true) {
-      if (options.minSize === false) {
-        setStrategy(function (axis) {
-          return this.convertRectanglePoints(
-            axis[0], axis[1],
-            axis[0] + options.ratio[0], axis[1] + option.ratio[1]
-          )
-        })
+      options.useOnlyRectangle = true;
+    }
+
+    options.customDraw = true;
+
+    if (options.useOnlyRectangle === true) {
+      if (options.fixedRatio === true) {
+        this.state = new FixedRatio(svgGeometry)
       } else {
-        setStrategy(function (axis) {
-          //영상 영역을 넘는 이슈로 0,0를 초기로 설정
-          axis = [0, 0];
-          return this.convertRectanglePoints(
-            axis[0], axis[1],
-            axis[0] + options.minSize.width, axis[1] + options.minSize.height
-          );
-        })
+        this.state = new Rectangle(svgGeometry)
       }
     } else {
-      setStrategy(function (axis) {
-        return this.convertRectanglePoints(axis[0], axis[1], axis[0], axis[1])
-      })
+      this.state = new Line(svgGeometry)
     }
-  } else {
-    setStrategy(function (axis) {
-      return [axis, axis]
-    })
   }
 
   this.parentSVGClickHandle = function(event) {
@@ -71,41 +209,16 @@ function CustomEditor (product, _options) {
 
     var axis = product.getPageAxis(event);
 
-    if (currentPoint === 0) {
-      options.points = this.getDefaultPoint(axis)
-      this.setSvgObj(svgGeometry.draw(options));
+    if (this.state.isFirst()) {
+      this.state.start(options, axis)
       this.bindContextMenu();
       this.bindESCkeyEvent();
       this.callStartEvent(options.event);
-
-      if(options.useOnlyRectangle === true) {
-        this.setCurrentPoint(++currentPoint)
-      } else {
-        this.setCurrentPoint(2)
-      }
+    } else if (this.state.isLast()) {
+      this.state.end()
+      this.endDraw();
     } else {
-      if(options.useOnlyRectangle === true) {
-        this.endDraw();
-      } else if (options.minPoint === currentPoint) {
-        if (this.validateAllAxis(options.minLineLength) === false || this.getSvgObj().validateStabilization() === false) {
-          return;
-        }
-
-        this.endDraw();
-      } else {
-        if (this.validateAllAxis(options.minLineLength) === false) {
-          return;
-        }
-
-        if (currentPoint > 2) {
-          if (this.getSvgObj().validateStabilization() === false) {
-            return;
-          }
-        }
-
-        this.addPoint(axis[0], axis[1]);
-        currentPoint++;
-      }
+      this.state.add(axis)
     }
   }
 
@@ -134,10 +247,8 @@ function CustomEditor (product, _options) {
   this.getEventOption = function () {
     return options.event
   }
-  this.getDefaultPoint = function (axis) {
-    return strategy(axis)
-  }
 
+  this.setOptions(_options)
   this.bindEvent();
 }
 
@@ -207,24 +318,6 @@ CustomEditor.prototype = {
     if ("end" in eventOption) {
       eventOption.end(this.getSvgObj());
     }
-  },
-  validateAllAxis: function(minLineLength) {
-    var points = this.getSvgObj().getData().points;
-
-    for (var i = 0, ii = points.length; i < ii; i++) {
-      var startAxis = points[i];
-      var endAxis = i === ii - 1 ? points[0] : points[i + 1];
-
-      if (this.funnyMath.pythagoreanTheorem(
-          startAxis[0],
-          startAxis[1],
-          endAxis[0],
-          endAxis[1]) < minLineLength) {
-        return false
-      }
-    }
-
-    return true
   }
 }
 
