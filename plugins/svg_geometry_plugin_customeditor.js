@@ -18,13 +18,20 @@ State.prototype = {
     this._currentPoint++
   },
   end: function () {
+    this._obj.endDraw()
     this._obj = null
     this._currentPoint = 0
     this._options = null
   },
   add: function () {},
   isFirst: function () {},
-  isLast: function () {}
+  isLast: function () {},
+  destory: function () {
+    this._obj.destory()
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
+  }
 }
 
 function FixedRatio (svgGeometry) {
@@ -64,6 +71,12 @@ FixedRatio.prototype = {
   },
   isLast: function () {
     return this._currentPoint !== 0
+  },
+  destory: function () {
+    this._obj.destory()
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
   }
 }
 
@@ -92,6 +105,12 @@ Rectangle.prototype = {
   },
   isLast: function () {
     return this._currentPoint !== 0
+  },
+  destory: function () {
+    this._obj.destory()
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
   }
 }
 
@@ -101,7 +120,7 @@ function Line (svgGeometry) {
   this._currentPoint = 0
   this._options = null
 }
-Rectangle.prototype = {
+Line.prototype = {
   start: function (options, axis) {
     options.points = [axis, axis]
     this._options = options
@@ -158,6 +177,12 @@ Rectangle.prototype = {
     }
 
     return true
+  },
+  destory: function () {
+    this._obj.destory()
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
   }
 }
 
@@ -165,9 +190,8 @@ Rectangle.prototype = {
 function CustomEditor (product, _options) {
   var commonFunc = product.common;
   var options = {}
-  var currentPoint = 0;
-  var svgObj = null;
   var self = this
+
   this.state = null
 
   var svgGeometry = new SVGGeometry(product.getParentSvg());
@@ -211,9 +235,7 @@ function CustomEditor (product, _options) {
 
     if (this.state.isFirst()) {
       this.state.start(options, axis)
-      this.bindContextMenu();
-      this.bindESCkeyEvent();
-      this.callStartEvent(options.event);
+      this.startDraw()
     } else if (this.state.isLast()) {
       this.state.end()
       this.endDraw();
@@ -229,18 +251,6 @@ function CustomEditor (product, _options) {
   this.eventCtrl = product.eventController;
   this.funnyMath = product.funnyMath;
 
-  this.getSvgObj = function() {
-    return svgObj
-  };
-  this.setSvgObj = function (obj) {
-    svgObj = obj
-  };
-  this.setCurrentPoint = function (point) {
-    currentPoint = point
-  };
-  this.isDrawing = function () {
-    return svgObj !== null
-  };
   this.getParentSvg = function () {
     return product.getParentSvg()
   }
@@ -257,9 +267,6 @@ CustomEditor.prototype = {
     return [
       [x1, y1], [x1, y2], [x2, y2], [x2, y1]
     ]
-  },
-  addPoint: function(x, y) {
-    this.getSvgObj().addPoint(x, y);
   },
   destroy: function () {
     this.unbindEvent();
@@ -294,29 +301,30 @@ CustomEditor.prototype = {
     document.removeEventListener('keyup', this.handleESCKey.bind(this));
   },
   removeDrawingGeometry: function () {
-    if (this.isDrawing()) {
-      this.getSvgObj().destroy();
+    if (this.state.isFirst() === false) {
+      this.state.destroy();
       this.unbindESCkeyEvent();
       this.unbindContextMenu();
-      this.setCurrentPoint(0);
     }
+  },
+  startDraw: function () {
+    this.bindContextMenu();
+    this.bindESCkeyEvent();
+    this.callStartEvent(this.getEventOption());
   },
   endDraw: function() {
     this.unbindContextMenu();
     this.unbindESCkeyEvent();
-    this.getSvgObj().endDraw();
     this.callEndEvent(this.getEventOption());
-    this.setSvgObj(null);
-    this.setCurrentPoint(0)
   },
   callStartEvent: function(eventOption) {
     if ("start" in eventOption) {
-      eventOption.start(this.getSvgObj());
+      eventOption.start(this.state._obj);
     }
   },
   callEndEvent: function(eventOption) {
     if ("end" in eventOption) {
-      eventOption.end(this.getSvgObj());
+      eventOption.end(this.state._obj);
     }
   }
 }
