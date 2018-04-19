@@ -1,10 +1,5 @@
 "use strict";
 /* globals SVGGeometry */
-/**
- * @todo
- * Drawing 할 객체가 option을 설정하면 하나로 되어
- * 모양을 변경을 못하기 때문에 모양을 변경할 수 있게해야 함
- */
 function State (svgGeometry) {
   this._svgGeometry = svgGeometry
   this._obj = null
@@ -166,11 +161,15 @@ function CustomEditor (product, options) {
   this._eventCtrl = product.eventController;
   this._options = null
   this._state = null
-  this.svgGeometry = new SVGGeometry(product.getParentSvg());
+  this._svgGeometry = new SVGGeometry(product.getParentSvg());
 
   this.parentSVGClickHandleProxy = function (event) {
     self.parentSVGClickHandle(event)
   };
+
+  this.removeDrawingGeometryProxy = function () {
+    self.removeDrawingGeometry()
+  }
 
   this.setOptions(options)
   this.bindEvent();
@@ -198,10 +197,10 @@ CustomEditor.prototype = {
     }
   },
   bindContextMenu: function() {
-    this._eventCtrl.bindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometry.bind(this));
+    this._eventCtrl.bindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometryProxy);
   },
   unbindContextMenu: function () {
-    this._eventCtrl.unbindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometry.bind(this));
+    this._eventCtrl.unbindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometryProxy);
   },
   bindESCkeyEvent: function () {
     document.addEventListener('keyup', this.handleESCKey.bind(this));
@@ -242,12 +241,12 @@ CustomEditor.prototype = {
   
     if (this._options.useOnlyRectangle === true) {
       if (this._options.fixedRatio === true) {
-        this._state = new FixedRatioState(this.svgGeometry)
+        this._state = new FixedRatioState(this._svgGeometry)
       } else {
-        this._state = new RectangleState(this.svgGeometry)
+        this._state = new RectangleState(this._svgGeometry)
       }
     } else {
-      this._state = new LineState(this.svgGeometry)
+      this._state = new LineState(this._svgGeometry)
     }
   },
   parentSVGClickHandle: function(event) {
