@@ -184,6 +184,7 @@ var drawArr = [
   '--',
   {
     className: 'IconHelper',
+    props: ['icon', 'iconText'],
     methods: [
       'createIcon',
       'changePosition',
@@ -196,10 +197,24 @@ var drawArr = [
   },
   {
     className: 'LineHelper',
-    methods: []
+    props: ['lines'],
+    methods: [
+      'addLine',
+      'setDefaultColor',
+      'setSelectColor',
+      'appendAll',
+      'appendAtLast',
+      'bindEvent',
+      'removeAll',
+      'hide',
+      'show',
+      'getLines',
+      'setLines'
+    ]
   },
   {
     className: 'CircleHelper',
+    props: ['circles'],
     methods: [
       'addCircle',
       'bindEvent',
@@ -220,26 +235,83 @@ var drawArr = [
   },
   {
     className: 'GeometryManager',
-    methods: []
+    props: ['points'],
+    methods: [
+      'setPoints',
+      'getPoints',
+      'getPointsLength',
+      'setAxis',
+      'appendAxis',
+      'getAxis',
+      'addAxis',
+      'validateAxis',
+      'validateAllPoint',
+      'validateGeometrySize',
+      'changeAxis',
+      'resetAllColor',
+      'setAllColor'
+    ]
   },
   {
     className: 'GroupHelper',
-    methods: []
+    props: ['groupId', 'groupTag'],
+    methods: [
+      'add',
+      'remove',
+      'moveTopLayer',
+      'append',
+      'appendChild',
+      'removeChild',
+      'insertBefore'
+    ]
   },
   {
     className: 'WiseFaceDetectionHelper',
-    methods: []
+    props: ['wiseFaceDetectionCircle'],
+    methods: [
+      'updateCircle',
+      'append',
+      'add',
+      'remove',
+      'changeFillColor'
+    ]
   },
   {
     className: 'TextTagHelper',
-    methods: []
+    props: ['textTag'],
+    methods: [
+      'addText',
+      'append',
+      'remove',
+      'show',
+      'hide',
+      'getTextTag',
+      'setTextTag'
+    ]
   },
   {
     className: 'PolygonHelper',
-    methods: []
+    props: ['polygon'],
+    methods: [
+      'addPolygon',
+      'append',
+      'bindEvent',
+      'selectPolygon',
+      'remove',
+      'setDefaultColor',
+      'setSelectColor',
+      'getPolygon',
+      'setPolygon'
+    ]
   },
   {
     className: 'ArrowImageHelper',
+    props: [
+      'arrowImageContainner',
+      'arrowImage',
+      'arrowTextContainner',
+      'arrowText'
+    ],
     methods: [
       'addImage',
       'append',
