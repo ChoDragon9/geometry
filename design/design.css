@@ -1,23 +1,31 @@
 * {
   box-sizing: border-box;
 }
-.crcc {
+ol {
+  list-style-type: square;
+}
+.crcc, .omt {
   width: auto;
   border: solid 1px #222;
   margin: 20px;
   float: left
 }
-.crcc-hr {
+.crcc-hr, .omt-hr {
   width: 100%;
   height: 1px;
   background-color: #222;
   float: left;
 }
-.crcc-class, .crcc-respon, .crcc-collabo {
+.omt-hr {
+  background-color: #ddd;
+}
+.crcc-class, .crcc-respon, .crcc-collabo,
+.omt-class, .omt-prop, .omt-method {
   padding: 10px
 }
-.crcc h1 {
-  font-size: 13px
+.crcc h1,
+.omt h1{
+  font-size: 14px
 }
 .crcc-self {
   width: 250px;
@@ -38,4 +46,8 @@
   width: 250px;
   height: 100%;
   float: right
+}
+
+.omt-method, .omt-prop {
+  border-top: solid 1px #222
 }

@@ -104,10 +104,6 @@ function draw (product, options) {
     draw.options.fixedRatio = true;
   }
 
-  /**
-   * @todo
-   * 서브 클래스들 prototype으로 변경
-   */
   draw.geometryManager = new GeometryManager(draw, product);
   draw.groupHelper = new GroupHelper(draw, product);
   draw.wiseFaceDetectionHelper = new WiseFaceDetectionHelper(draw, product);
@@ -277,7 +273,7 @@ function draw (product, options) {
     }
 
     if (draw.selectedLineIndex !== null) {
-      callCustomEvent("mouseup", draw.geometryManager.getAll());
+      callCustomEvent("mouseup", draw.getData());
     }
 
     resetElementStatus();
@@ -517,7 +513,7 @@ function draw (product, options) {
           }
         }
 
-        prevPoints = draw.geometryManager.getAll().points;
+        prevPoints = draw.geometryManager.getPoints();
         prevPoints[draw.selectedCircleIndex] = [xAxis, yAxis];
 
         if (validateStabilization(prevPoints) === false) {
@@ -552,7 +548,7 @@ function draw (product, options) {
         changedY2 = endAxis[1];
       }
 
-      prevPoints = draw.geometryManager.getAll().points;
+      prevPoints = draw.geometryManager.getPoints();
       prevPoints[draw.selectedLineIndex] = [changedX1, changedY1];
       prevPoints[endAxisIndex] = [changedX2, changedY2];
 
@@ -865,7 +861,7 @@ function draw (product, options) {
 
     try {
       points = typeof prevPoints === "undefined" ?
-        CommonUtils.cloneObject(draw.geometryManager.getAll().points) :
+        CommonUtils.cloneObject(draw.geometryManager.getPoints()) :
         CommonUtils.cloneObject(prevPoints);
       pointsLength = points.length;
 
@@ -905,7 +901,7 @@ function draw (product, options) {
 
     try {
       points = typeof prevPoints === "undefined" ?
-        CommonUtils.cloneObject(draw.geometryManager.getAll().points) :
+        CommonUtils.cloneObject(draw.geometryManager.getPoints()) :
         CommonUtils.cloneObject(prevPoints);
       pointsLength = points.length;
 
@@ -942,7 +938,7 @@ function draw (product, options) {
 
   function validateStabilization(prevPoints) {
     var points = typeof prevPoints === "undefined" ?
-      CommonUtils.cloneObject(draw.geometryManager.getAll().points) :
+      CommonUtils.cloneObject(draw.geometryManager.getPoints()) :
       CommonUtils.cloneObject(prevPoints);
     var returnVal = true;
 
@@ -964,7 +960,12 @@ function draw (product, options) {
   draw.normal = changeNormalStatus;
 
   draw.addPoint = addPoint;
-  draw.getData = draw.geometryManager.getAll;
+  draw.getData = function() {
+    return {
+      points: draw.geometryManager.getPoints(),
+      arrow: draw.arrowImageHelper.getArrow()
+    };
+  };
   draw.destroy = reset;
   draw.endDraw = endDraw;
 

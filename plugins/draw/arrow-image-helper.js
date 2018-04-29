@@ -4,8 +4,6 @@
 function ArrowImageHelper(draw, product) {
   "use strict";
 
-
-
   var IMAGE_WIDTH = 25;
   var IMAGE_HEIGHT = 33;
 
@@ -197,7 +195,7 @@ function ArrowImageHelper(draw, product) {
 
           changeArrow(arrow);
 
-          draw.callCustomEvent("mouseup", draw.geometryManager.getAll());
+          draw.callCustomEvent("mouseup", draw.getData());
         }
       };
 
@@ -251,15 +249,13 @@ function ArrowImageHelper(draw, product) {
     arrowText = [];
   }
 
-  return {
-    addImage: addImage,
-    append: append,
-    remove: remove,
-    getArrow: getArrow,
-    changeArrowImage: changeArrowImage,
-    changeArrow: changeArrow,
-    show: show,
-    hide: hide,
-    resetData: resetData
-  };
+  this.addImage = addImage
+  this.append = append
+  this.remove = remove
+  this.getArrow = getArrow
+  this.changeArrowImage = changeArrowImage
+  this.changeArrow = changeArrow
+  this.show = show
+  this.hide = hide
+  this.resetData = resetData
 }

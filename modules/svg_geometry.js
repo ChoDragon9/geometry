@@ -58,8 +58,6 @@ function SVGGeometry(svgTag) {
   this.svgTag = svgTag;
 }
 
-SVGGeometry.prototype.svgTag = null;
-
 /**
  * Plugin 추가 함수
  * 

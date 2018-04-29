@@ -6,28 +6,15 @@
 </head>
 <body>
 <div id="design">
-  <template v-for="item in items">
-    <div class="crcc-hr" v-if="item === '-'"></div>
-    <div class="crcc" v-else="">
-      <div class="crcc-self">
-        <div class="crcc-class">
-          <h1>Class</h1>
-          <p>{{item.className}}</p>
-        </div>
-        <div class="crcc-respon">
-          <h1>Responsibility</h1>
-          <ol>
-            <li v-for="responItem in item.respon">{{responItem}}</li>
-          </ol>
-        </div>
-      </div>
-      <div class="crcc-collabo" v-if="item.collabo">
-        <h1>Collaborators</h1>
-        <ol>
-          <li v-for="collaboItem in item.collabo">{{collaboItem}}</li>
-        </ol>
-      </div>
-    </div>
+  <template v-for="item in crccs">
+    <crcc-hr v-if="item === '-'"></crcc-hr>
+    <omt-hr v-else-if="item === '--'"></omt-hr>
+    <crcc :crcc="item"
+          v-else-if="item.respon">
+    </crcc>
+    <omt :omt="item"
+          v-else="">
+    </omt>
   </template>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>

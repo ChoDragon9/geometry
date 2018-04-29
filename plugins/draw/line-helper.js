@@ -3,13 +3,10 @@
  */
 function LineHelper(draw, product) {
   "use strict";
-
-
-
   var parentSvgMovedAttr = 'is-moved';
   var lines = [];
   var tempArrForDragChecking = [];
-  var iconHelper = new IconHelper(ElementController, draw.groupHelper);
+  var iconHelper = new IconHelper(draw.groupHelper);
   var hideOpacity = '0.5';
   var hoveredLineIndex = null;
   var iconHelperTimer = null;
@@ -25,12 +22,12 @@ function LineHelper(draw, product) {
   iconHelper.onLeave(iconHelper.hide);
 
   function backupPoints() {
-    tempArrForDragChecking = draw.geometryManager.getAll().points;
+    tempArrForDragChecking = draw.geometryManager.getPoints();
   }
 
   function isPointsChanged() {
     var returnVal = true;
-    var currentPoints = draw.geometryManager.getAll().points;
+    var currentPoints = draw.geometryManager.getPoints();
     if (tempArrForDragChecking.length !== currentPoints.length) {
       returnVal = false;
     }
@@ -126,7 +123,7 @@ function LineHelper(draw, product) {
 
   function mouseUpHandler() {
     setTimeout(function() {
-      draw.callCustomEvent("mouseup", draw.geometryManager.getAll());
+      draw.callCustomEvent("mouseup", draw.getData());
     });	
   }
 
@@ -181,7 +178,7 @@ function LineHelper(draw, product) {
 
   function appendAll() {
     for (var i = 0, len = lines.length; i < len; i++) {
-      ElementController.appendChild(draw.groupHelper, lines[i]);
+      draw.groupHelper.appendChild(lines[i]);
     }
 
     iconHelper.createIcon(true);
@@ -207,7 +204,7 @@ function LineHelper(draw, product) {
 
   function removeAll() {
     for (var i = 0, len = lines.length; i < len; i++) {
-      ElementController.removeChild(draw.groupHelper, lines[i]);
+      draw.groupHelper.removeChild(lines[i]);
     }
   }
 
@@ -219,17 +216,15 @@ function LineHelper(draw, product) {
     lines = _lines;
   }
 
-  return {
-    addLine: addLine,
-    setDefaultColor: setDefaultColor,
-    setSelectColor: setSelectColor,
-    appendAll: appendAll,
-    appendAtLast: appendAtLast,
-    bindEvent: bindEvent,
-    removeAll: removeAll,
-    hide: hide,
-    show: show,
-    getLines: getLines,
-    setLines: setLines
-  };
+  this.addLine = addLine
+  this.setDefaultColor = setDefaultColor
+  this.setSelectColor = setSelectColor
+  this.appendAll = appendAll
+  this.appendAtLast = appendAtLast
+  this.bindEvent = bindEvent
+  this.removeAll = removeAll
+  this.hide = hide
+  this.show = show
+  this.getLines = getLines
+  this.setLines = setLines
 }

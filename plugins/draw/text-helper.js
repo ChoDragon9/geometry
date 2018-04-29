@@ -27,13 +27,13 @@ function TextTagHelper(draw, product) {
 
   function append() {
     if (draw.options.textInCircle !== null) {
-      ElementController.appendChild(draw.groupHelper, textTag);
+      draw.groupHelper.appendChild(textTag);
     }
   }
 
   function remove() {
     if (draw.options.textInCircle !== null) {
-      ElementController.removeChild(draw.groupHelper, textTag);
+      draw.groupHelper.removeChild(textTag);
     }
   }
 
@@ -57,13 +57,11 @@ function TextTagHelper(draw, product) {
     textTag = _textTag;
   }
 
-  return {
-    addText: addText,
-    append: append,
-    remove: remove,
-    show: show,
-    hide: hide,
-    getTextTag: getTextTag,
-    setTextTag: setTextTag
-  };
+  this.addText = addText
+  this.append = append
+  this.remove = remove
+  this.show = show
+  this.hide = hide
+  this.getTextTag = getTextTag
+  this.setTextTag = setTextTag
 }

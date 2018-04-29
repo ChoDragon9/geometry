@@ -5,7 +5,7 @@ function CircleHelper(draw, product) {
 
   var parentSvg = product.getParentSvg();
   var isLeave = false;
-  var iconHelper = new IconHelper(ElementController, draw.groupHelper);
+  var iconHelper = new IconHelper(draw.groupHelper);
   var iconHelperTimer = null;
   var hoveredPointIndex = null;
   var circles = [];
@@ -106,7 +106,7 @@ function CircleHelper(draw, product) {
 
   function update() {
     setTimeout(function() {
-      draw.callCustomEvent("mouseup", draw.geometryManager.getAll());
+      draw.callCustomEvent("mouseup", draw.getData());
     });
   }
 
@@ -168,7 +168,7 @@ function CircleHelper(draw, product) {
 
   function appendAll() {
     for (var i = 0, len = circles.length; i < len; i++) {
-      ElementController.appendChild(draw.groupHelper, circles[i]);
+      draw.groupHelper.appendChild(circles[i]);
     }
     
     iconHelper.createIcon(false);
@@ -185,7 +185,7 @@ function CircleHelper(draw, product) {
     var nextElementSibling = circles[circleLength - 2].nextElementSibling;
 
     if (draw.options.textInCircle === null || nextElementSibling === null) {
-      ElementController.appendChild(draw.groupHelper, newCircleElement);
+      draw.groupHelper.appendChild(newCircleElement);
     } else {
       draw.groupHelper.insertBefore(
         newCircleElement,
@@ -196,7 +196,7 @@ function CircleHelper(draw, product) {
 
   function removeAll() {
     for (var i = 0, len = circles.length; i < len; i++) {
-      ElementController.removeChild(draw.groupHelper, circles[i]);
+      draw.groupHelper.removeChild(circles[i]);
     }
   }
 
@@ -208,21 +208,19 @@ function CircleHelper(draw, product) {
     circles = _circles;
   }
 
-  return {
-    addCircle: addCircle,
-    bindEvent: bindEvent,
-    selectCircle: selectCircle,
-    setDefaultColor: setDefaultColor,
-    setSelectColor: setSelectColor,
-    appendAll: appendAll,
-    changeRadius: changeRadius,
-    appendAtLast: appendAtLast,
-    removeAll: removeAll,
-    update: update,
-    isMouseLeave: isMouseLeave,
-    hide: hide,
-    show: show,
-    getCircles: getCircles,
-    setCircles: setCircles
-  };
+  this.addCircle = addCircle
+  this.bindEvent = bindEvent
+  this.selectCircle = selectCircle
+  this.setDefaultColor = setDefaultColor
+  this.setSelectColor = setSelectColor
+  this.appendAll = appendAll
+  this.changeRadius = changeRadius
+  this.appendAtLast = appendAtLast
+  this.removeAll = removeAll
+  this.update = update
+  this.isMouseLeave = isMouseLeave
+  this.hide = hide
+  this.show = show
+  this.getCircles = getCircles
+  this.setCircles = setCircles
 }

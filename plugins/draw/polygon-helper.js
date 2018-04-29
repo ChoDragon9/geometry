@@ -15,7 +15,7 @@ function PolygonHelper(draw, product) {
 
   function append() {
     if (draw.options.fill === true) {
-      ElementController.appendChild(draw.groupHelper, polygon);
+      draw.groupHelper.appendChild(polygon);
     }
   }
 
@@ -49,13 +49,13 @@ function PolygonHelper(draw, product) {
       draw.callCustomEvent("polygoncontextmenu", event);
     });
     // polygon.onmouseup = function(){
-    // 	draw.callCustomEvent("mouseup", draw.geometryManager.getAll());
+    // 	draw.callCustomEvent("mouseup", draw.getData());
     // };
   }
 
   function remove() {
     if (draw.options.fill === true) {
-      ElementController.removeChild(draw.groupHelper, polygon);
+      draw.groupHelper.removeChild(polygon);
     }
   }
 
@@ -80,7 +80,7 @@ function PolygonHelper(draw, product) {
 
   function update() {
     setTimeout(function() {
-      draw.callCustomEvent("mouseup", draw.geometryManager.getAll());
+      draw.callCustomEvent("mouseup", draw.getData());
     });
   }
 
@@ -92,15 +92,13 @@ function PolygonHelper(draw, product) {
     polygon = _polygon;
   }
 
-  return {
-    addPolygon: addPolygon,
-    append: append,
-    bindEvent: bindEvent,
-    selectPolygon: selectPolygon,
-    remove: remove,
-    setDefaultColor: setDefaultColor,
-    setSelectColor: setSelectColor,
-    getPolygon: getPolygon,
-    setPolygon: setPolygon
-  };
+  this.addPolygon = addPolygon
+  this.append = append
+  this.bindEvent = bindEvent
+  this.selectPolygon = selectPolygon
+  this.remove = remove
+  this.setDefaultColor = setDefaultColor
+  this.setSelectColor = setSelectColor
+  this.getPolygon = getPolygon
+  this.setPolygon = setPolygon
 }

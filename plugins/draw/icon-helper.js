@@ -8,7 +8,7 @@
 
   iconHelper.hide();
   */
-function IconHelper(ElementController, groupHelper) {
+function IconHelper(groupHelper) {
   var PLUS_IMAGE = './base/images/plus.svg';
   var MINUS_IMAGE = './base/images/minus.svg';
 
@@ -27,7 +27,7 @@ function IconHelper(ElementController, groupHelper) {
    * 
    * @param {Boolean} iconType true: Plus icon, false: Minus icon
    */
-  this.createIcon = function(iconType) {
+  function createIcon(iconType) {
     var src = iconType ? PLUS_IMAGE : MINUS_IMAGE;
 
     if (icon === null) {
@@ -77,20 +77,17 @@ function IconHelper(ElementController, groupHelper) {
     groupHelper.appendChild(icon);
     groupHelper.appendChild(iconText);
   };
-
-  this.changePosition = function(x, y) {
+  function changePosition(x, y) {
     ElementController.setAttr(icon, 'x', x - width / 2);
     ElementController.setAttr(icon, 'y', y - width / 2);
     ElementController.setAttr(iconText, 'x', x - width / 2);
     ElementController.setAttr(iconText, 'y', y - width / 2);
   };
-
-  this.show = function() {
+  function show() {
     icon.style.opacity = 1;
     iconText.style.opacity = 1;
   };
-
-  this.hide = function() {
+  function hide() {
     if (icon === null) {
       return;
     }
@@ -101,16 +98,21 @@ function IconHelper(ElementController, groupHelper) {
       self.changePosition(0, 0);
     }
   };
-
-  this.onClick = function(callBack) {
+  function onClick(callBack) {
     clickEventHandler = callBack;
   };
-  
-  this.onLeave = function(callBack){
+  function onLeave(callBack){
     leaveEventHandler = callBack;
   };
-  
-  this.onContextMenu = function(callBack){
+  function onContextMenu(callBack){
     contextMenuEventHandler = callBack;
   };
+
+  this.createIcon = createIcon
+  this.changePosition = changePosition
+  this.show = show
+  this.hide = hide
+  this.onClick = onClick
+  this.onLeave = onLeave
+  this.onContextMenu = onContextMenu
 }
