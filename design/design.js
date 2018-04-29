@@ -1,4 +1,4 @@
-var crccs = [
+var svgGeometryArr = [
   {
     className: 'SVG Geometry',
     respon: [
@@ -12,7 +12,7 @@ var crccs = [
     className: 'SVG Geometry Product',
     respon: ['<svg> 태그를 직접 컨트롤']
   },
-  '-',
+  '--',
   {
     className: 'FunnyMath',
     respon: ['수학 함수 객체']
@@ -29,10 +29,53 @@ var crccs = [
     className: 'ElementController',
     respon: ['DOM 조작']
   },
-  '-',
+];
+
+var customEditorArr = [
+  {
+    className: 'CustomEditor',
+    respon: ['마우스 이벤트를 통해 SVG를 추가함'],
+    collabo: [
+      '(State)FixedRatioState',
+      '(State)RectangleState',
+      '(State)LineState'
+    ]
+  },
+  {
+    className: 'State',
+    respon: ['상태패턴 최상위 클래스']
+  },
+  {
+    className: 'FixedRatioState',
+    respon: ['고정비 사각형 상태'],
+    collabo: ['State']
+  },
+  {
+    className: 'RectangleState',
+    respon: ['사각형 상태'],
+    collabo: ['State']
+  },
+  {
+    className: 'LineState',
+    respon: ['라인 상태'],
+    collabo: ['State']
+  },
+  '--',
+  {
+    className: '(CustomEditor)CustomEditorV2',
+    respon: ['마우스 이벤트를 통해 SVG를 추가함', '드래그 이벤트 추가됨']
+  }
+]
+
+var drawArr = [
   {
     className: 'Draw',
-    respon: ['SVG를 드로윙'],
+    respon: [
+      '옵션을 받아 어떤 Geometry를 생성함',
+      '데이터 로직',
+      '이벤트 로직',
+      '뷰 로직'
+    ],
     collabo: [
       'GeometryManager',
       'GroupHelper',
@@ -138,112 +181,84 @@ var crccs = [
       'FunnyMath'
     ]
   },
-  // '--',
-  // {
-  //   className: 'IconHelper',
-  //   methods: [
-  //     'createIcon',
-  //     'changePosition',
-  //     'show',
-  //     'hide',
-  //     'onClick',
-  //     'onLeave',
-  //     'onContextMenu'
-  //   ]
-  // },
-  // {
-  //   className: 'LineHelper',
-  //   methods: []
-  // },
-  // {
-  //   className: 'CircleHelper',
-  //   methods: [
-  //     'addCircle',
-  //     'bindEvent',
-  //     'selectCircle',
-  //     'setDefaultColor',
-  //     'setSelectColor',
-  //     'appendAll',
-  //     'changeRadius',
-  //     'appendAtLast',
-  //     'removeAll',
-  //     'update',
-  //     'isMouseLeave',
-  //     'hide',
-  //     'show',
-  //     'getCircles',
-  //     'setCircles'
-  //   ]
-  // },
-  // {
-  //   className: 'GeometryManager',
-  //   methods: []
-  // },
-  // {
-  //   className: 'GroupHelper',
-  //   methods: []
-  // },
-  // {
-  //   className: 'WiseFaceDetectionHelper',
-  //   methods: []
-  // },
-  // {
-  //   className: 'TextTagHelper',
-  //   methods: []
-  // },
-  // {
-  //   className: 'PolygonHelper',
-  //   methods: []
-  // },
-  // {
-  //   className: 'ArrowImageHelper',
-  //   methods: [
-  //     'addImage',
-  //     'append',
-  //     'remove',
-  //     'getArrow',
-  //     'changeArrowImage',
-  //     'changeArrow',
-  //     'show',
-  //     'hide',
-  //     'resetData'
-  //   ]
-  // },
-  '-',
+  '--',
   {
-    className: 'CustomEditor',
-    respon: ['마우스 이벤트를 통해 SVG를 추가함'],
-    collabo: [
-      '(State)FixedRatioState',
-      '(State)RectangleState',
-      '(State)LineState'
+    className: 'IconHelper',
+    methods: [
+      'createIcon',
+      'changePosition',
+      'show',
+      'hide',
+      'onClick',
+      'onLeave',
+      'onContextMenu'
     ]
   },
   {
-    className: 'State',
-    respon: ['상태패턴 최상위 클래스']
+    className: 'LineHelper',
+    methods: []
   },
   {
-    className: 'FixedRatioState',
-    respon: ['고정비 사각형 상태'],
-    collabo: ['State']
+    className: 'CircleHelper',
+    methods: [
+      'addCircle',
+      'bindEvent',
+      'selectCircle',
+      'setDefaultColor',
+      'setSelectColor',
+      'appendAll',
+      'changeRadius',
+      'appendAtLast',
+      'removeAll',
+      'update',
+      'isMouseLeave',
+      'hide',
+      'show',
+      'getCircles',
+      'setCircles'
+    ]
   },
   {
-    className: 'RectangleState',
-    respon: ['사각형 상태'],
-    collabo: ['State']
+    className: 'GeometryManager',
+    methods: []
   },
   {
-    className: 'LineState',
-    respon: ['라인 상태'],
-    collabo: ['State']
+    className: 'GroupHelper',
+    methods: []
   },
-  '-',
   {
-    className: '(CustomEditor)CustomEditorV2',
-    respon: ['마우스 이벤트를 통해 SVG를 추가함', '드래그 이벤트 추가됨']
-  }
+    className: 'WiseFaceDetectionHelper',
+    methods: []
+  },
+  {
+    className: 'TextTagHelper',
+    methods: []
+  },
+  {
+    className: 'PolygonHelper',
+    methods: []
+  },
+  {
+    className: 'ArrowImageHelper',
+    methods: [
+      'addImage',
+      'append',
+      'remove',
+      'getArrow',
+      'changeArrowImage',
+      'changeArrow',
+      'show',
+      'hide',
+      'resetData'
+    ]
+  },
 ]
+
+var crccs = [].concat(
+  // svgGeometryArr, ['-'],
+  drawArr,
+  // ['-'], customEditorArr
+)
 
 Vue.component('omt', {
   props: ['omt'],

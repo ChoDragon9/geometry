@@ -31,7 +31,7 @@ svgGeometry.draw({
   ]
 });
  */
-function draw (product, options) {
+function Draw (product, options) {
   var MINIMUM_ANGLE = 1;
   var TEXT_POINT_RADIUS = 1.5;
 
@@ -112,6 +112,42 @@ function draw (product, options) {
   draw.textTagHelper = new TextTagHelper(draw, product);
   draw.polygonHelper = new PolygonHelper(draw, product);
   draw.arrowImageHelper = new ArrowImageHelper(draw, product);
+
+  draw.hide = removeAllElement;
+  draw.show = appendDom;
+  draw.active = changeActiveStatus;
+  draw.normal = changeNormalStatus;
+
+  draw.addPoint = addPoint;
+  draw.getData = function() {
+    return {
+      points: draw.geometryManager.getPoints(),
+      arrow: draw.arrowImageHelper.getArrow()
+    };
+  };
+
+  draw.destroy = reset;
+  draw.endDraw = endDraw;
+
+  draw.createArrow = createArrow;
+  draw.changeArrow = draw.arrowImageHelper.changeArrow;
+  draw.changeMinSizeOption = changeMinSizeOption;
+  draw.changeMaxSizeOption = changeMaxSizeOption;
+  draw.changeRectangleToSize = changeRectangleToSize;
+  draw.modifyPoints = modifyPoints;
+  draw.alignCenter = alignCenter;
+
+  draw.validateAxis = draw.geometryManager.validateAxis;
+  draw.validateStabilization = validateStabilization;
+  draw.validateIntersection = validateIntersection;
+  draw.validateMinimumAngle = validateMinimumAngle;
+
+  draw.stopEvent = unbindEvent;
+  draw.startEvent = bindEvent;
+
+  draw.moveTopLayer = draw.groupHelper.moveTopLayer;
+
+  draw.changeWFDFillColor = draw.wiseFaceDetectionHelper.changeFillColor;
 
   init();
 
@@ -953,41 +989,6 @@ function draw (product, options) {
     draw.geometryManager.setPoints(points);
     draw.geometryManager.changeAxis();
   }
-
-  draw.hide = removeAllElement;
-  draw.show = appendDom;
-  draw.active = changeActiveStatus;
-  draw.normal = changeNormalStatus;
-
-  draw.addPoint = addPoint;
-  draw.getData = function() {
-    return {
-      points: draw.geometryManager.getPoints(),
-      arrow: draw.arrowImageHelper.getArrow()
-    };
-  };
-  draw.destroy = reset;
-  draw.endDraw = endDraw;
-
-  draw.createArrow = createArrow;
-  draw.changeArrow = draw.arrowImageHelper.changeArrow;
-  draw.changeMinSizeOption = changeMinSizeOption;
-  draw.changeMaxSizeOption = changeMaxSizeOption;
-  draw.changeRectangleToSize = changeRectangleToSize;
-  draw.modifyPoints = modifyPoints;
-  draw.alignCenter = alignCenter;
-
-  draw.validateAxis = draw.geometryManager.validateAxis;
-  draw.validateStabilization = validateStabilization;
-  draw.validateIntersection = validateIntersection;
-  draw.validateMinimumAngle = validateMinimumAngle;
-
-  draw.stopEvent = unbindEvent;
-  draw.startEvent = bindEvent;
-
-  draw.moveTopLayer = draw.groupHelper.moveTopLayer;
-
-  draw.changeWFDFillColor = draw.wiseFaceDetectionHelper.changeFillColor;
 }
 
-SVGGeometry.addPlugin('draw', draw);
+SVGGeometry.addPlugin('draw', Draw);
