@@ -1,15 +1,13 @@
 function GeometryManager(draw, product){
-  var elemCtrl = product.elementController;
-  var funnyMath = product.funnyMath;
-  var commonFunc = product.common;
+
   var geometryManager = {
-    points: commonFunc.cloneObject(draw.options.points),
+    points: CommonUtils.cloneObject(draw.options.points),
     isAllSelected: false,
     setPoints: function(points){
-      geometryManager.points = commonFunc.cloneObject(points);
+      geometryManager.points = CommonUtils.cloneObject(points);
     },
     getPoints: function(){
-      return commonFunc.cloneObject(geometryManager.points);
+      return CommonUtils.cloneObject(geometryManager.points);
     },
     getPointsLength: function(){
       return geometryManager.points.length;
@@ -144,8 +142,8 @@ function GeometryManager(draw, product){
         var circleXAxis = pointAxis[0];
         var circleYAxis = pointAxis[1];
         var selfCircle = circles[idx];
-        var width = parseInt(elemCtrl.getAttr(selfCircle, 'width'));
-        height = parseInt(elemCtrl.getAttr(selfCircle, 'height'));
+        var width = parseInt(ElementController.getAttr(selfCircle, 'width'));
+        height = parseInt(ElementController.getAttr(selfCircle, 'height'));
 
         /**
          * 고정비 사각형일 때, 부모의 영역를 넘어갈 경우 Safari에서
@@ -203,8 +201,8 @@ function GeometryManager(draw, product){
         var firstPoint = points[0];
         var secondPoint = points[1];
         var thridPoint = points[2];
-        var xAxis = funnyMath.getLineCenter(secondPoint[0], secondPoint[1], thridPoint[0], thridPoint[1])[0];
-        var yAxis = funnyMath.getLineCenter(firstPoint[0], firstPoint[1], secondPoint[0], secondPoint[1])[1];
+        var xAxis = FunnyMath.getLineCenter(secondPoint[0], secondPoint[1], thridPoint[0], thridPoint[1])[0];
+        var yAxis = FunnyMath.getLineCenter(firstPoint[0], firstPoint[1], secondPoint[0], secondPoint[1])[1];
         height = 0;
 
         if ("heightRatio" in draw.options.wiseFaceDetection) {

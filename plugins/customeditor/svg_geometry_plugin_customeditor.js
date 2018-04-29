@@ -4,8 +4,6 @@ function CustomEditor (product, options) {
   var self = this
 
   this._product = product
-  this._commonFunc = product.common;
-  this._eventCtrl = product.eventController;
   this._options = null
   this._state = null
   this._svgGeometry = new SVGGeometry(product.getParentSvg());
@@ -33,10 +31,10 @@ CustomEditor.prototype = {
     this.bindEvent();
   },
   unbindEvent: function () {
-    this._eventCtrl.unbindEvent(this.getParentSvg(), 'click', this.parentSVGClickHandleProxy);
+    EventController.unbindEvent(this.getParentSvg(), 'click', this.parentSVGClickHandleProxy);
   },
   bindEvent: function () {
-    this._eventCtrl.bindEvent(this.getParentSvg(), 'click', this.parentSVGClickHandleProxy);
+    EventController.bindEvent(this.getParentSvg(), 'click', this.parentSVGClickHandleProxy);
   },
   handleESCKey: function (event) {
     if (event.keyCode === 27) {
@@ -44,10 +42,10 @@ CustomEditor.prototype = {
     }
   },
   bindContextMenu: function() {
-    this._eventCtrl.bindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometryProxy);
+    EventController.bindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometryProxy);
   },
   unbindContextMenu: function () {
-    this._eventCtrl.unbindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometryProxy);
+    EventController.unbindEvent(this.getParentSvg(), "contextmenu", this.removeDrawingGeometryProxy);
   },
   bindESCkeyEvent: function () {
     document.addEventListener('keyup', this.handleESCKey.bind(this));
@@ -70,7 +68,7 @@ CustomEditor.prototype = {
     this.unbindESCkeyEvent();
   },
   setOptions: function (options) {
-    this._options = this._commonFunc.getOptions({
+    this._options = CommonUtils.getOptions({
       minPoint: 4,
       event: {},
       fixedRatio: false,

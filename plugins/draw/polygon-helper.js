@@ -3,10 +3,10 @@
  */
 function PolygonHelper(draw, product) {
   "use strict";
-  var elemCtrl = product.elementController;
+
   var polygon = null;
   function addPolygon() {
-    polygon = elemCtrl.createPolygon();
+    polygon = ElementController.createPolygon();
     if (draw.options.useEvent === true) {
       bindEvent(polygon);
     }
@@ -15,7 +15,7 @@ function PolygonHelper(draw, product) {
 
   function append() {
     if (draw.options.fill === true) {
-      elemCtrl.appendChild(draw.groupHelper, polygon);
+      ElementController.appendChild(draw.groupHelper, polygon);
     }
   }
 
@@ -55,7 +55,7 @@ function PolygonHelper(draw, product) {
 
   function remove() {
     if (draw.options.fill === true) {
-      elemCtrl.removeChild(draw.groupHelper, polygon);
+      ElementController.removeChild(draw.groupHelper, polygon);
     }
   }
 

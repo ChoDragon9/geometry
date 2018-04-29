@@ -36,10 +36,7 @@ function draw (product, options) {
   var TEXT_POINT_RADIUS = 1.5;
 
   var draw = this;
-  var eventCtrl = product.eventController;
-  var funnyMath = product.funnyMath;
-  var commonFunc = product.common;
-
+  
   var parentSvg = product.getParentSvg();
 
   var selectedPolygon = null;
@@ -47,7 +44,7 @@ function draw (product, options) {
   /**
    * Set Options
    */
-  draw.options = commonFunc.getOptions(
+  draw.options = CommonUtils.getOptions(
     {
       fillColor: '#cccccc',
       lineColor: '#cccccc',
@@ -514,7 +511,7 @@ function draw (product, options) {
           for (var i = 0, ii = validateAxis.length; i < ii; i++) {
             self = validateAxis[i];
 
-            if (funnyMath.pythagoreanTheorem(xAxis, yAxis, self[0], self[1]) < draw.options.minLineLength) {
+            if (FunnyMath.pythagoreanTheorem(xAxis, yAxis, self[0], self[1]) < draw.options.minLineLength) {
               return;
             }
           }
@@ -622,10 +619,10 @@ function draw (product, options) {
       draw.options.useEvent === true ||
       draw.options.customDraw === true) {
       parentSvg.startAxis = null;
-      eventCtrl.bindBodyEvent('mousedown', parentSVGMouseDownHandle);
-      eventCtrl.bindBodyEvent('mousemove', parentSVGMouseMoveHandle);
-      eventCtrl.bindBodyEvent('mouseup', parentSVGMouseUpHandle);
-      eventCtrl.bindBodyEvent('mouseleave', parentSVGMouseUpHandle);
+      EventController.bindBodyEvent('mousedown', parentSVGMouseDownHandle);
+      EventController.bindBodyEvent('mousemove', parentSVGMouseMoveHandle);
+      EventController.bindBodyEvent('mouseup', parentSVGMouseUpHandle);
+      EventController.bindBodyEvent('mouseleave', parentSVGMouseUpHandle);
     }
   }
 
@@ -704,10 +701,10 @@ function draw (product, options) {
   }
 
   function unbindEvent() {
-    eventCtrl.unbindBodyEvent('mousedown', parentSVGMouseDownHandle);
-    eventCtrl.unbindBodyEvent('mousemove', parentSVGMouseMoveHandle);
-    eventCtrl.unbindBodyEvent('mouseup', parentSVGMouseUpHandle);
-    eventCtrl.unbindBodyEvent('mouseleave', parentSVGMouseUpHandle);
+    EventController.unbindBodyEvent('mousedown', parentSVGMouseDownHandle);
+    EventController.unbindBodyEvent('mousemove', parentSVGMouseMoveHandle);
+    EventController.unbindBodyEvent('mouseup', parentSVGMouseUpHandle);
+    EventController.unbindBodyEvent('mouseleave', parentSVGMouseUpHandle);
     // document.documentElement.removeEventListener('mouseup', documentElementMouseMoveHandle);
   }
 
@@ -719,11 +716,11 @@ function draw (product, options) {
   }
 
   function changeMinSizeOption(newMinSize) {
-    draw.options.minSize = commonFunc.cloneObject(newMinSize);
+    draw.options.minSize = CommonUtils.cloneObject(newMinSize);
   }
 
   function changeMaxSizeOption(newMaxSize) {
-    draw.options.maxSize = commonFunc.cloneObject(newMaxSize);
+    draw.options.maxSize = CommonUtils.cloneObject(newMaxSize);
   }
 
   function changeRectangleToSize(width, height) {
@@ -855,7 +852,7 @@ function draw (product, options) {
 
   function createArrow(arrowOptions) {
     draw.useArrow = true;
-    draw.options.arrow = commonFunc.cloneObject(arrowOptions);
+    draw.options.arrow = CommonUtils.cloneObject(arrowOptions);
     draw.arrowImageHelper.addImage();
     draw.geometryManager.changeAxis();
     draw.arrowImageHelper.append();
@@ -868,8 +865,8 @@ function draw (product, options) {
 
     try {
       points = typeof prevPoints === "undefined" ?
-        commonFunc.cloneObject(draw.geometryManager.getAll().points) :
-        commonFunc.cloneObject(prevPoints);
+        CommonUtils.cloneObject(draw.geometryManager.getAll().points) :
+        CommonUtils.cloneObject(prevPoints);
       pointsLength = points.length;
 
       /**
@@ -878,7 +875,7 @@ function draw (product, options) {
       if (pointsLength >= 3 && draw.options.fill === true) {
         for (var i = 0; i < pointsLength; i++) {
           var firstPoint = [];
-          var vertextAngle = Math.abs(funnyMath.getVertextAngle(points[0], points[1], points[2]));
+          var vertextAngle = Math.abs(FunnyMath.getVertextAngle(points[0], points[1], points[2]));
 
           if (vertextAngle < MINIMUM_ANGLE) {
             returnVal = false;
@@ -908,8 +905,8 @@ function draw (product, options) {
 
     try {
       points = typeof prevPoints === "undefined" ?
-        commonFunc.cloneObject(draw.geometryManager.getAll().points) :
-        commonFunc.cloneObject(prevPoints);
+        CommonUtils.cloneObject(draw.geometryManager.getAll().points) :
+        CommonUtils.cloneObject(prevPoints);
       pointsLength = points.length;
 
       for (var i = 0; i < pointsLength - 1; i++) {
@@ -921,7 +918,7 @@ function draw (product, options) {
           var secondLineSecondPointIndex = ((j + 1) === pointsLength ? 0 : (j + 1));
           var secondLineSecondPoint = points[secondLineSecondPointIndex];
 
-          if (funnyMath.checkLineIntersection(
+          if (FunnyMath.checkLineIntersection(
               firstLineFirstPoint[0],
               firstLineFirstPoint[1],
               firstLineSecondPoint[0],
@@ -945,8 +942,8 @@ function draw (product, options) {
 
   function validateStabilization(prevPoints) {
     var points = typeof prevPoints === "undefined" ?
-      commonFunc.cloneObject(draw.geometryManager.getAll().points) :
-      commonFunc.cloneObject(prevPoints);
+      CommonUtils.cloneObject(draw.geometryManager.getAll().points) :
+      CommonUtils.cloneObject(prevPoints);
     var returnVal = true;
 
     if (validateMinimumAngle(points) === false || validateIntersection(points) === false) {

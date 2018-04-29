@@ -6,15 +6,15 @@
 function GroupHelper(draw, product){
   var groupId = null;
   var groupTag = null;
-  var elemCtrl = product.elementController;
+
   var parentSvg = product.getParentSvg();
   var notUseMoveTopLayer = draw.options.notUseMoveTopLayer;
 
   return {
     add: function() {
-      groupTag = elemCtrl.createGroup();
+      groupTag = ElementController.createGroup();
       groupId = 'group_' + Math.ceil(Math.random() * 1000000);
-      elemCtrl.setAttr(groupTag, 'id', groupId);
+      ElementController.setAttr(groupTag, 'id', groupId);
     },
     remove: function() {
       product.removeParentChild(groupTag);
@@ -36,10 +36,10 @@ function GroupHelper(draw, product){
       product.appendParentChild(groupTag);
     },
     appendChild: function(child) {
-      elemCtrl.appendChild(groupTag, child);
+      ElementController.appendChild(groupTag, child);
     },
     removeChild: function(child) {
-      elemCtrl.removeChild(groupTag, child);
+      ElementController.removeChild(groupTag, child);
     },
     insertBefore: function() {
       groupTag.insertBefore.apply(groupTag, arguments);

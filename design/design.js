@@ -20,20 +20,11 @@ var app = new Vue({
           'SVG Geometry Product'
         ]
       },
-      '-',
       {
         className: 'SVG Geometry Product',
-        respon: [
-          '<svg> 태그를 직접 컨트롤',
-          'SVG Geometry Plugin에서 사용할 공통 Class들을 정의'
-        ],
-        collabo: [
-          'FunnyMath',
-          'EventController',
-          'CommonUtils',
-          'ElementController'
-        ]
+        respon: ['<svg> 태그를 직접 컨트롤']
       },
+      '-',
       {
         className: 'FunnyMath',
         respon: ['수학 함수 객체']

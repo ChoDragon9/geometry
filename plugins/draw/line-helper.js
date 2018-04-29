@@ -3,13 +3,13 @@
  */
 function LineHelper(draw, product) {
   "use strict";
-  var elemCtrl = product.elementController;
-  var funnyMath = product.funnyMath;
+
+
 
   var parentSvgMovedAttr = 'is-moved';
   var lines = [];
   var tempArrForDragChecking = [];
-  var iconHelper = new IconHelper(elemCtrl, draw.groupHelper);
+  var iconHelper = new IconHelper(ElementController, draw.groupHelper);
   var hideOpacity = '0.5';
   var hoveredLineIndex = null;
   var iconHelperTimer = null;
@@ -50,7 +50,7 @@ function LineHelper(draw, product) {
   }
 
   function addLine(useLineEvent, useLineCursor) {
-    var newLine = elemCtrl.createLine(draw.options.lineStrokeWidth);
+    var newLine = ElementController.createLine(draw.options.lineStrokeWidth);
     newLine.lineIndex = lines.length;
     if (draw.options.useEvent === true && useLineEvent !== false) {
       bindEvent(newLine);
@@ -63,11 +63,11 @@ function LineHelper(draw, product) {
   }
 
   function setDefaultColor(lineElement) {
-    elemCtrl.setAttr(lineElement, 'stroke', draw.options.lineColor);
+    ElementController.setAttr(lineElement, 'stroke', draw.options.lineColor);
   }
 
   function setSelectColor(lineElement) {
-    elemCtrl.setAttr(lineElement, 'stroke', draw.options.lineColor);
+    ElementController.setAttr(lineElement, 'stroke', draw.options.lineColor);
   }
 
   function hide(lineElement) {
@@ -108,8 +108,8 @@ function LineHelper(draw, product) {
       rightAxis = draw.geometryManager.getAxis(this.lineIndex === lines.length - 1 ? 0 : this.lineIndex + 1);
 
       if (
-        funnyMath.pythagoreanTheorem(xAxis, yAxis, leftAxis[0], leftAxis[1]) < draw.options.minLineLength ||
-        funnyMath.pythagoreanTheorem(xAxis, yAxis, rightAxis[0], rightAxis[1]) < draw.options.minLineLength
+        FunnyMath.pythagoreanTheorem(xAxis, yAxis, leftAxis[0], leftAxis[1]) < draw.options.minLineLength ||
+        FunnyMath.pythagoreanTheorem(xAxis, yAxis, rightAxis[0], rightAxis[1]) < draw.options.minLineLength
       ) {
         return;
       }
@@ -181,7 +181,7 @@ function LineHelper(draw, product) {
 
   function appendAll() {
     for (var i = 0, len = lines.length; i < len; i++) {
-      elemCtrl.appendChild(draw.groupHelper, lines[i]);
+      ElementController.appendChild(draw.groupHelper, lines[i]);
     }
 
     iconHelper.createIcon(true);
@@ -207,7 +207,7 @@ function LineHelper(draw, product) {
 
   function removeAll() {
     for (var i = 0, len = lines.length; i < len; i++) {
-      elemCtrl.removeChild(draw.groupHelper, lines[i]);
+      ElementController.removeChild(draw.groupHelper, lines[i]);
     }
   }
 

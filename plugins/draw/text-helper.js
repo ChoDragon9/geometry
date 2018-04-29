@@ -2,11 +2,11 @@
  * Text 태그 헬퍼
  */
 function TextTagHelper(draw, product) {
-  var elemCtrl = product.elementController;
+
   var textTag = null;
   function addText() {
     if (draw.options.textInCircle !== null) {
-      textTag = elemCtrl.createText(draw.options.textInCircle);
+      textTag = ElementController.createText(draw.options.textInCircle);
       textTag.style.fontSize = '12px';
       draw.setCursor(textTag);
       bindEvent();
@@ -27,13 +27,13 @@ function TextTagHelper(draw, product) {
 
   function append() {
     if (draw.options.textInCircle !== null) {
-      elemCtrl.appendChild(draw.groupHelper, textTag);
+      ElementController.appendChild(draw.groupHelper, textTag);
     }
   }
 
   function remove() {
     if (draw.options.textInCircle !== null) {
-      elemCtrl.removeChild(draw.groupHelper, textTag);
+      ElementController.removeChild(draw.groupHelper, textTag);
     }
   }
 

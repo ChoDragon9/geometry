@@ -8,7 +8,7 @@
 
   iconHelper.hide();
   */
-function IconHelper(elemCtrl, groupHelper) {
+function IconHelper(ElementController, groupHelper) {
   var PLUS_IMAGE = './base/images/plus.svg';
   var MINUS_IMAGE = './base/images/minus.svg';
 
@@ -31,10 +31,10 @@ function IconHelper(elemCtrl, groupHelper) {
     var src = iconType ? PLUS_IMAGE : MINUS_IMAGE;
 
     if (icon === null) {
-      icon = elemCtrl.createRect(width, width);
-      iconText = elemCtrl.createImage(src, width, width)[0];
+      icon = ElementController.createRect(width, width);
+      iconText = ElementController.createImage(src, width, width)[0];
 
-      elemCtrl.setAttr(icon, 'fill', '#000000');
+      ElementController.setAttr(icon, 'fill', '#000000');
 
       icon.style.opacity = 0;
       iconText.style.opacity = 0;
@@ -79,10 +79,10 @@ function IconHelper(elemCtrl, groupHelper) {
   };
 
   this.changePosition = function(x, y) {
-    elemCtrl.setAttr(icon, 'x', x - width / 2);
-    elemCtrl.setAttr(icon, 'y', y - width / 2);
-    elemCtrl.setAttr(iconText, 'x', x - width / 2);
-    elemCtrl.setAttr(iconText, 'y', y - width / 2);
+    ElementController.setAttr(icon, 'x', x - width / 2);
+    ElementController.setAttr(icon, 'y', y - width / 2);
+    ElementController.setAttr(iconText, 'x', x - width / 2);
+    ElementController.setAttr(iconText, 'y', y - width / 2);
   };
 
   this.show = function() {

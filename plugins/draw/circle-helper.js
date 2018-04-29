@@ -2,10 +2,10 @@
  * Polygon과 Line 꼭지점 Helper
  */
 function CircleHelper(draw, product) {
-  var elemCtrl = product.elementController;
+
   var parentSvg = product.getParentSvg();
   var isLeave = false;
-  var iconHelper = new IconHelper(elemCtrl, draw.groupHelper);
+  var iconHelper = new IconHelper(ElementController, draw.groupHelper);
   var iconHelperTimer = null;
   var hoveredPointIndex = null;
   var circles = [];
@@ -19,7 +19,7 @@ function CircleHelper(draw, product) {
   });
 
   function addCircle(radius, useCircleEvent, useCircleCursor) {
-    var newCircle = elemCtrl.createRect(radius * 2, radius * 2);
+    var newCircle = ElementController.createRect(radius * 2, radius * 2);
     if (
       draw.options.useResizeRectangle === true ||
       draw.options.useEvent === true &&
@@ -70,10 +70,10 @@ function CircleHelper(draw, product) {
 
     hoveredPointIndex = this.circleIndex;
 
-    var xAxis = parseInt(elemCtrl.getAttr(this, 'x'));
-    var yAxis = parseInt(elemCtrl.getAttr(this, 'y'));
-    var width = parseInt(elemCtrl.getAttr(this, 'width'));
-    var height = parseInt(elemCtrl.getAttr(this, 'height'));
+    var xAxis = parseInt(ElementController.getAttr(this, 'x'));
+    var yAxis = parseInt(ElementController.getAttr(this, 'y'));
+    var width = parseInt(ElementController.getAttr(this, 'width'));
+    var height = parseInt(ElementController.getAttr(this, 'height'));
 
     if (xAxis - width * 2 < 0) {
       xAxis += width * 2;
@@ -151,11 +151,11 @@ function CircleHelper(draw, product) {
 
   function setDefaultColor(circleElement) {
 
-    elemCtrl.setAttr(circleElement, "fill", draw.options.pointColor);
+    ElementController.setAttr(circleElement, "fill", draw.options.pointColor);
   }
 
   function setSelectColor(circleElement) {
-    elemCtrl.setAttr(circleElement, "fill", draw.options.pointColor);
+    ElementController.setAttr(circleElement, "fill", draw.options.pointColor);
   }
 
   function hide(circleElement) {
@@ -168,15 +168,15 @@ function CircleHelper(draw, product) {
 
   function appendAll() {
     for (var i = 0, len = circles.length; i < len; i++) {
-      elemCtrl.appendChild(draw.groupHelper, circles[i]);
+      ElementController.appendChild(draw.groupHelper, circles[i]);
     }
     
     iconHelper.createIcon(false);
   }
 
   function changeRadius(index, radius) {
-    elemCtrl.setAttr(circles[index], 'width', radius * 2);
-    elemCtrl.setAttr(circles[index], 'height', radius * 2);
+    ElementController.setAttr(circles[index], 'width', radius * 2);
+    ElementController.setAttr(circles[index], 'height', radius * 2);
   }
 
   function appendAtLast() {
@@ -185,7 +185,7 @@ function CircleHelper(draw, product) {
     var nextElementSibling = circles[circleLength - 2].nextElementSibling;
 
     if (draw.options.textInCircle === null || nextElementSibling === null) {
-      elemCtrl.appendChild(draw.groupHelper, newCircleElement);
+      ElementController.appendChild(draw.groupHelper, newCircleElement);
     } else {
       draw.groupHelper.insertBefore(
         newCircleElement,
@@ -196,7 +196,7 @@ function CircleHelper(draw, product) {
 
   function removeAll() {
     for (var i = 0, len = circles.length; i < len; i++) {
-      elemCtrl.removeChild(draw.groupHelper, circles[i]);
+      ElementController.removeChild(draw.groupHelper, circles[i]);
     }
   }
 

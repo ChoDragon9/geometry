@@ -3,8 +3,8 @@
  */
 function ArrowImageHelper(draw, product) {
   "use strict";
-  var elemCtrl = product.elementController;
-  var funnyMath = product.funnyMath;
+
+
 
   var IMAGE_WIDTH = 25;
   var IMAGE_HEIGHT = 33;
@@ -63,11 +63,11 @@ function ArrowImageHelper(draw, product) {
     if (draw.options.arrow !== null) {
       if ('text' in draw.options.arrow) {
         if (draw.options.arrow.text === true) {
-          arrowTextContainner = elemCtrl.createGroup();
-          arrowText[0] = elemCtrl.createText('A');
-          elemCtrl.appendChild(arrowTextContainner, arrowText[0]);
-          arrowText[1] = elemCtrl.createText('B');
-          elemCtrl.appendChild(arrowTextContainner, arrowText[1]);
+          arrowTextContainner = ElementController.createGroup();
+          arrowText[0] = ElementController.createText('A');
+          ElementController.appendChild(arrowTextContainner, arrowText[0]);
+          arrowText[1] = ElementController.createText('B');
+          ElementController.appendChild(arrowTextContainner, arrowText[1]);
         }
       }
     }
@@ -88,11 +88,11 @@ function ArrowImageHelper(draw, product) {
     var textHalfWidth = 4;
     var textHalfHeight = 6;
     var getXAxisOfText = function(angle) {
-      return funnyMath.getCosine(angle) * radius - textHalfWidth;
+      return FunnyMath.getCosine(angle) * radius - textHalfWidth;
     };
 
     var getYAxisOfText = function(angle) {
-      return funnyMath.getSine(angle) * radius + textHalfHeight;
+      return FunnyMath.getSine(angle) * radius + textHalfHeight;
     };
 
     var axis = [{
@@ -106,18 +106,18 @@ function ArrowImageHelper(draw, product) {
     ];
 
     if (arrowTextContainner !== null) {
-      elemCtrl.setAttr(arrowText[0], 'x', xAxis + axis[0].x);
-      elemCtrl.setAttr(arrowText[0], 'y', yAxis + axis[0].y);
+      ElementController.setAttr(arrowText[0], 'x', xAxis + axis[0].x);
+      ElementController.setAttr(arrowText[0], 'y', yAxis + axis[0].y);
 
-      elemCtrl.setAttr(arrowText[1], 'x', xAxis + axis[1].x);
-      elemCtrl.setAttr(arrowText[1], 'y', yAxis + axis[1].y);
+      ElementController.setAttr(arrowText[1], 'x', xAxis + axis[1].x);
+      ElementController.setAttr(arrowText[1], 'y', yAxis + axis[1].y);
     }
   }
 
   function addImage() {
     if (draw.useArrow === true) {
       var imagePath = draw.options.arrow.mode === arrowQueue[arrowQueueLength - 1] ? NORMAL_ALL_IMAGE : NORMAL_IMAGE;
-      var createdImage = elemCtrl.createImage(imagePath, IMAGE_WIDTH, IMAGE_HEIGHT, true);
+      var createdImage = ElementController.createImage(imagePath, IMAGE_WIDTH, IMAGE_HEIGHT, true);
       arrowImage = createdImage[0];
       arrowImageContainner = createdImage[1];
 
@@ -141,17 +141,17 @@ function ArrowImageHelper(draw, product) {
   function changeArrowImage() {
     var startAxis = draw.geometryManager.getAxis(0);
     var endAxis = draw.geometryManager.getAxis(1);
-    var angle = funnyMath.getAngle(startAxis[0], startAxis[1], endAxis[0], endAxis[1]);
+    var angle = FunnyMath.getAngle(startAxis[0], startAxis[1], endAxis[0], endAxis[1]);
     var textAngle = angle;
     var degree = currentArrow === arrowQueue[1] ? 90 : 270;
 
-    var lineCenter = funnyMath.getLineCenter(startAxis[0], startAxis[1], endAxis[0], endAxis[1]);
+    var lineCenter = FunnyMath.getLineCenter(startAxis[0], startAxis[1], endAxis[0], endAxis[1]);
 
     var xAxis = lineCenter[0];
     var yAxis = lineCenter[1];
 
-    elemCtrl.setAttr(arrowImage, 'x', xAxis);
-    elemCtrl.setAttr(arrowImage, 'y', yAxis);
+    ElementController.setAttr(arrowImage, 'x', xAxis);
+    ElementController.setAttr(arrowImage, 'y', yAxis);
 
     if (draw.options.notUseAutoChangeOfArrow !== true) {
       if (Math.abs(angle) > 90) {
@@ -164,12 +164,12 @@ function ArrowImageHelper(draw, product) {
 
     angle += degree;
 
-    elemCtrl.setAttr(arrowImageContainner, 'transform', 'rotate(' + angle + ' ' + xAxis + ' ' + yAxis + ') translate(' + (halfArrowWidth * -1) + ',' + (halfArrowHeight * -1) + ')');
+    ElementController.setAttr(arrowImageContainner, 'transform', 'rotate(' + angle + ' ' + xAxis + ' ' + yAxis + ') translate(' + (halfArrowWidth * -1) + ',' + (halfArrowHeight * -1) + ')');
   }
 
   function changeArrowImagePath() {
     var imagePath = currentArrow === arrowQueue[arrowQueueLength - 1] ? NORMAL_ALL_IMAGE : NORMAL_IMAGE;
-    elemCtrl.setHrefAttr(arrowImage, imagePath);
+    ElementController.setHrefAttr(arrowImage, imagePath);
   }
 
   function bindEvent() {
@@ -184,7 +184,7 @@ function ArrowImageHelper(draw, product) {
         var imagePath = currentArrow === arrowQueue[arrowQueueLength - 1] ? PRESS_ALL_IMAGE : PRESS_IMAGE;
 
         arrowImage.isSelected = true;
-        elemCtrl.setHrefAttr(arrowImage, imagePath);
+        ElementController.setHrefAttr(arrowImage, imagePath);
       };
 
       arrowImage.onmouseup = function(event) {

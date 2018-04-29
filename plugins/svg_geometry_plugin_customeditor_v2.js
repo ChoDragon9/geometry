@@ -24,12 +24,12 @@ CustomEditorV2.prototype.parentSVGClickHandle = function (event) {
 CustomEditorV2.prototype.unbindEvent = function () {
   CustomEditor.prototype.unbindEvent.call(this)
 
-  this._eventCtrl.unbindEvent(this._product.getParentSvg(), 'mousedown', this.parentSVGMouseDownHandleProxy);
-  this._eventCtrl.unbindBodyEvent('mouseup', this.parentSVGMouseUpHandleProxy);
+  EventController.unbindEvent(this._product.getParentSvg(), 'mousedown', this.parentSVGMouseDownHandleProxy);
+  EventController.unbindBodyEvent('mouseup', this.parentSVGMouseUpHandleProxy);
 }
 CustomEditorV2.prototype.bindEvent = function () {
-  this._eventCtrl.bindEvent(this._product.getParentSvg(), 'mousedown', this.parentSVGMouseDownHandleProxy);
-  this._eventCtrl.bindEvent(this._product.getParentSvg(), 'mouseup', this.parentSVGMouseUpHandleProxy);
+  EventController.bindEvent(this._product.getParentSvg(), 'mousedown', this.parentSVGMouseDownHandleProxy);
+  EventController.bindEvent(this._product.getParentSvg(), 'mouseup', this.parentSVGMouseUpHandleProxy);
 }
 CustomEditorV2.prototype.bindCancelEvent = function () {
   this.bindContextMenu()
@@ -83,8 +83,8 @@ CustomEditorV2.prototype.abortCheckingDragEvent = function (event) {
   this._mouseDownTimer = null;
 
   this.parentSVGClickHandle(event);
-  this._eventCtrl.unbindEvent(this._product.getParentSvg(), 'mousedown', this.parentSVGMouseDownHandle);
-  this._eventCtrl.unbindEvent(this._product.getParentSvg(), 'mouseup', this.parentSVGMouseUpHandle);
+  EventController.unbindEvent(this._product.getParentSvg(), 'mousedown', this.parentSVGMouseDownHandle);
+  EventController.unbindEvent(this._product.getParentSvg(), 'mouseup', this.parentSVGMouseUpHandle);
 
   CustomEditor.prototype.bindEvent.call(this)
 }

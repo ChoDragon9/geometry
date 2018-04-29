@@ -38,7 +38,7 @@ LineState.prototype.isLast = function () {
 }
 LineState.prototype.validateAllAxis = function() {
   var points = this._obj.getData().points;
-  var pythagoreanTheorem = new FunnyMath().pythagoreanTheorem
+  var pythagoreanTheorem = FunnyMath.pythagoreanTheorem
 
   for (var i = 0, ii = points.length; i < ii; i++) {
     var startAxis = points[i];
