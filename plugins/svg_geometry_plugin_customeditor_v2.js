@@ -1,81 +1,18 @@
 "use strict";
 /* globals SVGGeometry */
 function CustomEditorV2 (product, options) {
-  var DEFAULT_OBJECT_SIZE = 30;
-  var mouseDownTimer = null;
-  var currentPoint = 0
-  var svgObj = null
   var self = this
+  self._mouseDownTimer = null;
+  self._svgObj = null
 
-  function parentSVGMouseUpHandle(event) {
-    //Right button
-
-    if(mouseDownTimer !== null){
-      clearTimeout(mouseDownTimer);
-      mouseDownTimer = null;
-
-      this.parentSVGClickHandle(event);
-      this._eventCtrl.unbindEvent(this._product.getParentSvg(), 'mousedown', parentSVGMouseDownHandle);
-      this._eventCtrl.unbindEvent(this._product.getParentSvg(), 'mouseup', parentSVGMouseUpHandle);
-
-      CustomEditor.prototype.bindEvent.call(this)
-      return;
-    }
-
-    if (event.buttons === 2) {
-      return;
-    }
-
-    if (
-      this._product.getParentSvgAttr(this._product.getParentMovedAttr()) === "true" ||
-      svgObj === null
-    ) {
-      return;
-    }
-    svgObj.endDraw();
-    this.unbindCancelEvent();
-    this.restartDrawing();
-    currentPoint = 0;
-    svgObj = null
+  self.parentSVGMouseUpHandleProxy = function (event) {
+    self.parentSVGMouseUpHandle.call(self, event)
+  }
+  self.parentSVGMouseDownHandleProxy = function (event) {
+    self.parentSVGMouseDownHandle.call(self, event)
   }
 
-  function parentSVGMouseDownHandle(event) {
-    if (
-      event.buttons === 2 ||
-      event.currentTarget !== event.target ||
-      this._product.getParentSvgAttr(this._product.getParentMovedAttr()) === "true"
-    ) {
-      return;
-    }
-
-    var axis = this._product.getPageAxis(event);
-
-    clearTimeout(mouseDownTimer);
-
-    mouseDownTimer = setTimeout(function(axis, options){
-      mouseDownTimer = null;
-      options.points = [
-        axis, [axis[0], axis[1] + DEFAULT_OBJECT_SIZE],
-        [axis[0] + DEFAULT_OBJECT_SIZE, axis[1] + DEFAULT_OBJECT_SIZE],
-        [axis[0] + DEFAULT_OBJECT_SIZE, axis[1]],
-      ];
-
-      options.useRectangleForCustomDraw = true;
-
-      svgObj = this._svgGeometry.draw(this._options);
-      currentPoint++;
-      this.bindCancelEvent();
-    }.bind(self), this._product.getClickDetectionTime(), axis, this._options);
-  }
-
-  this.parentSVGMouseUpHandleProxy = function (event) {
-    parentSVGMouseUpHandle.call(self, event)
-  }
-  this.parentSVGMouseDownHandleProxy = function (event) {
-    parentSVGMouseDownHandle.call(self, event)
-  }
-
-  CustomEditor.call(this, product, options)
+  CustomEditor.call(self, product, options)
 }
 
 CustomEditorV2.prototype = Object.create(CustomEditor.prototype)
@@ -117,6 +54,74 @@ CustomEditorV2.prototype.endDraw = function() {
   CustomEditor.prototype.endDraw.call(this)
   this.restartDrawing();
 }
+CustomEditorV2.prototype.endDragEvent = function () {
+  this._svgObj.endDraw();
+  this.unbindCancelEvent();
+  this.restartDrawing();
+  this._svgObj = null
+}
+CustomEditorV2.prototype.parentSVGMouseUpHandle = function (event) {
+  var isCheckingDragEvent = this._mouseDownTimer !== null;
 
+  if(isCheckingDragEvent){
+    this.abortCheckingDragEvent(event);
+    return;
+  }
+
+  var isRightMouseBtn = event.buttons === 2;
+  var isUsingParent = this._product.getParentSvgAttr(this._product.getParentMovedAttr()) === "true";
+
+  if (isRightMouseBtn || isUsingParent || this._svgObj === null) {
+    return;
+  }
+
+  this.endDragEvent()
+}
+
+CustomEditorV2.prototype.abortCheckingDragEvent = function (event) {
+  window.clearTimeout(this._mouseDownTimer);
+  this._mouseDownTimer = null;
+
+  this.parentSVGClickHandle(event);
+  this._eventCtrl.unbindEvent(this._product.getParentSvg(), 'mousedown', this.parentSVGMouseDownHandle);
+  this._eventCtrl.unbindEvent(this._product.getParentSvg(), 'mouseup', this.parentSVGMouseUpHandle);
+
+  CustomEditor.prototype.bindEvent.call(this)
+}
+
+CustomEditorV2.prototype.parentSVGMouseDownHandle = function (event) {
+  var isRightMouseBtn = event.buttons === 2
+  var isNotCurrentTarget = event.currentTarget !== event.target
+  var isUsingParent = this._product.getParentSvgAttr(this._product.getParentMovedAttr()) === "true"
+
+  if (isRightMouseBtn || isNotCurrentTarget || isUsingParent) {
+    return;
+  }
+
+  this.startCheckingDragEvent(event)
+}
+CustomEditorV2.prototype.startCheckingDragEvent = function (event) {
+  window.clearTimeout(this._mouseDownTimer);
+
+  this._mouseDownTimer = window.setTimeout(
+    this.startDragEvent.bind(this),
+    this._product.getClickDetectionTime(),
+    this._product.getPageAxis(event)
+  );
+}
+CustomEditorV2.prototype.startDragEvent = function (axis){
+  var DEFAULT_OBJECT_SIZE = 30;
+  this._mouseDownTimer = null;
+  this._options.points = [
+    axis, [axis[0], axis[1] + DEFAULT_OBJECT_SIZE],
+    [axis[0] + DEFAULT_OBJECT_SIZE, axis[1] + DEFAULT_OBJECT_SIZE],
+    [axis[0] + DEFAULT_OBJECT_SIZE, axis[1]],
+  ];
+
+  this._options.useRectangleForCustomDraw = true;
+
+  this._svgObj = this._svgGeometry.draw(this._options);
+  this.bindCancelEvent();
+}
 
 SVGGeometry.addPlugin('customEditorV2', CustomEditorV2);
