@@ -4,7 +4,6 @@
  * Group 태그 Helper
  */
 function GroupHelper(draw, product){
-  var groupId = null;
   var groupTag = null;
 
   var parentSvg = product.getParentSvg();
@@ -12,8 +11,6 @@ function GroupHelper(draw, product){
 
   this.add = function() {
     groupTag = ElementController.createGroup();
-    groupId = 'group_' + Math.ceil(Math.random() * 1000000);
-    ElementController.setAttr(groupTag, 'id', groupId);
   }
   this.remove = function() {
     product.removeParentChild(groupTag);
@@ -24,7 +21,7 @@ function GroupHelper(draw, product){
     }
     var lastChild = parentSvg.lastChild;
 
-    if (lastChild.id !== groupId) {
+    if (lastChild !== groupTag) {
       parentSvg.insertBefore(
         groupTag,
         lastChild.nextSibling

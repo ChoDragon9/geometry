@@ -28,7 +28,7 @@ function CircleHelper(draw, product) {
     }
     setDefaultColor(newCircle);
     if (useCircleCursor !== false) {
-      draw.setCursor(newCircle);
+      draw.drawView.setCursor(newCircle);
     }
 
     newCircle.circleIndex = circles.length;
@@ -146,7 +146,7 @@ function CircleHelper(draw, product) {
 
     setSelectColor(self);
     self.isSelected = true;
-    draw.setCursor(parentSvg);
+    draw.drawView.setCursor(parentSvg);
   }
 
   function setDefaultColor(circleElement) {

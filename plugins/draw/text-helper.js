@@ -8,7 +8,7 @@ function TextTagHelper(draw, product) {
     if (draw.options.textInCircle !== null) {
       textTag = ElementController.createText(draw.options.textInCircle);
       textTag.style.fontSize = '12px';
-      draw.setCursor(textTag);
+      draw.drawView.setCursor(textTag);
       bindEvent();
     }
   }

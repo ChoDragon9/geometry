@@ -122,7 +122,7 @@ function ArrowImageHelper(draw, product) {
       arrowImageContainner = createdImage[1];
 
       addArrowGuideText();
-      draw.setCursor(arrowImage);
+      draw.drawView.setCursor(arrowImage);
       bindEvent();
       changeArrow(draw.options.arrow.mode);
     }

@@ -10,7 +10,7 @@ function PolygonHelper(draw, product) {
     if (draw.options.useEvent === true) {
       bindEvent(polygon);
     }
-    draw.setCursor(polygon);
+    draw.drawView.setCursor(polygon);
   }
 
   function append() {

@@ -54,7 +54,7 @@ function LineHelper(draw, product) {
     }
     setDefaultColor(newLine);
     if (useLineCursor !== false) {
-      draw.setCursor(newLine);
+      draw.drawView.setCursor(newLine);
     }
     lines.push(newLine);
   }
