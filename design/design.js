@@ -77,7 +77,7 @@ var drawArr = [
       '뷰 로직'
     ],
     collabo: [
-      'GeometryManager',
+      'DrawModel',
       'GroupHelper',
       'WiseFaceDetectionHelper',
       'LineHelper',
@@ -93,6 +93,14 @@ var drawArr = [
   },
   '--',
   {
+    className: 'DrawModel',
+    respon: ['Draw의 데이터 관리'],
+    collabo: [
+      'CommonUtils',
+      'FunnyMath'
+    ]
+  },
+  {
     className: 'IconHelper',
     respon: ['아이콘 생성 및 조작'],
     collabo: [
@@ -107,7 +115,7 @@ var drawArr = [
     collabo: [
       'GroupHelper',
       'IconHelper',
-      'GeometryManager',
+      'DrawModel',
       '-',
       'ElementController',
       'FunnyMath'
@@ -119,24 +127,9 @@ var drawArr = [
     collabo: [
       'GroupHelper',
       'IconHelper',
-      'GeometryManager',
+      'DrawModel',
       '-',
       'ElementController'
-    ]
-  },
-  {
-    className: 'GeometryManager',
-    respon: ['Draw의 데이터 관리'],
-    collabo: [
-      'CircleHelper',
-      'LineHelper',
-      'TextHelper',
-      'PolygonHelper',
-      'WiseFaceDetectionHelper',
-      'ArrowImageHelper',
-      '-',
-      'CommonUtils',
-      'FunnyMath'
     ]
   },
   {
@@ -157,7 +150,7 @@ var drawArr = [
     collabo: [
       'GroupHelper',
       'CircleHelper',
-      'GeometryManager',
+      'DrawModel',
       '-',
       'ElementController'
     ]
@@ -182,6 +175,30 @@ var drawArr = [
     ]
   },
   '--',
+  {
+    className: 'DrawModel',
+    props: [
+      'points',
+      'isAllSelected'
+    ],
+    methods: [
+      'setIsAllSelectedState',
+      'modifyPoints',
+      'getRectangleIndex',
+      'alignCenter',
+      'changeMinSizeOption',
+      'changeMaxSizeOption',
+      'addAxis',
+      'validateAxis',
+      'validateAllPoint',
+      'setPoints',
+      'getPoints',
+      'getPointsLength',
+      'setAxis',
+      'appendAxis',
+      'getAxis'
+    ]
+  },
   {
     className: 'IconHelper',
     props: ['icon', 'iconText'],
@@ -231,25 +248,6 @@ var drawArr = [
       'show',
       'getCircles',
       'setCircles'
-    ]
-  },
-  {
-    className: 'GeometryManager',
-    props: ['points'],
-    methods: [
-      'setPoints',
-      'getPoints',
-      'getPointsLength',
-      'setAxis',
-      'appendAxis',
-      'getAxis',
-      'addAxis',
-      'validateAxis',
-      'validateAllPoint',
-      'validateGeometrySize',
-      'changeAxis',
-      'resetAllColor',
-      'setAllColor'
     ]
   },
   {
