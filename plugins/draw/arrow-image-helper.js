@@ -26,6 +26,7 @@ function ArrowImageHelper(draw, product) {
   var currentArrow = null;
 
   //set Scope of Arrow
+  // @ArrowImageView
   function setArrowScope() {
     var startIndex = 0;
     var endIndex = 0;
@@ -43,6 +44,7 @@ function ArrowImageHelper(draw, product) {
     }
   }
 
+  // @ArrowImageView
   function getNextArrow(arrow) {
     var nextIndex = 0;
     var arrowScopeLength = arrowScope.length;
@@ -57,17 +59,17 @@ function ArrowImageHelper(draw, product) {
     return arrowQueue[nextIndex];
   }
 
+  // @ArrowImageView
   function addArrowGuideText() {
-    if (draw.options.arrow !== null) {
-      if ('text' in draw.options.arrow) {
-        if (draw.options.arrow.text === true) {
-          arrowTextContainner = ElementController.createGroup();
-          arrowText[0] = ElementController.createText('A');
-          ElementController.appendChild(arrowTextContainner, arrowText[0]);
-          arrowText[1] = ElementController.createText('B');
-          ElementController.appendChild(arrowTextContainner, arrowText[1]);
-        }
-      }
+    if (draw.options.arrow === null) {
+      return
+    }
+    if (typeof draw.options.arrow.text !== 'undefined' && draw.options.arrow.text === true) {
+      arrowTextContainner = ElementController.createGroup();
+      arrowText[0] = ElementController.createText('A');
+      ElementController.appendChild(arrowTextContainner, arrowText[0]);
+      arrowText[1] = ElementController.createText('B');
+      ElementController.appendChild(arrowTextContainner, arrowText[1]);
     }
   }
 
@@ -137,8 +139,8 @@ function ArrowImageHelper(draw, product) {
   }
 
   function changeArrowImage() {
-    var startAxis = draw.geometryManager.getAxis(0);
-    var endAxis = draw.geometryManager.getAxis(1);
+    var startAxis = draw.drawModel.getAxis(0);
+    var endAxis = draw.drawModel.getAxis(1);
     var angle = FunnyMath.getAngle(startAxis[0], startAxis[1], endAxis[0], endAxis[1]);
     var textAngle = angle;
     var degree = currentArrow === arrowQueue[1] ? 90 : 270;

@@ -15,7 +15,7 @@ function TextTagHelper(draw, product) {
 
   function bindEvent() {
     var circles = draw.circleHelper.getCircles();
-    var pointsLength = draw.geometryManager.getPointsLength();
+    var pointsLength = draw.drawModel.getPointsLength();
     var lastCircle = circles[pointsLength - 1];
 
     textTag.onmousedown = lastCircle.onmousedown;

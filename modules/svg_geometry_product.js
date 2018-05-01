@@ -44,6 +44,17 @@ SVGGeometryProduct.prototype = {
 
     return [xAxis, yAxis];
   },
+  getParentSvgSize: function () {
+    var parentSvg = this.getParentSvg()
+
+    var width = this.getParentSvgAttr('width') || parentSvg.clientWidth
+    var height = this.getParentSvgAttr('height') || parentSvg.clientHeight
+
+    return {
+      width: parseInt(width),
+      height: parseInt(height)
+    }
+  },
   parentOffset: function () {
     var offset = this.getParentSvg().getBoundingClientRect();
     return {

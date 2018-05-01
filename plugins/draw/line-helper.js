@@ -22,12 +22,12 @@ function LineHelper(draw, product) {
   iconHelper.onLeave(iconHelper.hide);
 
   function backupPoints() {
-    tempArrForDragChecking = draw.geometryManager.getPoints();
+    tempArrForDragChecking = draw.drawModel.getPoints();
   }
 
   function isPointsChanged() {
     var returnVal = true;
-    var currentPoints = draw.geometryManager.getPoints();
+    var currentPoints = draw.drawModel.getPoints();
     if (tempArrForDragChecking.length !== currentPoints.length) {
       returnVal = false;
     }
@@ -84,13 +84,12 @@ function LineHelper(draw, product) {
   }
 
   function showPointIcon(event) {
-    var pointsLength = draw.geometryManager.points.length;
     clearTimeout(iconHelperTimer);
     if (
       product.getParentSvgAttr(parentSvgMovedAttr) === 'true' || //폴리건 드래그를 하고 있을 때
       draw.selectedLineIndex !== null || //드래그를 하고 있을 때
       this.style.opacity === hideOpacity || //선택된 오브젝트가 아닐 때
-      pointsLength >= draw.options.maxPoint) { //최대 포인트일 때
+      draw.drawModel.getPointsLength() >= draw.options.maxPoint) { //최대 포인트일 때
       return;
     }
     var pageAxis = product.getPageAxis(event);
@@ -101,8 +100,8 @@ function LineHelper(draw, product) {
 
 
     if (draw.options.minLineLength !== false) {
-      leftAxis = draw.geometryManager.getAxis(this.lineIndex);
-      rightAxis = draw.geometryManager.getAxis(this.lineIndex === lines.length - 1 ? 0 : this.lineIndex + 1);
+      leftAxis = draw.drawModel.getAxis(this.lineIndex);
+      rightAxis = draw.drawModel.getAxis(this.lineIndex === lines.length - 1 ? 0 : this.lineIndex + 1);
 
       if (
         FunnyMath.pythagoreanTheorem(xAxis, yAxis, leftAxis[0], leftAxis[1]) < draw.options.minLineLength ||
@@ -155,14 +154,13 @@ function LineHelper(draw, product) {
     var pageAxis = null;
     var xAxis = null;
     var yAxis = null;
-    var pointsLength = draw.geometryManager.getPointsLength();
 
     if (isPointsChanged() === false) {
       // console.log("isPointsChanged() === false return");
       return;
     }
 
-    if (pointsLength >= draw.options.maxPoint) {
+    if (draw.drawModel.getPointsLength() >= draw.options.maxPoint) {
       // console.log("pointsLength >= draw.options.maxPoint return");
       return;
     }

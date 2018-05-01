@@ -1,13 +1,4 @@
 "use strict";
-/* global SVGGeometry, GroupHelper
-WiseFaceDetectionHelper
-LineHelper
-CircleHelper
-TextTagHelper
-PolygonHelper
-ArrowImageHelper
-GeometryManager
- */
 /**
  * SVG 태그에 옵션에 맞게 Polygon, Line을 추가한다.
  * 
@@ -31,6 +22,19 @@ svgGeometry.draw({
   ]
 });
  */
+/**
+ * DrawModel
+ *
+ * DrawView - DrawController
+ * ArrowImageView - ArrowImageController
+ * CircleView - CircleController
+ * GroupView - GroupController
+ * IconView - IconController
+ * LineView - LineController
+ * PolygonView - PolygonController
+ * TextView - TextController
+ * WiseFaceDetectionView - WiseFaceDetectionController
+ */
 function Draw (product, options) {
   var MINIMUM_ANGLE = 1;
   var TEXT_POINT_RADIUS = 1.5;
@@ -41,9 +45,6 @@ function Draw (product, options) {
 
   var selectedPolygon = null;
 
-  /**
-   * Set Options
-   */
   draw.options = CommonUtils.getOptions(
     {
       fillColor: '#cccccc',
@@ -83,15 +84,6 @@ function Draw (product, options) {
     options
   );
 
-  draw.reset = reset;
-  draw.setCursor = setCursor;
-  draw.callCustomEvent = callCustomEvent;
-  draw.init = init;
-  draw.addPoint = addPoint;
-
-  draw.rectangleIndex = getRectangleIndex();
-  draw.selectedCircleIndex = null;
-  draw.selectedLineIndex = null;
   draw.useArrow = true;
 
   if (draw.options.arrow === null) {
@@ -104,7 +96,16 @@ function Draw (product, options) {
     draw.options.fixedRatio = true;
   }
 
-  draw.geometryManager = new GeometryManager(draw, product);
+  draw.reset = reset;
+  draw.setCursor = setCursor;
+  draw.callCustomEvent = callCustomEvent;
+  draw.init = init;
+  draw.addPoint = addPoint;
+
+  draw.selectedCircleIndex = null;
+  draw.selectedLineIndex = null;
+
+  draw.drawModel = new DrawModel(draw, product);
   draw.groupHelper = new GroupHelper(draw, product);
   draw.wiseFaceDetectionHelper = new WiseFaceDetectionHelper(draw, product);
   draw.lineHelper = new LineHelper(draw, product);
@@ -112,6 +113,8 @@ function Draw (product, options) {
   draw.textTagHelper = new TextTagHelper(draw, product);
   draw.polygonHelper = new PolygonHelper(draw, product);
   draw.arrowImageHelper = new ArrowImageHelper(draw, product);
+
+  draw.rectangleIndex = draw.drawModel.getRectangleIndex();
 
   draw.hide = removeAllElement;
   draw.show = appendDom;
@@ -121,7 +124,7 @@ function Draw (product, options) {
   draw.addPoint = addPoint;
   draw.getData = function() {
     return {
-      points: draw.geometryManager.getPoints(),
+      points: draw.drawModel.getPoints(),
       arrow: draw.arrowImageHelper.getArrow()
     };
   };
@@ -131,13 +134,13 @@ function Draw (product, options) {
 
   draw.createArrow = createArrow;
   draw.changeArrow = draw.arrowImageHelper.changeArrow;
-  draw.changeMinSizeOption = changeMinSizeOption;
-  draw.changeMaxSizeOption = changeMaxSizeOption;
+  draw.changeMinSizeOption = draw.drawModel.changeMinSizeOption;
+  draw.changeMaxSizeOption = draw.drawModel.changeMaxSizeOption;
   draw.changeRectangleToSize = changeRectangleToSize;
-  draw.modifyPoints = modifyPoints;
-  draw.alignCenter = alignCenter;
+  draw.modifyPoints = draw.drawModel.modifyPoints;
+  draw.alignCenter = draw.drawModel.alignCenter;
 
-  draw.validateAxis = draw.geometryManager.validateAxis;
+  draw.validateAxis = draw.drawModel.validateAxis;
   draw.validateStabilization = validateStabilization;
   draw.validateIntersection = validateIntersection;
   draw.validateMinimumAngle = validateMinimumAngle;
@@ -149,34 +152,155 @@ function Draw (product, options) {
 
   draw.changeWFDFillColor = draw.wiseFaceDetectionHelper.changeFillColor;
 
+  draw.changeAxis = function() {
+    var polygonPoint = '';
+    var height = 0;
+    var lines = draw.lineHelper.getLines();
+    var circles = draw.circleHelper.getCircles();
+    var textTag = draw.textTagHelper.getTextTag();
+    var polygon = draw.polygonHelper.getPolygon();
+    var points = draw.drawModel.getPoints();
+
+    for (var idx = 0, len = lines.length; idx < len; idx++) {
+      var startAxis = points[idx];
+      var endAxisIndex = draw.options.fill === true && idx === len - 1 ? 0 : idx + 1;
+      var endAxis = points[endAxisIndex];
+      var startXAxis = startAxis[0];
+      var endXAxis = endAxis[0];
+
+      lines[idx].setAttributeNS(null, 'x1', startXAxis);
+      lines[idx].setAttributeNS(null, 'y1', startAxis[1]);
+      lines[idx].setAttributeNS(null, 'x2', endXAxis);
+      lines[idx].setAttributeNS(null, 'y2', endAxis[1]);
+    }
+
+    for (idx = 0, len = circles.length; idx < len; idx++) {
+      var pointAxis = points[idx];
+      var circleXAxis = pointAxis[0];
+      var circleYAxis = pointAxis[1];
+      var selfCircle = circles[idx];
+      var width = parseInt(ElementController.getAttr(selfCircle, 'width'));
+      height = parseInt(ElementController.getAttr(selfCircle, 'height'));
+
+      /**
+       * 고정비 사각형일 때, 부모의 영역를 넘어갈 경우 Safari에서
+       * 정상적으로 Cursor가 지정이 안되므로 2px 이동 시킨다.
+       */
+      if (draw.options.fixedRatio === false && draw.options.useOnlyRectangle === false) {
+        circleXAxis -= width / 2;
+        circleYAxis -= height / 2;
+      } else if (draw.options.fixedRatio === true) {
+        switch (idx) {
+          case draw.rectangleIndex[0]:
+            circleXAxis -= width - draw.options.lineStrokeWidth / 2;
+            circleYAxis -= height - draw.options.lineStrokeWidth / 2;
+            break;
+          case draw.rectangleIndex[1]:
+            circleXAxis -= draw.options.lineStrokeWidth / 2;
+            circleYAxis -= height - draw.options.lineStrokeWidth / 2;
+            break;
+          case draw.rectangleIndex[2]:
+            circleXAxis -= width - draw.options.lineStrokeWidth / 2;
+            circleYAxis -= height - draw.options.lineStrokeWidth / 2;
+            break;
+          case draw.rectangleIndex[3]:
+            circleXAxis -= width - draw.options.lineStrokeWidth / 2;
+            circleYAxis -= draw.options.lineStrokeWidth / 2;
+            break;
+        }
+      }
+
+      selfCircle.setAttributeNS(null, "x", circleXAxis);
+      selfCircle.setAttributeNS(null, "y", circleYAxis);
+
+      if (idx === len - 1 && draw.options.textInCircle !== null) {
+        textTag.setAttributeNS(null, 'x', pointAxis[0] - 3);
+        textTag.setAttributeNS(null, 'y', pointAxis[1] + 4);
+      }
+
+      if (draw.options.fill === true) {
+        polygonPoint += pointAxis[0] + ',' + pointAxis[1] + ' ';
+      }
+    }
+
+    if (draw.options.fill === true) {
+      polygon.setAttributeNS(null, 'points', polygonPoint.replace(/[\s]{1}$/, ''));
+    }
+
+    if (draw.useArrow === true) {
+      draw.arrowImageHelper.changeArrowImage();
+    }
+
+    if (
+      draw.options.wiseFaceDetection !== false &&
+      Object.keys(draw.wiseFaceDetectionHelper).length > 0
+    ) {
+      var firstPoint = points[0];
+      var secondPoint = points[1];
+      var thridPoint = points[2];
+      var xAxis = FunnyMath.getLineCenter(secondPoint[0], secondPoint[1], thridPoint[0], thridPoint[1])[0];
+      var yAxis = FunnyMath.getLineCenter(firstPoint[0], firstPoint[1], secondPoint[0], secondPoint[1])[1];
+      height = 0;
+
+      if ("heightRatio" in draw.options.wiseFaceDetection) {
+        height = firstPoint[1] - secondPoint[1];
+      } else if ("widthRatio" in draw.options.wiseFaceDetection) {
+        height = firstPoint[0] - secondPoint[0];
+      }
+
+      height = Math.abs(height);
+
+      draw.wiseFaceDetectionHelper.updateCircle(xAxis, yAxis, height);
+    }
+  };
+  // @view
+  draw.resetAllColor = function() {
+    var lines = draw.lineHelper.getLines();
+    var circles = draw.circleHelper.getCircles();
+
+    for (var idx = 0, len = lines.length; idx < len; idx++) {
+      draw.lineHelper.setDefaultColor(lines[idx]);
+    }
+    for (idx = 0, len = circles.length; idx < len; idx++) {
+      draw.circleHelper.setDefaultColor(circles[idx]);
+    }
+
+    draw.polygonHelper.setDefaultColor();
+    draw.drawModel.setIsAllSelectedState(false);
+  };
+  // @view
+  draw.setAllColor = function() {
+    var lines = draw.lineHelper.getLines();
+    var circles = draw.circleHelper.getCircles();
+
+    for (var idx = 0, len = lines.length; idx < len; idx++) {
+      draw.lineHelper.setSelectColor(lines[idx]);
+    }
+    for (idx = 0, len = circles.length; idx < len; idx++) {
+      draw.circleHelper.setSelectColor(circles[idx]);
+    }
+
+    draw.polygonHelper.setSelectColor();
+    draw.drawModel.setIsAllSelectedState(true);
+  };
+
   init();
 
-  function getRectangleIndex(){
-    var indexList = [];
-    var isFlip = draw.options.flip;
-    var isMirror = draw.options.mirror;
-    var isMirrorAndFlip = isFlip && isMirror;
-
-    indexList[0] = isMirrorAndFlip ? 2 : (isFlip ? 1 : (isMirror ? 3 : 0))
-    indexList[1] = isMirrorAndFlip ? 3 : (isFlip ? 0 : (isMirror ? 2 : 1))
-    indexList[2] = isMirrorAndFlip ? 0 : (isFlip ? 3 : (isMirror ? 1 : 2))
-    indexList[3] = isMirrorAndFlip ? 1 : (isFlip ? 2 : (isMirror ? 0 : 3))
-
-    return indexList;
-  }
-
+  // @DrawView
   function setCursor(element) {
     var cursor = draw.options.useCursor === true ? 'pointer' : 'default';
     element.style.cursor = cursor;
   }
 
+  // @DrawView
   function resetCursor(element) {
     element.style.cursor = 'default';
   }
 
+  // @DrawView
   function createSVGElement() {
     var radius = draw.options.circleRadius;
-    var pointsLength = draw.geometryManager.getPointsLength();
+    var pointsLength = draw.drawModel.getPointsLength();
     var addLine = function() {
       if (draw.options.fixedRatio === true) {
         draw.lineHelper.addLine(false, false);
@@ -220,6 +344,7 @@ function Draw (product, options) {
     }
   }
 
+  // @DrawView
   function appendDom() {
     //appending sequense is important.
     //Group -> Polygon -> Line -> Circle -> Text
@@ -235,6 +360,7 @@ function Draw (product, options) {
     }
   }
 
+  // @DrawView
   function resetElementStatus() {
     var lines = draw.lineHelper.getLines();
     var circles = draw.circleHelper.getCircles();
@@ -266,19 +392,21 @@ function Draw (product, options) {
 
     parentSvg.startAxis = null;
 
-    if (draw.geometryManager.isAllSelected === false) {
-      draw.geometryManager.resetAllColor();
+    if (draw.drawModel.isAllSelected === false) {
+      draw.resetAllColor();
     }
 
     resetCursor(parentSvg);
   }
 
+  // @DrawView
   function resetParentSvgAttr() {
     setTimeout(function() {
       product.setParentSvgAttr(product.getParentMovedAttr(), false);
     }, 100);
   }
 
+  // @DrawController
   function callCustomEvent(eventName, arg) {
     var method = '';
 
@@ -294,6 +422,7 @@ function Draw (product, options) {
     }
   }
 
+  // @DrawView
   function toggleDraggingStatus(statusType) {
     var method = statusType === true ? "add" : "remove";
     var className = "svg-geometry";
@@ -301,6 +430,7 @@ function Draw (product, options) {
     document.body.classList[method](className);
   }
 
+  // @DrawController
   function parentSVGMouseUpHandle() {
     toggleDraggingStatus(false);
 
@@ -317,6 +447,7 @@ function Draw (product, options) {
   }
 
   /* mousedown에 세팅한 값은 항상 mouseup에 리셋을 해줘야 한다. */
+  // @DrawController
   function parentSVGMouseDownHandle(event) {
     var idx = 0;
     var len = 0;
@@ -376,6 +507,7 @@ function Draw (product, options) {
     }
   }
 
+  // @DrawController
   function parentSVGMouseMoveHandle(event) {
     if (draw.options.customDraw === true && draw.selectedCircleIndex === null) {
       parentSVGMouseDownHandle(event);
@@ -400,12 +532,12 @@ function Draw (product, options) {
     var offsetWidth = product.parentOffset().width;
     var offsetHeight = product.parentOffset().height;
 
-    var firstPoint = draw.geometryManager.getAxis(draw.rectangleIndex[0]);
-    var thirdPoint = draw.geometryManager.getAxis(draw.rectangleIndex[2]);
+    var firstPoint = draw.drawModel.getAxis(draw.rectangleIndex[0]);
+    var thirdPoint = draw.drawModel.getAxis(draw.rectangleIndex[2]);
 
     var prevPoints = [];
 
-    var pointsLength = draw.geometryManager.getPointsLength();
+    var pointsLength = draw.drawModel.getPointsLength();
 
     var changedX1 = 0;
     var changedX2 = 0;
@@ -437,7 +569,7 @@ function Draw (product, options) {
       }
 
       /*if(
-      	draw.geometryManager.validateAxis(xAxis, yAxis) === false
+      	draw.drawModel.validateAxis(xAxis, yAxis) === false
       	){
       	return;
       }*/
@@ -453,7 +585,7 @@ function Draw (product, options) {
           changedY2 = yAxis;
 
           //가로 Min, Max Validation
-          if (!draw.geometryManager.validateGeometrySize(
+          if (!validateGeometrySize(
               Math.abs(changedX1 - changedX2),
               Math.abs(changedY1 - thirdPoint[1])
             )) {
@@ -461,7 +593,7 @@ function Draw (product, options) {
           }
 
           //세로 Min, Max Validation
-          if (!draw.geometryManager.validateGeometrySize(
+          if (!validateGeometrySize(
               Math.abs(changedX1 - thirdPoint[0]),
               Math.abs(changedY1 - changedY2)
             )) {
@@ -482,7 +614,7 @@ function Draw (product, options) {
           changedY2 = changedY1 + ((changedX2 - changedX1) * parentSvg.ratio[1] / parentSvg.ratio[0]);
 
           //변경된좌표 체크
-          if (draw.geometryManager.validateAxis(changedX2, changedY2) === false) {
+          if (draw.drawModel.validateAxis(changedX2, changedY2) === false) {
             /**
              * @date 2017-04-24
              * maxSize로 적용한 것은 최대 사이즈로 정상 적용을 위해서 이다.
@@ -501,7 +633,7 @@ function Draw (product, options) {
           }
 
           //Min, Max Validation
-          if (!draw.geometryManager.validateGeometrySize(Math.abs(changedX1 - changedX2), Math.abs(changedY1 - changedY2))) {
+          if (!validateGeometrySize(Math.abs(changedX1 - changedX2), Math.abs(changedY1 - changedY2))) {
             return;
           }
         }
@@ -532,12 +664,12 @@ function Draw (product, options) {
 
           if (!(draw.options.fill === false && draw.selectedCircleIndex === 0)) {
             leftAxisIndex = draw.selectedCircleIndex === 0 ? circles.length - 1 : draw.selectedCircleIndex - 1;
-            validateAxis.push(draw.geometryManager.getAxis(leftAxisIndex));
+            validateAxis.push(draw.drawModel.getAxis(leftAxisIndex));
           }
 
           if (!(draw.options.fill === false && draw.selectedCircleIndex === circles.length - 1)) {
             rightAxisIndex = draw.selectedCircleIndex === circles.length - 1 ? 0 : draw.selectedCircleIndex + 1;
-            validateAxis.push(draw.geometryManager.getAxis(rightAxisIndex));
+            validateAxis.push(draw.drawModel.getAxis(rightAxisIndex));
           }
 
           for (var i = 0, ii = validateAxis.length; i < ii; i++) {
@@ -549,21 +681,21 @@ function Draw (product, options) {
           }
         }
 
-        prevPoints = draw.geometryManager.getPoints();
+        prevPoints = draw.drawModel.getPoints();
         prevPoints[draw.selectedCircleIndex] = [xAxis, yAxis];
 
         if (validateStabilization(prevPoints) === false) {
           return;
         }
 
-        draw.geometryManager.setAxis(draw.selectedCircleIndex, xAxis, yAxis);
+        draw.drawModel.setAxis(draw.selectedCircleIndex, xAxis, yAxis);
       }
       //라인을 선택하여 이동할 때
     } else if (draw.options.fill === true && draw.selectedLineIndex !== null) {
       lines = draw.lineHelper.getLines();
-      var startAxis = draw.geometryManager.getAxis(draw.selectedLineIndex);
+      var startAxis = draw.drawModel.getAxis(draw.selectedLineIndex);
       var endAxisIndex = draw.options.fill === true && draw.selectedLineIndex === lines.length - 1 ? 0 : draw.selectedLineIndex + 1;
-      var endAxis = draw.geometryManager.getAxis(endAxisIndex);
+      var endAxis = draw.drawModel.getAxis(endAxisIndex);
 
       changedX1 = startAxis[0] + movedXAxis;
       changedY1 = startAxis[1] + movedYAxis;
@@ -575,8 +707,8 @@ function Draw (product, options) {
        * 변경이 불가능하면 기존 좌표로 한다.
        */
       if (
-        draw.geometryManager.validateAxis(changedX1, changedY1) === false ||
-        draw.geometryManager.validateAxis(changedX2, changedY2) === false
+        draw.drawModel.validateAxis(changedX1, changedY1) === false ||
+        draw.drawModel.validateAxis(changedX2, changedY2) === false
       ) {
         changedX1 = startAxis[0];
         changedY1 = startAxis[1];
@@ -584,7 +716,7 @@ function Draw (product, options) {
         changedY2 = endAxis[1];
       }
 
-      prevPoints = draw.geometryManager.getPoints();
+      prevPoints = draw.drawModel.getPoints();
       prevPoints[draw.selectedLineIndex] = [changedX1, changedY1];
       prevPoints[endAxisIndex] = [changedX2, changedY2];
 
@@ -592,8 +724,8 @@ function Draw (product, options) {
         return;
       }
 
-      draw.geometryManager.setAxis(draw.selectedLineIndex, changedX1, changedY1);
-      draw.geometryManager.setAxis(endAxisIndex, changedX2, changedY2);
+      draw.drawModel.setAxis(draw.selectedLineIndex, changedX1, changedY1);
+      draw.drawModel.setAxis(endAxisIndex, changedX2, changedY2);
       //영역을 선택하여 이동할 때
     } else if (draw.options.fill === true || draw.selectedLineIndex !== null) {
       var isMoveOk = false;
@@ -623,17 +755,17 @@ function Draw (product, options) {
         }
       }
 
-      if (draw.geometryManager.validateAllPoint(movedXAxis, 0) === false) {
+      if (draw.drawModel.validateAllPoint(movedXAxis, 0) === false) {
         movedXAxis = 0;
       }
 
-      if (draw.geometryManager.validateAllPoint(0, movedYAxis) === false) {
+      if (draw.drawModel.validateAllPoint(0, movedYAxis) === false) {
         movedYAxis = 0;
       }
       if (isMoveOk) {
         for (var idx = 0; idx < pointsLength; idx++) {
-          self = draw.geometryManager.getAxis(idx);
-          draw.geometryManager.setAxis(idx, self[0] + movedXAxis, self[1] + movedYAxis);
+          self = draw.drawModel.getAxis(idx);
+          draw.drawModel.setAxis(idx, self[0] + movedXAxis, self[1] + movedYAxis);
         }
       }
     }
@@ -641,10 +773,11 @@ function Draw (product, options) {
     parentSvg.startAxis = [xAxis, yAxis];
 
     //Update
-    draw.geometryManager.changeAxis();
+    draw.changeAxis();
   }
 
   //Bind Event
+  // @DrawController
   function bindEvent() {
     if (
       draw.options.useResizeRectangle === true ||
@@ -658,27 +791,29 @@ function Draw (product, options) {
     }
   }
 
+  // @DrawView
   function init() {
     createSVGElement();
 
     if (draw.options.initCenter === true) {
-      alignCenter();
+      draw.drawModel.alignCenter();
     }
 
-    draw.geometryManager.changeAxis();
-    draw.geometryManager.resetAllColor();
+    draw.changeAxis();
+    draw.resetAllColor();
     bindEvent();
     appendDom();
   }
 
+  // @DrawView
   function addPoint(xAxis, yAxis, appendIndex) {
     var newCircleRadius = draw.options.circleRadius;
-    var pointsLength = draw.geometryManager.getPointsLength();
+    var pointsLength = draw.drawModel.getPointsLength();
     //Set Axis
     if (typeof appendIndex !== "undefined") {
-      draw.geometryManager.addAxis(xAxis, yAxis, appendIndex);
+      draw.drawModel.addAxis(xAxis, yAxis, appendIndex);
     } else {
-      draw.geometryManager.addAxis(xAxis, yAxis);
+      draw.drawModel.addAxis(xAxis, yAxis);
     }
 
     draw.lineHelper.addLine();
@@ -693,13 +828,14 @@ function Draw (product, options) {
     draw.circleHelper.changeRadius(pointsLength - 1, draw.options.circleRadius);
     draw.circleHelper.appendAtLast();
 
-    draw.geometryManager.changeAxis();
+    draw.changeAxis();
 
-    if (draw.geometryManager.isAllSelected) {
-      draw.geometryManager.setAllColor();
+    if (draw.drawModel.isAllSelected) {
+      draw.setAllColor();
     }
   }
 
+  // @DrawView
   function removeAllElement() {
     try {
       draw.lineHelper.removeAll();
@@ -722,6 +858,7 @@ function Draw (product, options) {
     }
   }
 
+  // @DrawView
   function reset() {
     removeAllElement();
     unbindEvent();
@@ -732,6 +869,7 @@ function Draw (product, options) {
     draw.arrowImageHelper.resetData();
   }
 
+  // @DrawController
   function unbindEvent() {
     EventController.unbindBodyEvent('mousedown', parentSVGMouseDownHandle);
     EventController.unbindBodyEvent('mousemove', parentSVGMouseMoveHandle);
@@ -740,6 +878,7 @@ function Draw (product, options) {
     // document.documentElement.removeEventListener('mouseup', documentElementMouseMoveHandle);
   }
 
+  // @DrawController
   function endDraw() {
     draw.options.customDraw = false;
     draw.options.useRectangleForCustomDraw = false;
@@ -747,21 +886,14 @@ function Draw (product, options) {
     resetParentSvgAttr();
   }
 
-  function changeMinSizeOption(newMinSize) {
-    draw.options.minSize = CommonUtils.cloneObject(newMinSize);
-  }
-
-  function changeMaxSizeOption(newMaxSize) {
-    draw.options.maxSize = CommonUtils.cloneObject(newMaxSize);
-  }
-
+  // @DrawController
   function changeRectangleToSize(width, height) {
     if (draw.options.useOnlyRectangle !== true && draw.options.fixedRatio !== true) {
       return;
     }
 
-    var firstPoint = draw.geometryManager.getAxis(0);
-    var thirdPoint = draw.geometryManager.getAxis(2);
+    var firstPoint = draw.drawModel.getAxis(0);
+    var thirdPoint = draw.drawModel.getAxis(2);
     var offset = product.parentOffset();
     var changedX1 = 0;
     var changedX3 = 0;
@@ -790,56 +922,21 @@ function Draw (product, options) {
     }
 
     changeRectangle(changedX1, changedY1, changedX3, changedY3, true);
-    draw.geometryManager.changeAxis();
+    draw.changeAxis();
   }
 
+  // @DrawController
   function changeRectangle(x1, y1, x2, y2, flagForchangeFirstAxis) {
     if (flagForchangeFirstAxis === true) {
-      draw.geometryManager.setAxis(0, x1, y1);
+      draw.drawModel.setAxis(0, x1, y1);
     }
 
-    draw.geometryManager.setAxis(draw.rectangleIndex[1], x1, y2);
-    draw.geometryManager.setAxis(draw.rectangleIndex[2], x2, y2);
-    draw.geometryManager.setAxis(draw.rectangleIndex[3], x2, y1);
+    draw.drawModel.setAxis(draw.rectangleIndex[1], x1, y2);
+    draw.drawModel.setAxis(draw.rectangleIndex[2], x2, y2);
+    draw.drawModel.setAxis(draw.rectangleIndex[3], x2, y1);
   }
 
-  function alignCenter() {
-    var parentSvgWidth = product.getParentSvgAttr('width');
-    var parentSvgHeight = product.getParentSvgAttr('height');
-    var firstPoint = draw.geometryManager.getAxis(0);
-    var thirdPoint = draw.geometryManager.getAxis(2);
-    var geometryWidth = thirdPoint[0] - firstPoint[0];
-    var geometryHeight = thirdPoint[1] - firstPoint[1];
-    var changedX1 = 0;
-    var changedY1 = 0;
-    var changedX3 = 0;
-    var changedY3 = 0;
-
-    if (parentSvgWidth === null) {
-      parentSvgWidth = parentSvg.clientWidth;
-    }
-
-    parentSvgWidth = parseInt(parentSvgWidth);
-
-    if (parentSvgHeight === null) {
-      parentSvgHeight = parentSvg.clientHeight;
-    }
-
-    parentSvgHeight = parseInt(parentSvgHeight);
-
-    changedX1 = Math.round(parentSvgWidth / 2 - geometryWidth / 2);
-    changedY1 = Math.round(parentSvgHeight / 2 - geometryHeight / 2);
-    changedX3 = changedX1 + geometryWidth;
-    changedY3 = changedY1 + geometryHeight;
-
-    draw.geometryManager.setAxis(0, changedX1, changedY1);
-    draw.geometryManager.setAxis(1, changedX1, changedY3);
-    draw.geometryManager.setAxis(2, changedX3, changedY3);
-    draw.geometryManager.setAxis(3, changedX3, changedY1);
-
-    draw.geometryManager.changeAxis();
-  }
-
+  // @DrawView
   function changeNormalStatus() {
     var lines = draw.lineHelper.getLines();
     var circles = draw.circleHelper.getCircles();
@@ -858,9 +955,10 @@ function Draw (product, options) {
 
     draw.textTagHelper.hide();
 
-    draw.geometryManager.resetAllColor();
+    draw.resetAllColor();
   }
 
+  // @DrawView
   function changeActiveStatus() {
     var lines = draw.lineHelper.getLines();
     var circles = draw.circleHelper.getCircles();
@@ -879,17 +977,19 @@ function Draw (product, options) {
 
     draw.textTagHelper.show();
 
-    draw.geometryManager.setAllColor();
+    draw.setAllColor();
   }
 
+  // @DrawView
   function createArrow(arrowOptions) {
     draw.useArrow = true;
     draw.options.arrow = CommonUtils.cloneObject(arrowOptions);
     draw.arrowImageHelper.addImage();
-    draw.geometryManager.changeAxis();
+    draw.changeAxis();
     draw.arrowImageHelper.append();
   }
 
+  // @DrawUtil
   function validateMinimumAngle(prevPoints) {
     var returnVal = true;
     var points = [];
@@ -897,7 +997,7 @@ function Draw (product, options) {
 
     try {
       points = typeof prevPoints === "undefined" ?
-        CommonUtils.cloneObject(draw.geometryManager.getPoints()) :
+        CommonUtils.cloneObject(draw.drawModel.getPoints()) :
         CommonUtils.cloneObject(prevPoints);
       pointsLength = points.length;
 
@@ -925,6 +1025,7 @@ function Draw (product, options) {
     return returnVal;
   }
 
+  // @DrawUtil
   function validateIntersection(prevPoints) {
     var returnVal = true;
     var points = 0;
@@ -937,7 +1038,7 @@ function Draw (product, options) {
 
     try {
       points = typeof prevPoints === "undefined" ?
-        CommonUtils.cloneObject(draw.geometryManager.getPoints()) :
+        CommonUtils.cloneObject(draw.drawModel.getPoints()) :
         CommonUtils.cloneObject(prevPoints);
       pointsLength = points.length;
 
@@ -972,9 +1073,10 @@ function Draw (product, options) {
     return returnVal;
   }
 
+  // @DrawUtil
   function validateStabilization(prevPoints) {
     var points = typeof prevPoints === "undefined" ?
-      CommonUtils.cloneObject(draw.geometryManager.getPoints()) :
+      CommonUtils.cloneObject(draw.drawModel.getPoints()) :
       CommonUtils.cloneObject(prevPoints);
     var returnVal = true;
 
@@ -985,9 +1087,21 @@ function Draw (product, options) {
     return returnVal;
   }
 
-  function modifyPoints(points){
-    draw.geometryManager.setPoints(points);
-    draw.geometryManager.changeAxis();
+  // @DrawView
+  function validateGeometrySize (geometryWidth, geometryHeight) {
+    if (typeof draw.options.minSize !== "undefined") {
+      if (geometryWidth < draw.options.minSize.width || geometryHeight < draw.options.minSize.height) {
+        return false
+      }
+    }
+
+    if (typeof draw.options.maxSize !== "undefined") {
+      if (geometryWidth > draw.options.maxSize.width || geometryHeight > draw.options.maxSize.height) {
+        return false
+      }
+    }
+
+    return true
   }
 }
 

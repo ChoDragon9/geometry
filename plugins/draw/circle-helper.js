@@ -60,7 +60,7 @@ function CircleHelper(draw, product) {
   }
 
   function showDeleteIcon() {
-    var pointsLength = draw.geometryManager.getPointsLength();
+    var pointsLength = draw.drawModel.getPointsLength();
 
     if (
       draw.selectedCircleIndex !== null ||
@@ -116,7 +116,7 @@ function CircleHelper(draw, product) {
 
   function removeCircle(event) {
     var self = this;
-    var points = draw.geometryManager.getPoints();
+    var points = draw.drawModel.getPoints();
     var pointsLength = points.length;
 
     event.preventDefault();
@@ -130,7 +130,7 @@ function CircleHelper(draw, product) {
     }
 
     points.splice(self.circleIndex, 1);
-    draw.geometryManager.setPoints(points);
+    draw.drawModel.setPoints(points);
     draw.reset();
     draw.init();
     draw.changeActiveStatus();
@@ -139,7 +139,7 @@ function CircleHelper(draw, product) {
   function selectCircle() {
     isLeave = false;
     var self = this;
-    var pointsLength = draw.geometryManager.getPointsLength();
+    var pointsLength = draw.drawModel.getPointsLength();
     if (this.nodeName === "text") {
       self = circles[pointsLength - 1];
     }
