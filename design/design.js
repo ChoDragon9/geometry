@@ -72,15 +72,12 @@ var drawArr = [
     className: 'Draw',
     respon: [
       '옵션을 받아 어떤 Geometry를 생성함',
-      '데이터 로직',
-      '이벤트 로직',
-      '뷰 로직'
+      'MVC 초기화'
     ],
     collabo: [
       'DrawModel',
       'DrawView',
       '-',
-      'EventController',
       'CommonUtils',
       'FunnyMath'
     ]
@@ -88,7 +85,7 @@ var drawArr = [
   '--',
   {
     className: 'DrawModel',
-    respon: ['Draw의 데이터 관리'],
+    respon: ['model'],
     collabo: [
       'CommonUtils',
       'FunnyMath'
@@ -96,7 +93,9 @@ var drawArr = [
   },
   {
     className: 'DrawView',
-    respon: ['Draw의 데이터 관리'],
+    respon: [
+      'view-controller'
+    ],
     collabo: [
       'GroupHelper',
       'WiseFaceDetectionHelper',
