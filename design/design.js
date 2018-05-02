@@ -185,6 +185,107 @@ var drawArr = [
       'FunnyMath'
     ]
   },
+  '--',
+  {
+    className: 'DrawModel',
+    respon: ['model'],
+    collabo: [
+      'CommonUtils',
+      'FunnyMath'
+    ]
+  },
+  {
+    className: 'DrawView',
+    respon: [
+      'view-controller'
+    ],
+    collabo: [
+      '[DrawModel]',
+      'GroupHelper',
+      'WiseFaceDetectionHelper',
+      'LineHelper',
+      'CircleHelper',
+      'TextTagHelper',
+      'PolygonHelper',
+      'ArrowImageHelper',
+      '--',
+      'FunnyMath',
+      'EventController',
+      'ElementController',
+      'CommonUtils'
+    ]
+  },
+  '--',
+  {
+    className: 'IconHelper',
+    respon: ['아이콘 생성 및 조작'],
+    collabo: [
+      '[DrawModel]',
+      '-',
+      'ElementController'
+    ]
+  },
+  {
+    className: 'LineHelper',
+    respon: ['line 태그 조작'],
+    collabo: [
+      '[DrawModel]',
+      'IconHelper',
+      '-',
+      'ElementController',
+      'FunnyMath'
+    ]
+  },
+  {
+    className: 'CircleHelper',
+    respon: ['circle 태그 조작'],
+    collabo: [
+      '[DrawModel]',
+      'IconHelper',
+      '-',
+      'ElementController'
+    ]
+  },
+  {
+    className: 'GroupHelper',
+    respon: ['g 태그 조작'],
+    collabo: [
+      'ElementController'
+    ]
+  },
+  {
+    className: 'WiseFaceDetectionHelper',
+    respon: ['wise facedetection 관련']
+  },
+  {
+    className: 'TextTagHelper',
+    respon: ['text 태그 조작'],
+    collabo: [
+      '[DrawModel]',
+      'CircleHelper',
+      '-',
+      'ElementController'
+    ]
+  },
+  {
+    className: 'PolygonHelper',
+    respon: ['polygon 태그 조작'],
+    collabo: [
+      '[DrawModel]',
+      '-',
+      'ElementController'
+    ]
+  },
+  {
+    className: 'ArrowImageHelper',
+    respon: ['image 태그 조작'],
+    collabo: [
+      '[DrawModel]',
+      '-',
+      'ElementController',
+      'FunnyMath'
+    ]
+  },
   '-',
   {
     className: 'Draw',
@@ -414,6 +515,147 @@ var drawArr = [
       'resetData'
     ]
   },
+  '--',
+  {
+    className: 'IconHelper',
+    props: ['_icon', '_iconText'],
+    methods: [
+      'createIcon',
+      'changePosition',
+      '--',
+      'onClick',
+      'onLeave',
+      'onContextMenu',
+      '--',
+      'show',
+      'hide'
+    ]
+  },
+  {
+    className: 'LineHelper',
+    props: ['_lines'],
+    methods: [
+      'addLine',
+      'appendAll',
+      'appendAtLast',
+      'removeAll',
+      '--',
+      'setDefaultColor',
+      'setSelectColor',
+      '--',
+      'getLines',
+      'setLines',
+      '--',
+      'bindEvent',
+      '--',
+      'show',
+      'hide'
+    ]
+  },
+  {
+    className: 'CircleHelper',
+    props: ['_circles'],
+    methods: [
+      'addCircle',
+      'appendAll',
+      'changeRadius',
+      'appendAtLast',
+      'removeAll',
+      'update',
+      'isMouseLeave',
+      '--',
+      'bindEvent',
+      '--',
+      'getCircles',
+      'setCircles',
+      '--',
+      'selectCircle',
+      'setDefaultColor',
+      'setSelectColor',
+      'show',
+      'hide'
+    ]
+  },
+  {
+    className: 'GroupHelper',
+    props: ['_groupId', '_groupTag'],
+    methods: [
+      'add',
+      'remove',
+      'moveTopLayer',
+      'append',
+      'appendChild',
+      'removeChild',
+      'insertBefore'
+    ]
+  },
+  {
+    className: 'WiseFaceDetectionHelper',
+    props: ['_wiseFaceDetectionCircle'],
+    methods: [
+      'append',
+      'add',
+      'remove',
+      '--',
+      'updateCircle',
+      'changeFillColor'
+    ]
+  },
+  {
+    className: 'TextTagHelper',
+    props: ['_textTag'],
+    methods: [
+      'addText',
+      'append',
+      'remove',
+      '--',
+      'getTextTag',
+      'setTextTag',
+      '--',
+      'show',
+      'hide'
+    ]
+  },
+  {
+    className: 'PolygonHelper',
+    props: ['_polygon'],
+    methods: [
+      'addPolygon',
+      'append',
+      'remove',
+      '--',
+      'bindEvent',
+      '--',
+      'getPolygon',
+      'setPolygon',
+      '--',
+      'selectPolygon',
+      'setDefaultColor',
+      'setSelectColor'
+    ]
+  },
+  {
+    className: 'ArrowImageHelper',
+    props: [
+      '_arrowImageContainner',
+      '_arrowImage',
+      '_arrowTextContainner',
+      '_arrowText'
+    ],
+    methods: [
+      'addImage',
+      'append',
+      'remove',
+      'resetData',
+      '--',
+      'getArrow',
+      'changeArrowImage',
+      'changeArrow',
+      '--',
+      'show',
+      'hide',
+    ]
+  }
 ]
 
 var crccs = [].concat(
