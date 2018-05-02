@@ -1,32 +1,32 @@
 /**
  * Polygon 태그 헬퍼
  */
-function PolygonHelper(draw, product) {
-  "use strict";
+function PolygonHelper (draw, product) { // eslint-disable-line
+  'use strict'
 
-  var polygon = null;
-  function addPolygon() {
-    polygon = ElementController.createPolygon();
+  var polygon = null
+  function addPolygon () {
+    polygon = ElementController.createPolygon()
     if (draw.options.useEvent === true) {
-      bindEvent(polygon);
+      bindEvent(polygon)
     }
-    draw.drawView.setCursor(polygon);
+    draw.drawView.setCursor(polygon)
   }
 
-  function append() {
+  function append () {
     if (draw.options.fill === true) {
-      draw.groupHelper.appendChild(polygon);
+      draw.groupHelper.appendChild(polygon)
     }
   }
 
-  function selectPolygon() {
-    setSelectColor();
-    polygon.isSelected = true;
-    draw.groupHelper.moveTopLayer();
+  function selectPolygon () {
+    setSelectColor()
+    polygon.isSelected = true
+    draw.groupHelper.moveTopLayer()
   }
 
-  function bindEvent() {
-    polygon.onmousedown = selectPolygon;
+  function bindEvent () {
+    polygon.onmousedown = selectPolygon
     /*
     @date: 2016-09-19
     oncontextmenu로 하면 IE에서 정상 동작을 하지 않기 때문에 삭제됨.
@@ -34,62 +34,59 @@ function PolygonHelper(draw, product) {
       draw.callCustomEvent("polygoncontextmenu", event);
     };
     */
-    polygon.onmouseup = function() {
+    polygon.onmouseup = function () {
       if (draw.options.customDraw === true) {
-        return;
+        return
       }
-      update();
-    };
-    polygon.addEventListener('mouseleave', function() {
+      update()
+    }
+    polygon.addEventListener('mouseleave', function () {
       if (polygon.isSelected === true) {
-        update();
+        update()
       }
-    });
-    polygon.addEventListener('contextmenu', function(event) {
-      draw.callCustomEvent("polygoncontextmenu", event);
-    });
-    // polygon.onmouseup = function(){
-    // 	draw.callCustomEvent("mouseup", draw.getData());
-    // };
+    })
+    polygon.addEventListener('contextmenu', function (event) {
+      draw.callCustomEvent('polygoncontextmenu', event)
+    })
   }
 
-  function remove() {
+  function remove () {
     if (draw.options.fill === true) {
-      draw.groupHelper.removeChild(polygon);
+      draw.groupHelper.removeChild(polygon)
     }
   }
 
-  function setDefaultColor() {
+  function setDefaultColor () {
     if (draw.options.fill === true) {
-      polygon.style.fill = draw.options.fillColor;
-      polygon.style.opacity = draw.options.fillOpacity;
+      polygon.style.fill = draw.options.fillColor
+      polygon.style.opacity = draw.options.fillOpacity
     }
   }
 
-  function setSelectColor() {
+  function setSelectColor () {
     if (polygon === null) {
-      return;
+      return
     }
 
-    var opacity = draw.options.fillOpacity;
+    var opacity = draw.options.fillOpacity
     if (opacity > 0) {
-      opacity = opacity + opacity * 0.5;
+      opacity = opacity + opacity * 0.5
     }
-    polygon.style.opacity = opacity;
+    polygon.style.opacity = opacity
   }
 
-  function update() {
-    setTimeout(function() {
-      draw.callCustomEvent("mouseup", draw.getData());
-    });
+  function update () {
+    setTimeout(function () {
+      draw.callCustomEvent('mouseup', draw.getData())
+    })
   }
 
-  function getPolygon(){
-    return polygon;
+  function getPolygon () {
+    return polygon
   }
 
-  function setPolygon(_polygon){
-    polygon = _polygon;
+  function setPolygon (_polygon) {
+    polygon = _polygon
   }
 
   this.addPolygon = addPolygon

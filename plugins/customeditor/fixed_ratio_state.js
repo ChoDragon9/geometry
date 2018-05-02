@@ -7,7 +7,7 @@ FixedRatioState.prototype.start = function (options, axis) {
   if (options.minSize === false) {
     points = this.convertRectanglePoints(
       axis[0], axis[1],
-      axis[0] + options.ratio[0], axis[1] + option.ratio[1]
+      axis[0] + options.ratio[0], axis[1] + options.ratio[1]
     )
   } else {
     points = this.convertRectanglePoints(

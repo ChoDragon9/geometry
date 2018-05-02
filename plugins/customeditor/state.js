@@ -36,14 +36,14 @@ State.prototype = {
       [x1, y1], [x1, y2], [x2, y2], [x2, y1]
     ]
   },
-  callStartEvent: function() {
-    if ("start" in this._options.event) {
-      this._options.event.start(this._obj);
+  callStartEvent: function () {
+    if ('start' in this._options.event) {
+      this._options.event.start(this._obj)
     }
   },
-  callEndEvent: function() {
-    if ("end" in this._options.event) {
-      this._options.event.end(this._obj);
+  callEndEvent: function () {
+    if ('end' in this._options.event) {
+      this._options.event.end(this._obj)
     }
   }
 }

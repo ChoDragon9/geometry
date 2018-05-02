@@ -1,0 +1,47 @@
+{
+  "name": "dragonjs-geometry",
+  "version": "1.0.0",
+  "description": "SVG 를 사용한 Geometry 그리기 도구",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard ./modules/*.js ./modules/**/*.js ./plugins/*.js ./plugins/**/*.js ./common/*.js ./common/**/*.js",
+    "test:fix": "standard --fix ./modules/*.js ./modules/**/*.js ./plugins/*.js ./plugins/**/*.js ./common/*.js ./common/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChoDragon9/dragonjs-geometry.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChoDragon9/dragonjs-geometry/issues"
+  },
+  "homepage": "https://github.com/ChoDragon9/dragonjs-geometry#readme",
+  "devDependencies": {
+    "standard": "^11.0.1"
+  },
+  "standard": {
+    "globals": [
+      "CommonUtils",
+      "ElementController",
+      "EventController",
+      "CustomEditor",
+      "GroupHelper",
+      "WiseFaceDetectionHelper",
+      "LineHelper",
+      "CircleHelper",
+      "TextTagHelper",
+      "PolygonHelper",
+      "ArrowImageHelper",
+      "SVGGeometry",
+      "DrawModel",
+      "DrawView",
+      "FunnyMath",
+      "IconHelper",
+      "State",
+      "FixedRatioState",
+      "RectangleState",
+      "LineState"
+    ]
+  }
+}

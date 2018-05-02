@@ -28,7 +28,7 @@ LineState.prototype.add = function (axis) {
   this._currentPoint++
 }
 LineState.prototype.isLast = function () {
-  if (this._currentPoint == this._options.minPoint) {
+  if (this._currentPoint === this._options.minPoint) {
     if (this.validateAllAxis(this._options.minLineLength) === false || this._obj.validateStabilization() === false) {
       return false
     }
@@ -36,19 +36,19 @@ LineState.prototype.isLast = function () {
   }
   return false
 }
-LineState.prototype.validateAllAxis = function() {
-  var points = this._obj.getData().points;
+LineState.prototype.validateAllAxis = function () {
+  var points = this._obj.getData().points
   var pythagoreanTheorem = FunnyMath.pythagoreanTheorem
 
   for (var i = 0, ii = points.length; i < ii; i++) {
-    var startAxis = points[i];
-    var endAxis = i === ii - 1 ? points[0] : points[i + 1];
+    var startAxis = points[i]
+    var endAxis = i === ii - 1 ? points[0] : points[i + 1]
 
     if (pythagoreanTheorem(
-        startAxis[0],
-        startAxis[1],
-        endAxis[0],
-        endAxis[1]) < this._options.minLineLength) {
+      startAxis[0],
+      startAxis[1],
+      endAxis[0],
+      endAxis[1]) < this._options.minLineLength) {
       return false
     }
   }
