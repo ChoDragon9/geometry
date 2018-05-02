@@ -9,6 +9,9 @@ function DrawView (draw, product) { // eslint-disable-line
 
   var drawView = this
 
+  draw.selectedCircleIndex = null
+  draw.selectedLineIndex = null
+
   draw.groupHelper = new GroupHelper(draw, product)
   draw.wiseFaceDetectionHelper = new WiseFaceDetectionHelper(draw, product)
   draw.lineHelper = new LineHelper(draw, product)
@@ -291,8 +294,6 @@ function DrawView (draw, product) { // eslint-disable-line
 
     document.body.classList[method](className)
   }
-
-  // @DrawView
   this.resetElementStatus = function () {
     var lines = draw.lineHelper.getLines()
     var circles = draw.circleHelper.getCircles()
@@ -330,8 +331,6 @@ function DrawView (draw, product) { // eslint-disable-line
 
     parentSvgStartAxis = null
   }
-
-  // @DrawController
   this.parentSVGMouseUpHandle = function () {
     drawView.toggleDraggingStatus(false)
 
@@ -346,9 +345,6 @@ function DrawView (draw, product) { // eslint-disable-line
     drawView.resetElementStatus()
     drawView.resetParentSvgAttr()
   }
-
-  /* mousedown에 세팅한 값은 항상 mouseup에 리셋을 해줘야 한다. */
-  // @DrawController
   this.parentSVGMouseDownHandle = function (event) {
     var idx = 0
     var len = 0
@@ -406,8 +402,6 @@ function DrawView (draw, product) { // eslint-disable-line
       drawView.toggleDraggingStatus(true)
     }
   }
-
-  // @DrawController
   this.parentSVGMouseMoveHandle = function (event) {
     if (draw.options.customDraw === true && draw.selectedCircleIndex === null) {
       drawView.parentSVGMouseDownHandle(event)
@@ -668,8 +662,6 @@ function DrawView (draw, product) { // eslint-disable-line
     // Update
     draw.changeAxis()
   }
-
-  // @DrawController
   this.bindEvent = function () {
     if (
       draw.options.useResizeRectangle === true ||
@@ -682,8 +674,6 @@ function DrawView (draw, product) { // eslint-disable-line
       EventController.bindBodyEvent('mouseleave', drawView.parentSVGMouseUpHandle)
     }
   }
-
-  // @DrawView
   this.init = function () {
     drawView.createSVGElement()
 
@@ -696,8 +686,6 @@ function DrawView (draw, product) { // eslint-disable-line
     drawView.bindEvent()
     drawView.appendDom()
   }
-
-  // @DrawView
   this.reset = function () {
     drawView.removeAllElement()
     drawView.unbindEvent()
@@ -707,8 +695,6 @@ function DrawView (draw, product) { // eslint-disable-line
     draw.textTagHelper.setTextTag(null)
     draw.arrowImageHelper.resetData()
   }
-
-  // @DrawController
   this.unbindEvent = function () {
     EventController.unbindBodyEvent('mousedown', drawView.parentSVGMouseDownHandle)
     EventController.unbindBodyEvent('mousemove', drawView.parentSVGMouseMoveHandle)
@@ -716,16 +702,12 @@ function DrawView (draw, product) { // eslint-disable-line
     EventController.unbindBodyEvent('mouseleave', drawView.parentSVGMouseUpHandle)
     // document.documentElement.removeEventListener('mouseup', documentElementMouseMoveHandle);
   }
-
-  // @DrawController
   this.endDraw = function () {
     draw.options.customDraw = false
     draw.options.useRectangleForCustomDraw = false
     drawView.resetElementStatus()
     drawView.resetParentSvgAttr()
   }
-
-  // @DrawController
   this.changeRectangleToSize = function (width, height) {
     if (draw.options.useOnlyRectangle !== true && draw.options.fixedRatio !== true) {
       return
@@ -763,8 +745,6 @@ function DrawView (draw, product) { // eslint-disable-line
     drawView.changeRectangle(changedX1, changedY1, changedX3, changedY3, true)
     draw.changeAxis()
   }
-
-  // @DrawController
   this.changeRectangle = function (x1, y1, x2, y2, flagForchangeFirstAxis) {
     if (flagForchangeFirstAxis === true) {
       draw.drawModel.setAxis(0, x1, y1)
@@ -774,8 +754,6 @@ function DrawView (draw, product) { // eslint-disable-line
     draw.drawModel.setAxis(draw.rectangleIndex[2], x2, y2)
     draw.drawModel.setAxis(draw.rectangleIndex[3], x2, y1)
   }
-
-  // @DrawView
   this.changeNormalStatus = function () {
     var lines = draw.lineHelper.getLines()
     var circles = draw.circleHelper.getCircles()
@@ -796,8 +774,6 @@ function DrawView (draw, product) { // eslint-disable-line
 
     draw.resetAllColor()
   }
-
-  // @DrawView
   this.changeActiveStatus = function () {
     var lines = draw.lineHelper.getLines()
     var circles = draw.circleHelper.getCircles()
@@ -818,8 +794,6 @@ function DrawView (draw, product) { // eslint-disable-line
 
     draw.setAllColor()
   }
-
-  // @DrawView
   this.validateGeometrySize = function (geometryWidth, geometryHeight) {
     if (typeof draw.options.minSize !== 'undefined') {
       if (geometryWidth < draw.options.minSize.width || geometryHeight < draw.options.minSize.height) {

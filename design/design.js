@@ -78,13 +78,7 @@ var drawArr = [
     ],
     collabo: [
       'DrawModel',
-      'GroupHelper',
-      'WiseFaceDetectionHelper',
-      'LineHelper',
-      'CircleHelper',
-      'TextTagHelper',
-      'PolygonHelper',
-      'ArrowImageHelper',
+      'DrawView',
       '-',
       'EventController',
       'CommonUtils',
@@ -100,6 +94,25 @@ var drawArr = [
       'FunnyMath'
     ]
   },
+  {
+    className: 'DrawView',
+    respon: ['Draw의 데이터 관리'],
+    collabo: [
+      'GroupHelper',
+      'WiseFaceDetectionHelper',
+      'LineHelper',
+      'CircleHelper',
+      'TextTagHelper',
+      'PolygonHelper',
+      'ArrowImageHelper',
+      '--',
+      'FunnyMath',
+      'EventController',
+      'ElementController',
+      'CommonUtils'
+    ]
+  },
+  '--',
   {
     className: 'IconHelper',
     respon: ['아이콘 생성 및 조작'],
@@ -136,7 +149,6 @@ var drawArr = [
     className: 'GroupHelper',
     respon: ['g 태그 조작'],
     collabo: [
-      '-',
       'ElementController'
     ]
   },
@@ -174,7 +186,47 @@ var drawArr = [
       'FunnyMath'
     ]
   },
-  '--',
+  '-',
+  {
+    className: 'Draw',
+    props: [
+      'options',
+      'drawModel',
+      'drawView',
+      'rectangleIndex'
+    ],
+    methods: [
+      'callCustomEvent',
+      'init',
+      'addPoint',
+      'hide',
+      'show',
+      'active',
+      'normal',
+      'getData',
+      'reset',
+      'destroy',
+      'endDraw',
+      'createArrow',
+      'changeArrow',
+      'changeMinSizeOption',
+      'changeMaxSizeOption',
+      'changeRectangleToSize',
+      'modifyPoints',
+      'alignCenter',
+      'validateAxis',
+      'stopEvent',
+      'startEvent',
+      'moveTopLayer',
+      'changeWFDFillColor',
+      'changeAxis',
+      'resetAllColor',
+      'setAllColor',
+      'validateStabilization',
+      'validateIntersection',
+      'validateMinimumAngle'
+    ]
+  },
   {
     className: 'DrawModel',
     props: [
@@ -199,6 +251,47 @@ var drawArr = [
       'getAxis'
     ]
   },
+  {
+    className: 'DrawView',
+    props: [
+      'parentSvgRatio', 'parentSvgStartAxis',
+      'selectedPolygon'
+    ],
+    methods: [
+      'getArrow',
+      'changeArrow',
+      'moveTopLayer',
+      'changeFillColor',
+      'changeAxis',
+      'resetAllColor',
+      'setAllColor',
+      'setCursor',
+      'resetCursor',
+      'createSVGElement',
+      'appendDom',
+      'resetParentSvgAttr',
+      'removeAllElement',
+      'addPoint',
+      'callCustomEvent',
+      'createArrow',
+      'toggleDraggingStatus',
+      'resetElementStatus',
+      'parentSVGMouseUpHandle',
+      'parentSVGMouseDownHandle',
+      'parentSVGMouseMoveHandle',
+      'bindEvent',
+      'init',
+      'reset',
+      'unbindEvent',
+      'endDraw',
+      'changeRectangleToSize',
+      'changeRectangle',
+      'changeNormalStatus',
+      'changeActiveStatus',
+      'validateGeometrySize'
+    ]
+  },
+  '--',
   {
     className: 'IconHelper',
     props: ['icon', 'iconText'],

@@ -88,9 +88,6 @@ function Draw (product, options) {
     draw.options.fixedRatio = true
   }
 
-  draw.selectedCircleIndex = null
-  draw.selectedLineIndex = null
-
   draw.drawModel = new DrawModel(draw, product)
   draw.drawView = new DrawView(draw, product)
 

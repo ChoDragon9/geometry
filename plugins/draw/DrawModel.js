@@ -2,17 +2,14 @@ function DrawModel (draw, product) {
   var self = this
   this.points = CommonUtils.cloneObject(draw.options.points)
   this.isAllSelected = false
-
   this.setIsAllSelectedState = function (state) {
     this.isAllSelected = state
   }
-
   this.modifyPoints = function (points) {
     this.setPoints(points)
     // Notify
     draw.changeAxis()
   }
-
   this.getRectangleIndex = function () {
     var indexList = []
     var isFlip = draw.options.flip
@@ -26,7 +23,6 @@ function DrawModel (draw, product) {
 
     return indexList
   }
-
   this.alignCenter = function () {
     var parentSvgSize = product.getParentSvgSize()
     var firstPoint = self.getAxis(0)
@@ -46,15 +42,12 @@ function DrawModel (draw, product) {
 
     draw.changeAxis()
   }
-
   this.changeMinSizeOption = function (newMinSize) {
     draw.options.minSize = CommonUtils.cloneObject(newMinSize)
   }
-
   this.changeMaxSizeOption = function (newMaxSize) {
     draw.options.maxSize = CommonUtils.cloneObject(newMaxSize)
   }
-
   this.addAxis = function (xAxis, yAxis, appendIndex) {
     var lastPoint = null
     var newPoint = null
@@ -91,7 +84,6 @@ function DrawModel (draw, product) {
       this.setAxis(pointsLength, newPoint[0], newPoint[1])
     }
   }
-
   this.validateAxis = function (xAxis, yAxis) {
     var offset = product.parentOffset()
     var returnVal = true
@@ -107,7 +99,6 @@ function DrawModel (draw, product) {
 
     return returnVal
   }
-
   this.validateAllPoint = function (movedXAxis, movedYAxis) {
     var returnVal = true
     var points = this.getPoints()
@@ -123,7 +114,6 @@ function DrawModel (draw, product) {
 
     return returnVal
   }
-  // 모든 SVG 태그들을 좌표를 기준으로 변경한다.
 }
 DrawModel.prototype = {
   setPoints: function (points) {
