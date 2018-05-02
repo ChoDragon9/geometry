@@ -1,9 +1,9 @@
-"use strict";
+'use strict'
 /* globals SVGGeometryProduct */
 /**
  * SVG를 사용한 Drawing 툴 모듈이다.
  * Plugin 중 'draw'를 통해서 영역을 조작한다.
- * 
+ *
  * @class
  * @param {Object} svgTag svg tag
  * @example
@@ -23,11 +23,11 @@
 
 * @example
 <caption>HTML</caption>
-<svg 
-  width="500" 
-  height="500" 
+<svg
+  width="500"
+  height="500"
   id="svg_polygon"
-  xmlns="http://www.w3.org/2000/svg" 
+  xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 </svg>
 
@@ -54,15 +54,15 @@ svgGeometry.draw({
   ]
 });
  */
-function SVGGeometry(svgTag) {
-  this.svgTag = svgTag;
+function SVGGeometry (svgTag) {
+  this.svgTag = svgTag
 }
 
 /**
  * Plugin 추가 함수
- * 
+ *
  * @param {String} name 플러그인 이름
- * @param {Function} callback 플러그인 호출 시 사용될 Callback 함수
+ * @param {Function} Constructor 플러그인 호출 시 사용될 Callback 함수
  * @example
 <caption>정의</caption>
 SVGGeometry.addPlugin('draw', function(number){
@@ -75,8 +75,8 @@ var svgGeometry = new SVGGeometry(svgTag);
 svgGeometry.draw(0);
 svgGeometry.draw(1);
  */
-SVGGeometry.addPlugin = function(name, callback) {
-  SVGGeometry.prototype[name] = function(options) {
-    return new callback(new SVGGeometryProduct(this.svgTag), options)
-  };
-};
+SVGGeometry.addPlugin = function (name, Constructor) {
+  SVGGeometry.prototype[name] = function (options) {
+    return new Constructor(new SVGGeometryProduct(this.svgTag), options)
+  }
+}
