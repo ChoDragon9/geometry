@@ -21,6 +21,7 @@ function CustomEditor (product, options) {
 }
 
 CustomEditor.prototype = {
+  constructor: CustomEditor,
   destroy: function () {
     this.unbindEvent()
   },
