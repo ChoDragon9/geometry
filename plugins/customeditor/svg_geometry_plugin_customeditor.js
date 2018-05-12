@@ -32,10 +32,10 @@ CustomEditor.prototype = {
     this.bindEvent()
   },
   unbindEvent: function () {
-    EventController.unbindEvent(this.getParentSvg(), 'click', this.parentSVGClickHandleProxy)
+    EventController.unbindEvent('click', this.parentSVGClickHandleProxy)(this.getParentSvg())
   },
   bindEvent: function () {
-    EventController.bindEvent(this.getParentSvg(), 'click', this.parentSVGClickHandleProxy)
+    EventController.bindEvent('click', this.parentSVGClickHandleProxy)(this.getParentSvg())
   },
   handleESCKey: function (event) {
     if (event.keyCode === 27) {
@@ -43,10 +43,10 @@ CustomEditor.prototype = {
     }
   },
   bindContextMenu: function () {
-    EventController.bindEvent(this.getParentSvg(), 'contextmenu', this.removeDrawingGeometryProxy)
+    EventController.bindEvent('contextmenu', this.removeDrawingGeometryProxy)(this.getParentSvg())
   },
   unbindContextMenu: function () {
-    EventController.unbindEvent(this.getParentSvg(), 'contextmenu', this.removeDrawingGeometryProxy)
+    EventController.unbindEvent('contextmenu', this.removeDrawingGeometryProxy)(this.getParentSvg())
   },
   bindESCkeyEvent: function () {
     document.addEventListener('keyup', this.handleESCKey.bind(this))

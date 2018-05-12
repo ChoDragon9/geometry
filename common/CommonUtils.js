@@ -24,7 +24,7 @@ window.CommonUtils = {
     return scroll
   },
   cloneObject: function (obj) {
-    if (obj === null || typeof (obj) !== 'object') {
+    if (typeof (obj) !== 'object') {
       return obj
     }
 
