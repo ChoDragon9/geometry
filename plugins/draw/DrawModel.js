@@ -100,19 +100,9 @@ function DrawModel (draw, product) {
     return returnVal
   }
   this.validateAllPoint = function (movedXAxis, movedYAxis) {
-    var returnVal = true
-    var points = this.getPoints()
-    var pointsLength = points.length
-
-    for (var i = 0; i < pointsLength; i++) {
-      var self = points[i]
-      if (this.validateAxis(self[0] + movedXAxis, self[1] + movedYAxis) === false) {
-        returnVal = false
-        break
-      }
-    }
-
-    return returnVal
+    return !find(point => {
+      return !this.validateAxis(point[0] + movedXAxis, point[1] + movedYAxis)
+    })(this.getPoints())
   }
 }
 DrawModel.prototype = {

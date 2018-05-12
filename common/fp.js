@@ -1,9 +1,15 @@
 ((w) => {
   w.each = iter => (list) => {
-    for (let item of list) {
-      iter(item)
+    for (let i = 0, len = list.length; i < len; i++) {
+      iter(list[i], i, list, len)
     }
     return list
+  }
+  w.loop = iter => len => {
+    for (let i = 0; i < len; i++) {
+      iter(i, len)
+    }
+    return len
   }
   w.map = iter => list => {
     const newList = []
@@ -22,9 +28,16 @@
     return newList
   }
   w.find = iter => list => {
-    for (let item of list) {
-      if (iter(item)) return item
+    for (let i = 0, len = list.length; i < len; i++) {
+      if (iter(list[i], i, list)) return list[i]
     }
+    return null
+  }
+  w.findIndex = iter => list => {
+    for (let i = 0, len = list.length; i < len; i++) {
+      if (iter(list[i], i, list)) return i
+    }
+    return -1
   }
   w.reduce = (init, iter) => list => {
     w.each((item) => {

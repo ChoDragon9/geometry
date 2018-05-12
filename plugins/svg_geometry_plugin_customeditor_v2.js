@@ -87,7 +87,7 @@ CustomEditorV2.prototype.abortCheckingDragEvent = function (event) {
   this.parentSVGClickHandle(event)
 
   divEq(
-    EventController.unbindEvent('mousedown', this.parentSVGMouseDownHandle)
+    EventController.unbindEvent('mousedown', this.parentSVGMouseDownHandle),
     EventController.unbindEvent('mouseup', this.parentSVGMouseUpHandle)
   )(this._product.getParentSvg())
 

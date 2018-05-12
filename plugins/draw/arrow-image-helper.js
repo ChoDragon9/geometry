@@ -28,16 +28,8 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
   // set Scope of Arrow
   // @ArrowImageView
   function setArrowScope () {
-    var startIndex = 0
-    var endIndex = 0
-    for (var idx = 0; idx < arrowQueueLength; idx++) {
-      if (arrowQueue[idx] === draw.options.arrow.min) {
-        startIndex = idx
-      }
-      if (arrowQueue[idx] === draw.options.arrow.max) {
-        endIndex = idx
-      }
-    }
+    var startIndex = findIndex(arrow => arrow === draw.options.arrow.min)(arrowQueue)
+    var endIndex = findIndex(arrow => arrow === draw.options.arrow.max)(arrowQueue)
 
     for (var i = startIndex; i <= endIndex; i++) {
       arrowScope.push(arrowQueue[i])
@@ -46,15 +38,9 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
 
   // @ArrowImageView
   function getNextArrow (arrow) {
-    var nextIndex = 0
-    var arrowScopeLength = arrowScope.length
-
-    for (var i = 0, len = arrowScope.length; i < len; i++) {
-      if (arrowScope[i] === arrow && arrowScopeLength - 1 !== i) {
-        nextIndex = i + 1
-        break
-      }
-    }
+    var nextIndex = findIndex((item, index, list) => {
+      return item === arrow && list.length - 1 !== index
+    })(arrowScope) + 1
 
     return arrowQueue[nextIndex]
   }

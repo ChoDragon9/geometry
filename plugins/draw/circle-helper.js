@@ -160,10 +160,7 @@ function CircleHelper (draw, product) { // eslint-disable-line
   }
 
   function appendAll () {
-    for (var i = 0, len = circles.length; i < len; i++) {
-      draw.groupHelper.appendChild(circles[i])
-    }
-
+    each(circle => draw.groupHelper.appendChild(circle))(circles)
     iconHelper.createIcon(false)
   }
 
@@ -190,9 +187,9 @@ function CircleHelper (draw, product) { // eslint-disable-line
   }
 
   function removeAll () {
-    for (var i = 0, len = circles.length; i < len; i++) {
-      draw.groupHelper.removeChild(circles[i])
-    }
+    each(circle => {
+      draw.groupHelper.removeChild(circle)
+    })(circles)
   }
 
   function getCircles () {

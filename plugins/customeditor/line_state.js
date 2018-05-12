@@ -40,19 +40,13 @@ LineState.prototype.validateAllAxis = function () {
   var points = this._obj.getData().points
   var pythagoreanTheorem = FunnyMath.pythagoreanTheorem
 
-  for (var i = 0, ii = points.length; i < ii; i++) {
-    var startAxis = points[i]
-    var endAxis = i === ii - 1 ? points[0] : points[i + 1]
+  return !find((startAxis, index, points) => {
+    var endAxis = index === points.length - 1 ?
+      points[0] : points[index + 1]
 
-    if (pythagoreanTheorem(
-      startAxis[0],
-      startAxis[1],
-      endAxis[0],
-      endAxis[1]) < this._options.minLineLength) {
-      return false
+    if (pythagoreanTheorem(startAxis[0], startAxis[1], endAxis[0], endAxis[1]) < this._options.minLineLength) {
+      return true
     }
-  }
-
-  return true
+  })(points)
 }
 LineState.prototype.constructor = LineState

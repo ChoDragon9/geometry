@@ -139,7 +139,6 @@ function Draw (product, options) {
 
   // @DrawUtil
   function validateMinimumAngle (prevPoints) {
-    var returnVal = true
     var points = []
     var pointsLength = 0
 
@@ -153,24 +152,20 @@ function Draw (product, options) {
        * 삼각형부터 체크
        */
       if (pointsLength >= 3 && draw.options.fill === true) {
-        for (var i = 0; i < pointsLength; i++) {
-          var firstPoint = []
-          var vertextAngle = Math.abs(FunnyMath.getVertextAngle(points[0], points[1], points[2]))
-
-          if (vertextAngle < MINIMUM_ANGLE) {
-            returnVal = false
-            break
-          }
-
-          firstPoint = points.shift()
-          points.push(firstPoint)
+        var vertextAngle = Math.abs(FunnyMath.getVertextAngle(points[0], points[1], points[2]))
+        if (vertextAngle < MINIMUM_ANGLE) {
+          return false
         }
+
+        loop(() => {
+          points.push(points.shift())
+        })(pointsLength)
       }
     } catch (e) {
       console.warn(e)
     }
 
-    return returnVal
+    return true
   }
 
   // @DrawUtil

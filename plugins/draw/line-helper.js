@@ -29,24 +29,20 @@ function LineHelper (draw, product) { // eslint-disable-line
   }
 
   function isPointsChanged () {
-    var returnVal = true
     var currentPoints = draw.drawModel.getPoints()
     if (tempArrForDragChecking.length !== currentPoints.length) {
-      returnVal = false
+      return false
     }
 
-    for (var i = 0, ii = tempArrForDragChecking.length; i < ii; i++) {
-      if (
-        tempArrForDragChecking[i][0] !== currentPoints[i][0] ||
-        tempArrForDragChecking[i][1] !== currentPoints[i][1]) {
-        returnVal = false
-        break
+    return pipe(
+      findIndex((item, index) => {
+        return item[0] !== currentPoints[index][0] || item[1] !== currentPoints[index][1]
+      }),
+      (index) => {
+        tempArrForDragChecking = []
+        return index === -1
       }
-    }
-
-    tempArrForDragChecking = []
-
-    return returnVal
+    )(tempArrForDragChecking)
   }
 
   function addLine (useLineEvent, useLineCursor) {
@@ -169,9 +165,7 @@ function LineHelper (draw, product) { // eslint-disable-line
   }
 
   function appendAll () {
-    for (var i = 0, len = lines.length; i < len; i++) {
-      draw.groupHelper.appendChild(lines[i])
-    }
+    each(line => draw.groupHelper.appendChild(line))(lines)
 
     iconHelper.createIcon(true)
   }
@@ -195,9 +189,7 @@ function LineHelper (draw, product) { // eslint-disable-line
   }
 
   function removeAll () {
-    for (var i = 0, len = lines.length; i < len; i++) {
-      draw.groupHelper.removeChild(lines[i])
-    }
+    each(line => draw.groupHelper.removeChild(line))(lines)
   }
 
   function getLines () {

@@ -33,26 +33,27 @@ function DrawView (draw, product) { // eslint-disable-line
     var polygon = draw.polygonHelper.getPolygon()
     var points = draw.drawModel.getPoints()
 
-    for (var idx = 0, len = lines.length; idx < len; idx++) {
-      var startAxis = points[idx]
-      var endAxisIndex = draw.options.fill === true && idx === len - 1 ? 0 : idx + 1
+    each((line, index, _, len) => {
+      var startAxis = points[index]
+      var endAxisIndex = draw.options.fill === true && index === len - 1 ? 0 : index + 1
       var endAxis = points[endAxisIndex]
       var startXAxis = startAxis[0]
       var endXAxis = endAxis[0]
 
-      lines[idx].setAttributeNS(null, 'x1', startXAxis)
-      lines[idx].setAttributeNS(null, 'y1', startAxis[1])
-      lines[idx].setAttributeNS(null, 'x2', endXAxis)
-      lines[idx].setAttributeNS(null, 'y2', endAxis[1])
-    }
+      divEq(
+        ElementController.setAttr('x1', startXAxis),
+        ElementController.setAttr('y1', startAxis[1]),
+        ElementController.setAttr('x2', endXAxis),
+        ElementController.setAttr('y2', endAxis[1])
+      )(line)
+    })(lines)
 
-    for (idx = 0, len = circles.length; idx < len; idx++) {
-      var pointAxis = points[idx]
+    each((circle, index, _, len) => {
+      var pointAxis = points[index]
       var circleXAxis = pointAxis[0]
       var circleYAxis = pointAxis[1]
-      var selfCircle = circles[idx]
-      var width = parseInt(ElementController.getAttr('width')(selfCircle))
-      height = parseInt(ElementController.getAttr('height')(selfCircle))
+      var width = parseInt(ElementController.getAttr('width')(circle))
+      var height = parseInt(ElementController.getAttr('height')(circle))
 
       /**
        * 고정비 사각형일 때, 부모의 영역를 넘어갈 경우 Safari에서
@@ -62,7 +63,7 @@ function DrawView (draw, product) { // eslint-disable-line
         circleXAxis -= width / 2
         circleYAxis -= height / 2
       } else if (draw.options.fixedRatio === true) {
-        switch (idx) {
+        switch (index) {
           case draw.rectangleIndex[0]:
             circleXAxis -= width - draw.options.lineStrokeWidth / 2
             circleYAxis -= height - draw.options.lineStrokeWidth / 2
@@ -82,10 +83,10 @@ function DrawView (draw, product) { // eslint-disable-line
         }
       }
 
-      selfCircle.setAttributeNS(null, 'x', circleXAxis)
-      selfCircle.setAttributeNS(null, 'y', circleYAxis)
+      circle.setAttributeNS(null, 'x', circleXAxis)
+      circle.setAttributeNS(null, 'y', circleYAxis)
 
-      if (idx === len - 1 && draw.options.textInCircle !== null) {
+      if (index === len - 1 && draw.options.textInCircle !== null) {
         textTag.setAttributeNS(null, 'x', pointAxis[0] - 3)
         textTag.setAttributeNS(null, 'y', pointAxis[1] + 4)
       }
@@ -93,7 +94,7 @@ function DrawView (draw, product) { // eslint-disable-line
       if (draw.options.fill === true) {
         polygonPoint += pointAxis[0] + ',' + pointAxis[1] + ' '
       }
-    }
+    })(circles)
 
     if (draw.options.fill === true) {
       polygon.setAttributeNS(null, 'points', polygonPoint.replace(/[\s]{1}$/, ''))
@@ -126,12 +127,8 @@ function DrawView (draw, product) { // eslint-disable-line
     var lines = draw.lineHelper.getLines()
     var circles = draw.circleHelper.getCircles()
 
-    for (var idx = 0, len = lines.length; idx < len; idx++) {
-      draw.lineHelper.setDefaultColor(lines[idx])
-    }
-    for (idx = 0, len = circles.length; idx < len; idx++) {
-      draw.circleHelper.setDefaultColor(circles[idx])
-    }
+    each(line => draw.lineHelper.setDefaultColor(line))(lines)
+    each(circle => draw.lineHelper.setDefaultColor(circle))(circles)
 
     draw.polygonHelper.setDefaultColor()
   }
@@ -139,12 +136,8 @@ function DrawView (draw, product) { // eslint-disable-line
     var lines = draw.lineHelper.getLines()
     var circles = draw.circleHelper.getCircles()
 
-    for (var idx = 0, len = lines.length; idx < len; idx++) {
-      draw.lineHelper.setSelectColor(lines[idx])
-    }
-    for (idx = 0, len = circles.length; idx < len; idx++) {
-      draw.circleHelper.setSelectColor(circles[idx])
-    }
+    each(line => draw.lineHelper.setSelectColor(line))(lines)
+    each(circle => draw.lineHelper.setSelectColor(circle))(circles)
 
     draw.polygonHelper.setSelectColor()
   }
@@ -165,7 +158,7 @@ function DrawView (draw, product) { // eslint-disable-line
       }
     }
 
-    for (var i = 0, len = pointsLength; i < len; i++) {
+    loop((i, len) => {
       if (i < len - 1) {
         addLine()
       } else {
@@ -189,7 +182,7 @@ function DrawView (draw, product) { // eslint-disable-line
       } else {
         draw.circleHelper.addCircle(radius)
       }
-    }
+    })(pointsLength)
 
     draw.textTagHelper.addText()
     draw.arrowImageHelper.addImage()
@@ -351,24 +344,26 @@ function DrawView (draw, product) { // eslint-disable-line
     var circles = draw.circleHelper.getCircles()
     var lines = draw.lineHelper.getLines()
     var polygon = draw.polygonHelper.getPolygon()
+    const isSelected = item => item.isSelected
 
     parentSvgStartAxis = product.getPageAxis(event)
 
-    for (idx = 0, len = circles.length; idx < len; idx++) {
-      if (circles[idx].isSelected === true) {
-        draw.selectedCircleIndex = idx
-        break
+    pipe(
+      findIndex(isSelected),
+      index => {
+        index > -1 && (draw.selectedCircleIndex = index)
       }
-    }
+    )(circles)
+
 
     // Check selected Line
     if (draw.selectedCircleIndex === null && draw.options.fixedRatio === false) {
-      for (idx = 0, len = lines.length; idx < len; idx++) {
-        if (lines[idx].isSelected === true) {
-          draw.selectedLineIndex = idx
-          break
+      pipe(
+        findIndex(isSelected),
+        index => {
+          index > -1 && (draw.selectedLineIndex = index)
         }
-      }
+      )
     }
 
     if (draw.options.fixedRatio === true && draw.options.ratio !== false) {
@@ -650,10 +645,10 @@ function DrawView (draw, product) { // eslint-disable-line
         movedYAxis = 0
       }
       if (isMoveOk) {
-        for (var idx = 0; idx < pointsLength; idx++) {
-          self = draw.drawModel.getAxis(idx)
-          draw.drawModel.setAxis(idx, self[0] + movedXAxis, self[1] + movedYAxis)
-        }
+        loop(index => {
+          const self = draw.drawModel.getAxis(index)
+          draw.drawModel.setAxis(index, self[0] + movedXAxis, self[1] + movedYAxis)
+        })(pointsLength)
       }
     }
 
