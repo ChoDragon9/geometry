@@ -2,15 +2,16 @@
  * DOM 조작 객체
  */
 window.ElementController = {
-  setAttr: function (element, attrName, val, _ns) {
-    var ns = typeof _ns === 'undefined' ? null : _ns
-    element.setAttributeNS(ns, attrName, val)
+  setAttr (attrName, val, ns) {
+    !!ns && (ns = null)
+    return (element) => {
+      element.setAttributeNS(ns, attrName, val)
+      return element
+    }
   },
-  setHrefAttr: function (element, val) {
-    this.setAttr(element, 'href', val, 'http://www.w3.org/1999/xlink')
-  },
-  getAttr: function (element, attrName) {
-    return element.getAttributeNS(null, attrName)
+  getAttr: (attrName) => (element) => element.getAttributeNS(null, attrName),
+  setHrefAttr: function (val) {
+    return this.setAttr('href', val, 'http://www.w3.org/1999/xlink')
   },
   removeChild: function (parentElement, childrenElement) {
     parentElement.removeChild(childrenElement)
@@ -22,57 +23,76 @@ window.ElementController = {
     return document.createElementNS('http://www.w3.org/2000/svg', name)
   },
   createLine: function (strokeWidth) {
-    var line = this.createSVGElement('line')
-    line.setAttributeNS(null, 'stroke-width', strokeWidth)
-    line.setAttributeNS(null, 'draggable', false)
-
-    return line
+    return pipe(
+      this.createSVGElement,
+      divEq(
+        this.setAttr('stroke-width', strokeWidth),
+        this.setAttr('draggable', false),
+      )
+    )('line')
   },
   createCircle: function (circleRadius) {
-    var circle = this.createSVGElement('circle')
-    circle.setAttributeNS(null, 'r', circleRadius)
-    circle.setAttributeNS(null, 'draggable', false)
-
-    return circle
+    return pipe(
+      this.createSVGElement,
+      divEq(
+        this.setAttr('r', circleRadius),
+        this.setAttr('draggable', false)
+      )
+    )('circle')
   },
   createRect: function (width, height) {
-    var rectangle = this.createSVGElement('rect')
-    rectangle.setAttributeNS(null, 'width', width)
-    rectangle.setAttributeNS(null, 'height', height)
-    rectangle.setAttributeNS(null, 'draggable', false)
-
-    return rectangle
+    return pipe(
+      this.createSVGElement,
+      divEq(
+        this.setAttr('width', width),
+        this.setAttr('height', height),
+        this.setAttr('draggable', false)
+      )
+    )('rect')
   },
   createText: function (txt) {
-    var textTag = this.createSVGElement('text')
-    textTag.textContent = txt
-    textTag.setAttributeNS(null, 'draggable', false)
-
-    return textTag
+    return pipe(
+      this.createSVGElement,
+      this.setAttr('draggable', false),
+      (text) => {
+        text.textContent = txt
+        return text
+      }
+    )('text')
   },
   createGroup: function () {
     return this.createSVGElement('g')
   },
   createImage: function (imagePath, width, height) {
     var imageContainner = this.createGroup()
-    var image = this.createSVGElement('image')
-
-    this.setHrefAttr(image, imagePath)
-    image.setAttributeNS(null, 'width', width)
-    image.setAttributeNS(null, 'height', height)
-    image.setAttributeNS(null, 'draggable', false)
+    var image = pipe(
+      this.createSVGElement,
+      divEq(
+        this.setHrefAttr(imagePath),
+        this.setAttr('width', width),
+        this.setAttr('height', height),
+        this.setAttr('draggable', false)
+      )
+    )('image')
 
     imageContainner.appendChild(image)
 
     return [image, imageContainner]
   },
   createPolygon: function () {
-    var polygon = this.createSVGElement('polygon')
-    polygon.setAttributeNS(null, 'draggable', false)
-
-    return polygon
+    return pipe(
+      this.createSVGElement,
+      this.setAttr('draggable', false)
+    )('polygon')
   },
   createUse: function () {
     return this.createSVGElement('use')
+  },
+  getSVGOffset (target) {
+    return () => {
+      return {
+        top, left, width, height
+      } = target.getBoundingClientRect()
+    }
   }
 }

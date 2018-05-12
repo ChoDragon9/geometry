@@ -102,15 +102,17 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
     {
       x: getXAxisOfText(angle),
       y: getYAxisOfText(angle)
-    }
-    ]
+    }]
 
     if (arrowTextContainner !== null) {
-      ElementController.setAttr(arrowText[0], 'x', xAxis + axis[0].x)
-      ElementController.setAttr(arrowText[0], 'y', yAxis + axis[0].y)
-
-      ElementController.setAttr(arrowText[1], 'x', xAxis + axis[1].x)
-      ElementController.setAttr(arrowText[1], 'y', yAxis + axis[1].y)
+      divEq(
+        ElementController.setAttr('x', xAxis + axis[0].x),
+        ElementController.setAttr('y', yAxis + axis[0].y)
+      )(arrowText[0])
+      divEq(
+        ElementController.setAttr('x', xAxis + axis[1].x),
+        ElementController.setAttr('y', yAxis + axis[1].y)
+      )(arrowText[1])
     }
   }
 
@@ -150,8 +152,10 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
     var xAxis = lineCenter[0]
     var yAxis = lineCenter[1]
 
-    ElementController.setAttr(arrowImage, 'x', xAxis)
-    ElementController.setAttr(arrowImage, 'y', yAxis)
+    divEq(
+      ElementController.setAttr('x', xAxis),
+      ElementController.setAttr('y', yAxis)
+    )(arrowImage)
 
     if (draw.options.notUseAutoChangeOfArrow !== true) {
       if (Math.abs(angle) > 90) {
@@ -164,12 +168,15 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
 
     angle += degree
 
-    ElementController.setAttr(arrowImageContainner, 'transform', 'rotate(' + angle + ' ' + xAxis + ' ' + yAxis + ') translate(' + (halfArrowWidth * -1) + ',' + (halfArrowHeight * -1) + ')')
+    ElementController.setAttr(
+      'transform',
+      `rotate(${angle} ${xAxis} ${yAxis}) translate(${halfArrowWidth * -1},${halfArrowHeight * -1})`
+    )(arrowImageContainner)
   }
 
   function changeArrowImagePath () {
     var imagePath = currentArrow === arrowQueue[arrowQueueLength - 1] ? NORMAL_ALL_IMAGE : NORMAL_IMAGE
-    ElementController.setHrefAttr(arrowImage, imagePath)
+    ElementController.setHrefAttr(imagePath)(arrowImage)
   }
 
   function bindEvent () {
@@ -184,7 +191,7 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
         var imagePath = currentArrow === arrowQueue[arrowQueueLength - 1] ? PRESS_ALL_IMAGE : PRESS_IMAGE
 
         arrowImage.isSelected = true
-        ElementController.setHrefAttr(arrowImage, imagePath)
+        ElementController.setHrefAttr(imagePath)(arrowImage)
       }
 
       arrowImage.onmouseup = function (event) {

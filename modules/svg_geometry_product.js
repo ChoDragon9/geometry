@@ -55,26 +55,13 @@ SVGGeometryProduct.prototype = {
     }
   },
   parentOffset: function () {
-    var offset = this.getParentSvg().getBoundingClientRect()
-    return {
-      top: offset.top,
-      left: offset.left,
-      width: offset.width,
-      height: offset.height
-    }
+    return ElementController.getSVGOffset(this.getParentSvg())()
   },
   setParentSvgAttr: function (attrName, val) {
-    return ElementController.setAttr(
-      this.getParentSvg(),
-      attrName,
-      val
-    )
+    return ElementController.setAttr(attrName, val)(this.getParentSvg())
   },
   getParentSvgAttr: function (attrName) {
-    return ElementController.getAttr(
-      this.getParentSvg(),
-      attrName
-    )
+    return ElementController.getAttr(attrName)(this.getParentSvg())
   },
   removeParentChild: function (childrenElement) {
     ElementController.removeChild(this.getParentSvg(), childrenElement)

@@ -9,6 +9,9 @@ function CircleHelper (draw, product) { // eslint-disable-line
   var hoveredPointIndex = null
   var circles = []
 
+  const setDefaultColor = ElementController.setAttr('fill', draw.options.pointColor)
+  const setSelectColor = setDefaultColor
+
   iconHelper.onClick(function (event) {
     iconHelper.hide()
     removeCircle.call({
@@ -69,10 +72,10 @@ function CircleHelper (draw, product) { // eslint-disable-line
 
     hoveredPointIndex = this.circleIndex
 
-    var xAxis = parseInt(ElementController.getAttr(this, 'x'))
-    var yAxis = parseInt(ElementController.getAttr(this, 'y'))
-    var width = parseInt(ElementController.getAttr(this, 'width'))
-    var height = parseInt(ElementController.getAttr(this, 'height'))
+    var xAxis = parseInt(ElementController.getAttr('x')(this))
+    var yAxis = parseInt(ElementController.getAttr('y')(this))
+    var width = parseInt(ElementController.getAttr('width')(this))
+    var height = parseInt(ElementController.getAttr('height')(this))
 
     if (xAxis - width * 2 < 0) {
       xAxis += width * 2
@@ -148,14 +151,6 @@ function CircleHelper (draw, product) { // eslint-disable-line
     draw.drawView.setCursor(parentSvg)
   }
 
-  function setDefaultColor (circleElement) {
-    ElementController.setAttr(circleElement, 'fill', draw.options.pointColor)
-  }
-
-  function setSelectColor (circleElement) {
-    ElementController.setAttr(circleElement, 'fill', draw.options.pointColor)
-  }
-
   function hide (circleElement) {
     circleElement.style.display = 'none'
   }
@@ -173,8 +168,10 @@ function CircleHelper (draw, product) { // eslint-disable-line
   }
 
   function changeRadius (index, radius) {
-    ElementController.setAttr(circles[index], 'width', radius * 2)
-    ElementController.setAttr(circles[index], 'height', radius * 2)
+    divEq(
+      ElementController.setAttr('width', radius * 2),
+      ElementController.setAttr('height', radius * 2)
+    )(circles[index])
   }
 
   function appendAtLast () {

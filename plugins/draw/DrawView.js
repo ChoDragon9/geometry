@@ -51,8 +51,8 @@ function DrawView (draw, product) { // eslint-disable-line
       var circleXAxis = pointAxis[0]
       var circleYAxis = pointAxis[1]
       var selfCircle = circles[idx]
-      var width = parseInt(ElementController.getAttr(selfCircle, 'width'))
-      height = parseInt(ElementController.getAttr(selfCircle, 'height'))
+      var width = parseInt(ElementController.getAttr('width')(selfCircle))
+      height = parseInt(ElementController.getAttr('height')(selfCircle))
 
       /**
        * 고정비 사각형일 때, 부모의 영역를 넘어갈 경우 Safari에서

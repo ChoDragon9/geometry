@@ -11,6 +11,9 @@ function LineHelper (draw, product) { // eslint-disable-line
   var hoveredLineIndex = null
   var iconHelperTimer = null
 
+  const setDefaultColor = ElementController.setAttr('stroke', draw.options.lineColor)
+  const setSelectColor = setDefaultColor
+
   iconHelper.onClick(function (event) {
     backupPoints() // addPointInLine에서 드래그 체크를 하기 때문에 추가
     addPointInLine.call({
@@ -57,14 +60,6 @@ function LineHelper (draw, product) { // eslint-disable-line
       draw.drawView.setCursor(newLine)
     }
     lines.push(newLine)
-  }
-
-  function setDefaultColor (lineElement) {
-    ElementController.setAttr(lineElement, 'stroke', draw.options.lineColor)
-  }
-
-  function setSelectColor (lineElement) {
-    ElementController.setAttr(lineElement, 'stroke', draw.options.lineColor)
   }
 
   function hide (lineElement) {

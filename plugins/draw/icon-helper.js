@@ -33,7 +33,7 @@ function IconHelper (groupHelper) { // eslint-disable-line
       icon = ElementController.createRect(width, width)
       iconText = ElementController.createImage(src, width, width)[0]
 
-      ElementController.setAttr(icon, 'fill', '#000000')
+      ElementController.setAttr('fill', '#000000')(icon)
 
       icon.style.opacity = 0
       iconText.style.opacity = 0
@@ -77,10 +77,14 @@ function IconHelper (groupHelper) { // eslint-disable-line
     groupHelper.appendChild(iconText)
   };
   function changePosition (x, y) {
-    ElementController.setAttr(icon, 'x', x - width / 2)
-    ElementController.setAttr(icon, 'y', y - width / 2)
-    ElementController.setAttr(iconText, 'x', x - width / 2)
-    ElementController.setAttr(iconText, 'y', y - width / 2)
+    divEq(
+      ElementController.setAttr('x', x - width / 2),
+      ElementController.setAttr('y', y - width / 2)
+    )(icon)
+    divEq(
+      ElementController.setAttr('x', x - width / 2),
+      ElementController.setAttr('y', y - width / 2),
+    )(iconText)
   };
   function show () {
     icon.style.opacity = 1
