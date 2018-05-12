@@ -6,13 +6,13 @@ function WiseFaceDetectionHelper (draw) { // eslint-disable-line
   var wiseFaceDetection = draw.options.wiseFaceDetection
 
   function changeFillColor (fillColor) {
-    wiseFaceDetectionCircle.style.color = fillColor
+    ElementController.style('color', fillColor)(wiseFaceDetectionCircle)
   }
 
   function add () {
     wiseFaceDetectionCircle = document.createElement('span')
     wiseFaceDetectionCircle.className = 'tui tui-wn5-smile'
-    wiseFaceDetectionCircle.style.position = 'absolute'
+    ElementController.style('position', 'absolute')(wiseFaceDetectionCircle)
     changeFillColor(wiseFaceDetection.fillColor)
   }
 
@@ -41,15 +41,17 @@ function WiseFaceDetectionHelper (draw) { // eslint-disable-line
       radius *= wiseFaceDetection.widthRatio
     }
 
-    wiseFaceDetectionCircle.style.top = (yAxis - radius) + 'px'
-    wiseFaceDetectionCircle.style.left = (xAxis - radius) + 'px'
-    wiseFaceDetectionCircle.style.fontSize = (radius * 2) + 'px'
+    divEq(
+      ElementController.style('top', (yAxis - radius) + 'px'),
+      ElementController.style('left', (xAxis - radius) + 'px'),
+      ElementController.style('fontSize', (radius * 2) + 'px')
+    )(wiseFaceDetectionCircle)
   }
 
   if (wiseFaceDetection !== false) {
-    wiseFaceDetection.fillColor = typeof wiseFaceDetection.fillColor === 'undefined' ? '#dd2200' : wiseFaceDetection.fillColor
-    wiseFaceDetection.heightRatio = typeof wiseFaceDetection.heightRatio === 'undefined' ? 2.2 : wiseFaceDetection.heightRatio
-    wiseFaceDetection.widthRatio = typeof wiseFaceDetection.widthRatio === 'undefined' ? false : wiseFaceDetection.widthRatio
+    isUndefined(wiseFaceDetection.fillColor)() && (wiseFaceDetection.fillColor = '#dd2200')
+    isUndefined(wiseFaceDetection.heightRatio)() && (wiseFaceDetection.heightRatio = 2.2)
+    isUndefined(wiseFaceDetection.widthRatio)() && (wiseFaceDetection.widthRatio = false)
 
     this.updateCircle = updateCircle
     this.append = append

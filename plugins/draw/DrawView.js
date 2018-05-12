@@ -142,10 +142,10 @@ function DrawView (draw, product) { // eslint-disable-line
     draw.polygonHelper.setSelectColor()
   }
   this.setCursor = function (element) {
-    element.style.cursor = draw.options.useCursor ? 'pointer' : 'default'
+    ElementController.style('cursor', draw.options.useCursor ? 'pointer' : 'default')(element)
   }
   this.resetCursor = function (element) {
-    element.style.cursor = 'default'
+    ElementController.style('cursor', 'default')(element)
   }
   this.createSVGElement = function () {
     var radius = draw.options.circleRadius
@@ -236,7 +236,7 @@ function DrawView (draw, product) { // eslint-disable-line
     var newCircleRadius = draw.options.circleRadius
     var pointsLength = draw.drawModel.getPointsLength()
     // Set Axis
-    if (typeof appendIndex !== 'undefined') {
+    if (negate(isUndefined(appendIndex)())) {
       draw.drawModel.addAxis(xAxis, yAxis, appendIndex)
     } else {
       draw.drawModel.addAxis(xAxis, yAxis)
@@ -790,13 +790,13 @@ function DrawView (draw, product) { // eslint-disable-line
     draw.setAllColor()
   }
   this.validateGeometrySize = function (geometryWidth, geometryHeight) {
-    if (typeof draw.options.minSize !== 'undefined') {
+    if (negate(isUndefined(draw.options.minSize)())) {
       if (geometryWidth < draw.options.minSize.width || geometryHeight < draw.options.minSize.height) {
         return false
       }
     }
 
-    if (typeof draw.options.maxSize !== 'undefined') {
+    if (negate(isUndefined(draw.options.maxSize)())) {
       if (geometryWidth > draw.options.maxSize.width || geometryHeight > draw.options.maxSize.height) {
         return false
       }

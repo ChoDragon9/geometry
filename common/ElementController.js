@@ -19,6 +19,12 @@ window.ElementController = {
   appendChild: function (parentElement, childrenElement) {
     parentElement.appendChild(childrenElement)
   },
+  style (name, value) {
+    return elem => {
+      elem.style[name] = value
+      return elem
+    }
+  },
   createSVGElement: function (name) {
     return document.createElementNS('http://www.w3.org/2000/svg', name)
   },

@@ -60,17 +60,17 @@ function LineHelper (draw, product) { // eslint-disable-line
 
   function hide (lineElement) {
     if (draw.options.fill === true) {
-      lineElement.style.display = 'none'
+      ElementController.style('display', 'none')(lineElement)
     } else {
-      lineElement.style.opacity = hideOpacity
+      ElementController.style('opacity', hideOpacity)(lineElement)
     }
   }
 
   function show (lineElement) {
     if (draw.options.fill === true) {
-      lineElement.style.display = 'inline'
+      ElementController.style('display', 'inline')(lineElement)
     } else {
-      lineElement.style.opacity = 1
+      ElementController.style('opacity', 1)(lineElement)
     }
   }
 

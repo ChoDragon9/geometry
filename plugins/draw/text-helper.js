@@ -5,9 +5,13 @@ function TextTagHelper (draw, product) { // eslint-disable-line
   var textTag = null
   function addText () {
     if (draw.options.textInCircle !== null) {
-      textTag = ElementController.createText(draw.options.textInCircle)
-      textTag.style.fontSize = '12px'
-      draw.drawView.setCursor(textTag)
+      textTag = pipe(
+        ElementController.createText,
+        divEq(
+          ElementController.style('fontSize', '12px'),
+          draw.drawView.setCursor
+        )
+      )(draw.options.textInCircle)
       bindEvent()
     }
   }
@@ -38,13 +42,13 @@ function TextTagHelper (draw, product) { // eslint-disable-line
 
   function show () {
     if (draw.options.textInCircle !== null) {
-      textTag.style.display = 'inline'
+      ElementController.style('display', 'inline')(textTag)
     }
   }
 
   function hide () {
     if (draw.options.textInCircle !== null) {
-      textTag.style.display = 'none'
+      ElementController.style('display', 'none')(textTag)
     }
   }
 

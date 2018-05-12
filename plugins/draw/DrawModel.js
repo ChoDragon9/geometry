@@ -56,7 +56,7 @@ function DrawModel (draw, product) {
 
     var pointsLength = this.getPointsLength()
 
-    if (typeof xAxis === 'undefined' && typeof yAxis === 'undefined') {
+    if (isUndefined(xAxis)() && isUndefined(yAxis)()) {
       lastPoint = this.getAxis(pointsLength - 1)
       newPoint = [lastPoint[0], lastPoint[1]]
       newPoint[0] += draw.options.circleRadius
@@ -78,7 +78,7 @@ function DrawModel (draw, product) {
       newPoint = [xAxis, yAxis]
     }
 
-    if (typeof appendIndex !== 'undefined') {
+    if (negate(isUndefined(appendIndex)())) {
       this.appendAxis(appendIndex, newPoint[0], newPoint[1])
     } else {
       this.setAxis(pointsLength, newPoint[0], newPoint[1])

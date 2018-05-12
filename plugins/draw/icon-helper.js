@@ -35,12 +35,11 @@ function IconHelper (groupHelper) { // eslint-disable-line
 
       ElementController.setAttr('fill', '#000000')(icon)
 
-      icon.style.opacity = 0
-      iconText.style.opacity = 0
+      each(ElementController.style('opacity', 0))([icon, iconText])
 
       if (clickEventHandler !== null) {
-        icon.style.cursor = 'pointer'
-        iconText.style.cursor = 'pointer'
+
+        each(ElementController.style('cursor', 'pointer'))([icon, iconText])
 
         icon.addEventListener('click', function (event) {
           event.preventDefault()
@@ -87,8 +86,7 @@ function IconHelper (groupHelper) { // eslint-disable-line
     )(iconText)
   };
   function show () {
-    icon.style.opacity = 1
-    iconText.style.opacity = 1
+    each(ElementController.style('opacity', 1))([icon, iconText])
   };
   function hide () {
     if (icon === null) {
@@ -96,8 +94,7 @@ function IconHelper (groupHelper) { // eslint-disable-line
     }
 
     if (icon.style.opacity === '1') {
-      icon.style.opacity = 0
-      iconText.style.opacity = 0
+      each(ElementController.style('opacity', 0))([icon, iconText])
       self.changePosition(0, 0)
     }
   };

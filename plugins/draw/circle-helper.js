@@ -151,14 +151,6 @@ function CircleHelper (draw, product) { // eslint-disable-line
     draw.drawView.setCursor(parentSvg)
   }
 
-  function hide (circleElement) {
-    circleElement.style.display = 'none'
-  }
-
-  function show (circleElement) {
-    circleElement.style.display = 'inline'
-  }
-
   function appendAll () {
     each(circle => draw.groupHelper.appendChild(circle))(circles)
     iconHelper.createIcon(false)
@@ -211,8 +203,8 @@ function CircleHelper (draw, product) { // eslint-disable-line
   this.removeAll = removeAll
   this.update = update
   this.isMouseLeave = isMouseLeave
-  this.hide = hide
-  this.show = show
+  this.hide = ElementController.style('display', 'none')
+  this.show = ElementController.style('display', 'inline')
   this.getCircles = getCircles
   this.setCircles = setCircles
 }

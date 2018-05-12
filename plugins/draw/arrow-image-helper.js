@@ -50,7 +50,7 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
     if (draw.options.arrow === null) {
       return
     }
-    if (typeof draw.options.arrow.text !== 'undefined' && draw.options.arrow.text === true) {
+    if (negate(isUndefined(draw.options.arrow.text)()) && draw.options.arrow.text === true) {
       arrowTextContainner = ElementController.createGroup()
       arrowText[0] = ElementController.createText('A')
       ElementController.appendChild(arrowTextContainner, arrowText[0])
@@ -60,13 +60,15 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
   }
 
   function show () {
-    arrowTextContainner.style.display = 'inline'
-    arrowImage.style.display = 'inline'
+    each(ElementController.style('display', 'inline'))([
+      arrowImage, arrowTextContainner
+    ])
   }
 
   function hide () {
-    arrowTextContainner.style.display = 'none'
-    arrowImage.style.display = 'none'
+    each(ElementController.style('display', 'none'))([
+      arrowImage, arrowTextContainner
+    ])
   }
 
   function changeArrowGuideText (xAxis, yAxis, angle) {

@@ -58,8 +58,10 @@ function PolygonHelper (draw, product) { // eslint-disable-line
 
   function setDefaultColor () {
     if (draw.options.fill === true) {
-      polygon.style.fill = draw.options.fillColor
-      polygon.style.opacity = draw.options.fillOpacity
+      divEq(
+        ElementController.style('fill', draw.options.fillColor),
+        ElementController.style('opacity', draw.options.fillOpacity)
+      )(polygon)
     }
   }
 
@@ -72,7 +74,7 @@ function PolygonHelper (draw, product) { // eslint-disable-line
     if (opacity > 0) {
       opacity = opacity + opacity * 0.5
     }
-    polygon.style.opacity = opacity
+    ElementController.style('opacity', opacity)
   }
 
   function update () {
