@@ -143,7 +143,7 @@ function Draw (product, options) {
     var pointsLength = 0
 
     try {
-      points = isUndefined(prevPoints)()
+      points = isUndefined(prevPoints)
         ? CommonUtils.cloneObject(draw.drawModel.getPoints())
         : CommonUtils.cloneObject(prevPoints)
       pointsLength = points.length
@@ -180,7 +180,7 @@ function Draw (product, options) {
     }
 
     try {
-      points = isUndefined(prevPoints)()
+      points = isUndefined(prevPoints)
         ? CommonUtils.cloneObject(draw.drawModel.getPoints())
         : CommonUtils.cloneObject(prevPoints)
       pointsLength = points.length
@@ -218,7 +218,7 @@ function Draw (product, options) {
 
   // @DrawUtil
   function validateStabilization (prevPoints) {
-    var points = isUndefined(prevPoints)()
+    var points = isUndefined(prevPoints)
       ? CommonUtils.cloneObject(draw.drawModel.getPoints())
       : CommonUtils.cloneObject(prevPoints)
     var returnVal = true

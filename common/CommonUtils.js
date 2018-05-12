@@ -42,7 +42,7 @@ window.CommonUtils = {
     var newOptions = this.cloneObject(_options)
 
     for (var keyName in defaultOptions) {
-      if (isUndefined(newOptions[keyName])()) {
+      if (isUndefined(newOptions[keyName])) {
         newOptions[keyName] = defaultOptions[keyName]
       }
     }

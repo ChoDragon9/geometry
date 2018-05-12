@@ -50,7 +50,7 @@ function ArrowImageHelper (draw, product) { // eslint-disable-line
     if (draw.options.arrow === null) {
       return
     }
-    if (negate(isUndefined(draw.options.arrow.text)()) && draw.options.arrow.text === true) {
+    if (negate(isUndefined(draw.options.arrow.text)) && draw.options.arrow.text === true) {
       arrowTextContainner = ElementController.createGroup()
       arrowText[0] = ElementController.createText('A')
       ElementController.appendChild(arrowTextContainner, arrowText[0])

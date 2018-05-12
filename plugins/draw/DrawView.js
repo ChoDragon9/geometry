@@ -236,7 +236,7 @@ function DrawView (draw, product) { // eslint-disable-line
     var newCircleRadius = draw.options.circleRadius
     var pointsLength = draw.drawModel.getPointsLength()
     // Set Axis
-    if (negate(isUndefined(appendIndex)())) {
+    if (negate(isUndefined(appendIndex))) {
       draw.drawModel.addAxis(xAxis, yAxis, appendIndex)
     } else {
       draw.drawModel.addAxis(xAxis, yAxis)
@@ -790,13 +790,13 @@ function DrawView (draw, product) { // eslint-disable-line
     draw.setAllColor()
   }
   this.validateGeometrySize = function (geometryWidth, geometryHeight) {
-    if (negate(isUndefined(draw.options.minSize)())) {
+    if (negate(isUndefined(draw.options.minSize))) {
       if (geometryWidth < draw.options.minSize.width || geometryHeight < draw.options.minSize.height) {
         return false
       }
     }
 
-    if (negate(isUndefined(draw.options.maxSize)())) {
+    if (negate(isUndefined(draw.options.maxSize))) {
       if (geometryWidth > draw.options.maxSize.width || geometryHeight > draw.options.maxSize.height) {
         return false
       }

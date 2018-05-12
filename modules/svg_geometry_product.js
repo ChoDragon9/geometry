@@ -5,10 +5,8 @@
  * @param {Object} svgTag svg tag
  */
 function SVGGeometryProduct (svgTag) {
-  svgTag.setAttributeNS(null, 'draggable', false)
-
-  // Default style
   divEq(
+    ElementController.setAttr('draggable', false),
     ElementController.style('cursor', 'normal'),
     ElementController.style('userSelect', 'none'),
     ElementController.style('mozUserSelect', 'none'),
@@ -22,27 +20,28 @@ function SVGGeometryProduct (svgTag) {
 }
 
 SVGGeometryProduct.prototype = {
-  getParentMovedAttr: function () {
-    return 'is-moved'
-  },
-  getIconHiddenDelay: function () {
-    return 2000 // ms
-  },
-  getClickDetectionTime: function () {
-    return 100 // ms
-  },
+  getParentMovedAttr: () => 'is-moved',
+  getIconHiddenDelay: () => 2000,
+  getClickDetectionTime: () => 100,
   getPageAxis: function (event) {
-    var offset = this.parentOffset()
-    var xAxis = event.pageX - offset.left
-    var yAxis = event.pageY - offset.top
-    var scroll = CommonUtils.getBodyScroll()
+    return pipe(
+      ({left, top}) => {
+        return [
+          event.pageX - left,
+          event.pageY - top
+        ]
+      },
+      ([xAxis, yAxis]) => {
+        const scroll = CommonUtils.getBodyScroll()
 
-    if (scroll) {
-      xAxis -= scroll.left
-      yAxis -= scroll.top
-    }
+        if (scroll) {
+          xAxis -= scroll.left
+          yAxis -= scroll.top
+        }
 
-    return [xAxis, yAxis]
+        return [xAxis, yAxis]
+      }
+    )(this.parentOffset())
   },
   getParentSvgSize: function () {
     var parentSvg = this.getParentSvg()

@@ -49,9 +49,9 @@ function WiseFaceDetectionHelper (draw) { // eslint-disable-line
   }
 
   if (wiseFaceDetection !== false) {
-    isUndefined(wiseFaceDetection.fillColor)() && (wiseFaceDetection.fillColor = '#dd2200')
-    isUndefined(wiseFaceDetection.heightRatio)() && (wiseFaceDetection.heightRatio = 2.2)
-    isUndefined(wiseFaceDetection.widthRatio)() && (wiseFaceDetection.widthRatio = false)
+    isUndefined(wiseFaceDetection.fillColor) && (wiseFaceDetection.fillColor = '#dd2200')
+    isUndefined(wiseFaceDetection.heightRatio) && (wiseFaceDetection.heightRatio = 2.2)
+    isUndefined(wiseFaceDetection.widthRatio) && (wiseFaceDetection.widthRatio = false)
 
     this.updateCircle = updateCircle
     this.append = append

@@ -52,8 +52,6 @@
     w.each((fn) => fn(val))(fns)
     return val
   }
-  w.isUndefined = (obj) => () => {
-    return typeof obj === 'undefined'
-  }
+  w.isUndefined = (obj) => typeof obj === 'undefined',
   w.negate = v => !v
 })(typeof global === 'object' ? global : window)
