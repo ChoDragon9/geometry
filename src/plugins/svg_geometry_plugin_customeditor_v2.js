@@ -1,14 +1,17 @@
 'use strict'
 const CustomEditor = require('./customeditor')
 const Draw = require('./draw')
+const {MOVED_ATTR} = require('../modules/constants')
 const EventController = require('../common/EventController')
+const ElementController = require('../common/ElementController')
 const _ = require('../common/fp')
+const {CLICK_DETECTION_TIME} = require('../modules/constants')
 
-function CustomEditorV2 (product, options) {
+function CustomEditorV2 (rootSVG, options) {
   var self = this
   self._mouseDownTimer = null
   self._svgObj = null
-  self._product = product
+  self._rootSVG = rootSVG
 
   self.parentSVGMouseUpHandleProxy = function (event) {
     self.parentSVGMouseUpHandle.bind(self)(event)
@@ -17,7 +20,7 @@ function CustomEditorV2 (product, options) {
     self.parentSVGMouseDownHandle.bind(self)(event)
   }
 
-  CustomEditor.call(self, product, options)
+  CustomEditor.call(self, rootSVG, options)
 }
 
 CustomEditorV2.prototype = Object.create(CustomEditor.prototype)
@@ -29,14 +32,14 @@ CustomEditorV2.prototype.parentSVGClickHandle = function (event) {
 CustomEditorV2.prototype.unbindEvent = function () {
   CustomEditor.prototype.unbindEvent.call(this)
 
-  EventController.unbindEvent('mousedown', this.parentSVGMouseDownHandleProxy)(this._product.getParentSvg())
+  EventController.unbindEvent('mousedown', this.parentSVGMouseDownHandleProxy)(this._rootSVG)
   EventController.unbindBodyEvent('mouseup', this.parentSVGMouseUpHandleProxy)
 }
 CustomEditorV2.prototype.bindEvent = function () {
   _.divEq(
     EventController.bindEvent('mousedown', this.parentSVGMouseDownHandleProxy),
     EventController.bindEvent('mouseup', this.parentSVGMouseUpHandleProxy)
-  )(this._product.getParentSvg())
+  )(this._rootSVG)
 }
 CustomEditorV2.prototype.bindCancelEvent = function () {
   this.bindContextMenu()
@@ -76,7 +79,7 @@ CustomEditorV2.prototype.parentSVGMouseUpHandle = function (event) {
   }
 
   var isRightMouseBtn = event.buttons === 2
-  var isUsingParent = this._product.getParentSvgAttr(this._product.getParentMovedAttr()) === 'true'
+  var isUsingParent = ElementController.getAttr(MOVED_ATTR)(this._rootSVG) === 'true'
 
   if (isRightMouseBtn || isUsingParent || this._svgObj === null) {
     return
@@ -94,7 +97,7 @@ CustomEditorV2.prototype.abortCheckingDragEvent = function (event) {
   _.divEq(
     EventController.unbindEvent('mousedown', this.parentSVGMouseDownHandle),
     EventController.unbindEvent('mouseup', this.parentSVGMouseUpHandle)
-  )(this._product.getParentSvg())
+  )(this._rootSVG)
 
   CustomEditor.prototype.bindEvent.call(this)
 }
@@ -102,7 +105,7 @@ CustomEditorV2.prototype.abortCheckingDragEvent = function (event) {
 CustomEditorV2.prototype.parentSVGMouseDownHandle = function (event) {
   var isRightMouseBtn = event.buttons === 2
   var isNotCurrentTarget = event.currentTarget !== event.target
-  var isUsingParent = this._product.getParentSvgAttr(this._product.getParentMovedAttr()) === 'true'
+  var isUsingParent = ElementController.getAttr(MOVED_ATTR)(this._rootSVG) === 'true'
 
   if (isRightMouseBtn || isNotCurrentTarget || isUsingParent) {
     return
@@ -115,8 +118,8 @@ CustomEditorV2.prototype.startCheckingDragEvent = function (event) {
 
   this._mouseDownTimer = window.setTimeout(
     this.startDragEvent.bind(this),
-    this._product.getClickDetectionTime(),
-    this._product.getPageAxis(event)
+    CLICK_DETECTION_TIME,
+    ElementController.getPageAxis(this._rootSVG, event)
   )
 }
 CustomEditorV2.prototype.startDragEvent = function (axis) {
@@ -130,7 +133,7 @@ CustomEditorV2.prototype.startDragEvent = function (axis) {
 
   this._options.useRectangleForCustomDraw = true
 
-  this._svgObj = new Draw(this._product, this._options)
+  this._svgObj = new Draw(this._rootSVG, this._options)
   this.bindCancelEvent()
 }
 

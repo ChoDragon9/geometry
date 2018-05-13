@@ -4,7 +4,7 @@
   "description": "SVG 를 사용한 Geometry 그리기 도구",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel ./sample/index.html",
+    "dev": "parcel ./sample/index.html --no-hmr",
     "test": "mocha",
     "lint": "standard ./src/*.js ./src/**/*.js ./test/*.js ./test/**/*.js",
     "lint:fix": "standard --fix ./src/*.js ./src/**/*.js ./test/*.js ./test/**/*.js"

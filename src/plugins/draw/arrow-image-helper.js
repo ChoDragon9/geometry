@@ -5,7 +5,7 @@ const ElementController = require('../../common/ElementController')
 const FunnyMath = require('../../common/FunnyMath')
 const _ = require('../../common/fp')
 
-module.exports = function ArrowImageHelper (draw, product) { // eslint-disable-line
+module.exports = function ArrowImageHelper (draw, rootSVG) { // eslint-disable-line
   'use strict'
 
   var IMAGE_WIDTH = 25

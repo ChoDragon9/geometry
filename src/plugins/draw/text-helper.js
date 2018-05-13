@@ -4,7 +4,7 @@
 const ElementController = require('../../common/ElementController')
 const _ = require('../../common/fp')
 
-module.exports = function TextTagHelper (draw, product) { // eslint-disable-line
+module.exports = function TextTagHelper (draw, rootSVG) { // eslint-disable-line
   var textTag = null
   function addText () {
     if (draw.options.textInCircle !== null) {

@@ -41,7 +41,7 @@ const DrawModel = require('./DrawModel')
 const DrawView = require('./DrawView')
 const _ = require('../../common/fp')
 
-module.exports = function Draw (product, options) {
+module.exports = function Draw (rootSVG, options) {
   var draw = this
 
   var MINIMUM_ANGLE = 1
@@ -94,8 +94,8 @@ module.exports = function Draw (product, options) {
     draw.options.fixedRatio = true
   }
 
-  draw.drawModel = new DrawModel(draw, product)
-  draw.drawView = new DrawView(draw, product)
+  draw.drawModel = new DrawModel(draw, rootSVG)
+  draw.drawView = new DrawView(draw, rootSVG)
 
   draw.rectangleIndex = draw.drawModel.getRectangleIndex()
 

@@ -5,8 +5,9 @@ const IconHelper = require('./icon-helper')
 const FunnyMath = require('../../common/FunnyMath')
 const ElementController = require('../../common/ElementController')
 const _ = require('../../common/fp')
+const {ICON_HIDDEN_DELAY} = require('../../modules/constants')
 
-module.exports = function LineHelper (draw, product) { // eslint-disable-line
+module.exports = function LineHelper (draw, rootSVG) { // eslint-disable-line
   'use strict'
   var parentSvgMovedAttr = 'is-moved'
   var lines = []
@@ -82,13 +83,13 @@ module.exports = function LineHelper (draw, product) { // eslint-disable-line
   function showPointIcon (event) {
     clearTimeout(iconHelperTimer)
     if (
-      product.getParentSvgAttr(parentSvgMovedAttr) === 'true' || // 폴리건 드래그를 하고 있을 때
+      ElementController.getAttr(parentSvgMovedAttr)(rootSVG) === 'true' || // 폴리건 드래그를 하고 있을 때
       draw.selectedLineIndex !== null || // 드래그를 하고 있을 때
       this.style.opacity === hideOpacity || // 선택된 오브젝트가 아닐 때
       draw.drawModel.getPointsLength() >= draw.options.maxPoint) { // 최대 포인트일 때
       return
     }
-    var pageAxis = product.getPageAxis(event)
+    var pageAxis = ElementController.getPageAxis(rootSVG, event)
     var xAxis = pageAxis[0]
     var yAxis = pageAxis[1]
     var leftAxis = null
@@ -112,7 +113,7 @@ module.exports = function LineHelper (draw, product) { // eslint-disable-line
 
     iconHelperTimer = setTimeout(function () {
       iconHelper.hide()
-    }, product.getIconHiddenDelay())
+    }, ICON_HIDDEN_DELAY)
   }
 
   function mouseUpHandler () {
@@ -160,7 +161,7 @@ module.exports = function LineHelper (draw, product) { // eslint-disable-line
       return
     }
 
-    pageAxis = product.getPageAxis(event)
+    pageAxis = ElementController.getPageAxis(rootSVG, event)
     xAxis = pageAxis[0]
     yAxis = pageAxis[1]
 

@@ -96,6 +96,27 @@ module.exports = {
   createUse: function () {
     return this.createSVGElement('use')
   },
+  getBodyScroll: function () {
+    var scroll = false
+    var body = document.body
+    var html = document.documentElement
+
+    if (body.scrollTop !== 0 || body.scrollLeft !== 0) {
+      // For Chrome, Safari, Opera
+      scroll = {
+        left: body.scrollLeft,
+        top: body.scrollTop
+      }
+    } else if (html.scrollTop !== 0 || html.scrollLeft !== 0) {
+      // Firefox, IE
+      scroll = {
+        left: html.scrollLeft,
+        top: html.scrollTop
+      }
+    }
+
+    return scroll
+  },
   getSVGOffset (target) {
     return () => {
       const {
@@ -106,5 +127,45 @@ module.exports = {
         top, left, width, height
       }
     }
+  },
+  getPageAxis (element, event) {
+    return _.pipe(
+      this.getSVGOffset(element),
+      ({left, top}) => {
+        return [
+          event.pageX - left,
+          event.pageY - top
+        ]
+      },
+      ([xAxis, yAxis]) => {
+        const scroll = this.getBodyScroll()
+
+        if (scroll) {
+          xAxis -= scroll.left
+          yAxis -= scroll.top
+        }
+
+        return [xAxis, yAxis]
+      }
+    )()
+  },
+  getSize (element) {
+    const width = _.pipe(
+      this.getAttr('width'),
+      (width) => {
+        return width || element.clientWidth
+      },
+      parseInt
+    )(element)
+
+    const height = _.pipe(
+      this.getAttr('height'),
+      (height) => {
+        return height || element.clientHeight
+      },
+      parseInt
+    )(element)
+
+    return { width, height }
   }
 }

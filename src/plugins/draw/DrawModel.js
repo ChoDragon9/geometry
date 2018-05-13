@@ -1,7 +1,8 @@
 const CommonUtils = require('../../common/CommonUtils')
+const ElementController = require('../../common/ElementController')
 const _ = require('../../common/fp')
 
-function DrawModel (draw, product) {
+function DrawModel (draw, rootSVG) {
   var self = this
   this.points = CommonUtils.cloneObject(draw.options.points)
   this.isAllSelected = false
@@ -27,7 +28,7 @@ function DrawModel (draw, product) {
     return indexList
   }
   this.alignCenter = function () {
-    var parentSvgSize = product.getParentSvgSize()
+    var parentSvgSize = ElementController.getSize(rootSVG)
     var firstPoint = self.getAxis(0)
     var thirdPoint = self.getAxis(2)
     var geometryWidth = thirdPoint[0] - firstPoint[0]
@@ -55,7 +56,7 @@ function DrawModel (draw, product) {
     var lastPoint = null
     var newPoint = null
 
-    var offset = product.parentOffset()
+    var offset = ElementController.getSVGOffset(rootSVG)()
 
     var pointsLength = this.getPointsLength()
 
@@ -88,7 +89,7 @@ function DrawModel (draw, product) {
     }
   }
   this.validateAxis = function (xAxis, yAxis) {
-    var offset = product.parentOffset()
+    var offset = ElementController.getSVGOffset(rootSVG)()
     var returnVal = true
 
     if (

@@ -2,8 +2,8 @@ const State = require('./state')
 const FunnyMath = require('../../common/FunnyMath')
 const _ = require('../../common/fp')
 
-function LineState (product) {
-  State.call(this, product)
+function LineState (rootSVG) {
+  State.call(this, rootSVG)
   this._obj = null
   this._currentPoint = 0
   this._options = null

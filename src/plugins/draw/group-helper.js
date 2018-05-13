@@ -6,33 +6,31 @@
 const ElementController = require('../../common/ElementController')
 const _ = require('../../common/fp')
 
-module.exports = function GroupHelper (draw, product) { // eslint-disable-line
+module.exports = function GroupHelper (draw, rootSVG) { // eslint-disable-line
   var groupTag = null
-
-  var parentSvg = product.getParentSvg()
   var notUseMoveTopLayer = draw.options.notUseMoveTopLayer
 
   this.add = function () {
     groupTag = ElementController.createGroup()
   }
   this.remove = function () {
-    product.removeParentChild(groupTag)
+    ElementController.removeChild(rootSVG, groupTag)
   }
   this.moveTopLayer = function () {
     if (notUseMoveTopLayer === true) {
       return
     }
-    var lastChild = parentSvg.lastChild
+    var lastChild = rootSVG.lastChild
 
     if (lastChild !== groupTag) {
-      parentSvg.insertBefore(
+      rootSVG.insertBefore(
         groupTag,
         lastChild.nextSibling
       )
     }
   }
   this.append = function () {
-    product.appendParentChild(groupTag)
+    ElementController.appendChild(rootSVG, groupTag)
   }
   this.appendChild = function (child) {
     ElementController.appendChild(groupTag, child)

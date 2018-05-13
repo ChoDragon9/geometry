@@ -53,12 +53,23 @@ svgGeometry.draw({
   ]
 });
  */
-const SVGGeometryProduct = require('./svg_geometry_product')
 const Draw = require('../plugins/draw')
 const CustomEditor = require('../plugins/customeditor')
 const CustomEditorV2 = require('../plugins/svg_geometry_plugin_customeditor_v2')
 
+const ElementController = require('../common/ElementController')
+const _ = require('../common/fp')
+
 function SVGGeometry (svgTag) {
+  _.divEq(
+    ElementController.setAttr('draggable', false),
+    ElementController.style('cursor', 'normal'),
+    ElementController.style('userSelect', 'none'),
+    ElementController.style('mozUserSelect', 'none'),
+    ElementController.style('webkitUserSelect', 'none'),
+    ElementController.style('msUserSelect', 'none')
+  )(svgTag)
+
   this.svgTag = svgTag
 }
 
@@ -81,7 +92,7 @@ svgGeometry.draw(1);
  */
 SVGGeometry.addPlugin = function (name, Constructor) {
   SVGGeometry.prototype[name] = function (options) {
-    return new Constructor(new SVGGeometryProduct(this.svgTag), options)
+    return new Constructor(this.svgTag, options)
   }
 }
 

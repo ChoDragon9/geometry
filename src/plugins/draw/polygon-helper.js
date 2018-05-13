@@ -4,7 +4,7 @@
 const ElementController = require('../../common/ElementController')
 const _ = require('../../common/fp')
 
-module.exports = function PolygonHelper (draw, product) { // eslint-disable-line
+module.exports = function PolygonHelper (draw, rootSVG) { // eslint-disable-line
   'use strict'
 
   var polygon = null

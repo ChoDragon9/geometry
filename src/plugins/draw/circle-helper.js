@@ -4,9 +4,9 @@
 const IconHelper = require('./icon-helper')
 const ElementController = require('../../common/ElementController')
 const _ = require('../../common/fp')
+const {ICON_HIDDEN_DELAY} = require('../../modules/constants')
 
-module.exports = function CircleHelper (draw, product) { // eslint-disable-line
-  var parentSvg = product.getParentSvg()
+module.exports = function CircleHelper (draw, rootSVG) { // eslint-disable-line
   var isLeave = false
   var iconHelper = new IconHelper(draw.groupHelper)
   var iconHelperTimer = null
@@ -107,7 +107,7 @@ module.exports = function CircleHelper (draw, product) { // eslint-disable-line
     clearTimeout(iconHelperTimer)
     iconHelperTimer = setTimeout(function () {
       iconHelper.hide()
-    }, product.getIconHiddenDelay())
+    }, ICON_HIDDEN_DELAY)
   }
 
   function update () {
@@ -152,7 +152,7 @@ module.exports = function CircleHelper (draw, product) { // eslint-disable-line
 
     setSelectColor(self)
     self.isSelected = true
-    draw.drawView.setCursor(parentSvg)
+    draw.drawView.setCursor(rootSVG)
   }
 
   function appendAll () {

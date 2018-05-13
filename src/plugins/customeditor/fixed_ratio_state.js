@@ -1,7 +1,7 @@
 const State = require('./state')
 
-function FixedRatioState (product) {
-  State.call(this, product)
+function FixedRatioState (rootSVG) {
+  State.call(this, rootSVG)
 }
 FixedRatioState.prototype = Object.create(State.prototype)
 FixedRatioState.prototype.start = function (options, axis) {

@@ -1,5 +1,3 @@
-const _ = require('./fp')
-
 module.exports = {
   getRadian: function (angle) {
     return angle * (Math.PI / 180)

@@ -11,11 +11,11 @@ const FunnyMath = require('../../common/FunnyMath')
 const EventController = require('../../common/EventController')
 const CommonUtils = require('../../common/CommonUtils')
 const _ = require('../../common/fp')
+const {MOVED_ATTR} = require('../../modules/constants')
 
-module.exports = function DrawView (draw, product) { // eslint-disable-line
+module.exports = function DrawView (draw, rootSVG) { // eslint-disable-line
   var TEXT_POINT_RADIUS = 1.5
 
-  var parentSvg = product.getParentSvg()
   var parentSvgRatio = []
   var parentSvgStartAxis = null
 
@@ -26,13 +26,13 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
   draw.selectedCircleIndex = null
   draw.selectedLineIndex = null
 
-  draw.groupHelper = new GroupHelper(draw, product)
-  draw.wiseFaceDetectionHelper = new WiseFaceDetectionHelper(draw, product)
-  draw.lineHelper = new LineHelper(draw, product)
-  draw.circleHelper = new CircleHelper(draw, product)
-  draw.textTagHelper = new TextTagHelper(draw, product)
-  draw.polygonHelper = new PolygonHelper(draw, product)
-  draw.arrowImageHelper = new ArrowImageHelper(draw, product)
+  draw.groupHelper = new GroupHelper(draw, rootSVG)
+  draw.wiseFaceDetectionHelper = new WiseFaceDetectionHelper(draw, rootSVG)
+  draw.lineHelper = new LineHelper(draw, rootSVG)
+  draw.circleHelper = new CircleHelper(draw, rootSVG)
+  draw.textTagHelper = new TextTagHelper(draw, rootSVG)
+  draw.polygonHelper = new PolygonHelper(draw, rootSVG)
+  draw.arrowImageHelper = new ArrowImageHelper(draw, rootSVG)
 
   this.getArrow = draw.arrowImageHelper.getArrow
   this.changeArrow = draw.arrowImageHelper.changeArrow
@@ -220,7 +220,7 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
   }
   this.resetParentSvgAttr = function () {
     window.setTimeout(function () {
-      product.setParentSvgAttr(product.getParentMovedAttr(), false)
+      ElementController.setAttr(MOVED_ATTR, false)(rootSVG)
     }, 100)
   }
   this.removeAllElement = function () {
@@ -328,7 +328,7 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
       draw.resetAllColor()
     }
 
-    drawView.resetCursor(parentSvg)
+    drawView.resetCursor(rootSVG)
 
     if (draw.options.fixedRatio === true) {
       parentSvgRatio = []
@@ -358,7 +358,7 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
     var polygon = draw.polygonHelper.getPolygon()
     const isSelected = item => item.isSelected
 
-    parentSvgStartAxis = product.getPageAxis(event)
+    parentSvgStartAxis = ElementController.getPageAxis(rootSVG, event)
 
     _.pipe(
       _.findIndex(isSelected),
@@ -405,13 +405,13 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
       draw.selectedLineIndex !== null ||
       selectedPolygon !== null
     ) {
-      product.setParentSvgAttr(product.getParentMovedAttr(), true)
+      ElementController.setAttr(MOVED_ATTR, true)(rootSVG)
       drawView.toggleDraggingStatus(true)
     }
   }
   const moveRectangle = (event) => {
     let [changedX1, changedY1] = draw.drawModel.getAxis(draw.rectangleIndex[0])
-    let [changedX2, changedY2] = product.getPageAxis(event)
+    let [changedX2, changedY2] = ElementController.getPageAxis(rootSVG, event)
     let thirdPoint = draw.drawModel.getAxis(draw.rectangleIndex[2])
 
     // 가로 Min, Max Validation
@@ -432,7 +432,7 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
     return [changedX1, changedY1, changedX2, changedY2]
   }
   const moveFixedRect = (event) => {
-    var pageAxis = product.getPageAxis(event)
+    var pageAxis = ElementController.getPageAxis(rootSVG, event)
     var xAxis = pageAxis[0]
     var yAxis = pageAxis[1]
     var firstPoint = draw.drawModel.getAxis(draw.rectangleIndex[0])
@@ -492,15 +492,15 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
       return
     }
 
-    var pageAxis = product.getPageAxis(event)
+    var pageAxis = ElementController.getPageAxis(rootSVG, event)
     var xAxis = pageAxis[0]
     var yAxis = pageAxis[1]
 
     var movedXAxis = xAxis - parentSvgStartAxis[0]
     var movedYAxis = yAxis - parentSvgStartAxis[1]
 
-    var offsetWidth = product.parentOffset().width
-    var offsetHeight = product.parentOffset().height
+    var offsetWidth = ElementController.getSVGOffset(rootSVG)().width
+    var offsetHeight = ElementController.getSVGOffset(rootSVG)().height
 
     var firstPoint = draw.drawModel.getAxis(draw.rectangleIndex[0])
     var thirdPoint = draw.drawModel.getAxis(draw.rectangleIndex[2])
@@ -550,8 +550,11 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
 
         // 뒤집어지는 것을 방지 하기 위해 세번째 포인트가 첫번째 포인트 보다 적을 때 return
         if (
-          draw.options.useRectangleForCustomDraw === false &&
-          (firstPoint[0] > axis[2] || firstPoint[1] > axis[3])
+          _.isUndefined(axis) ||
+          (
+            draw.options.useRectangleForCustomDraw === false &&
+            (firstPoint[0] > axis[2] || firstPoint[1] > axis[3])
+          )
         ) {
           return
         }
@@ -738,7 +741,7 @@ module.exports = function DrawView (draw, product) { // eslint-disable-line
 
     var firstPoint = draw.drawModel.getAxis(0)
     var thirdPoint = draw.drawModel.getAxis(2)
-    var offset = product.parentOffset()
+    var offset = ElementController.getSVGOffset(rootSVG)()
     var changedX1 = 0
     var changedX3 = 0
     var changedY1 = 0

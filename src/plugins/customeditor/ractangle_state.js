@@ -1,7 +1,7 @@
 const State = require('./state')
 
-function RectangleState (product) {
-  State.call(this, product)
+function RectangleState (rootSVG) {
+  State.call(this, rootSVG)
 }
 RectangleState.prototype = Object.create(State.prototype)
 RectangleState.prototype.start = function (options, axis) {

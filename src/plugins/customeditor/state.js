@@ -1,7 +1,7 @@
 const Draw = require('../draw')
 
-function State (product) {
-  this._product = product
+function State (rootSVG) {
+  this._rootSVG = rootSVG
   this._obj = null
   this._currentPoint = 0
   this._options = null
@@ -10,7 +10,7 @@ function State (product) {
 State.prototype = {
   start: function (options, axis) {
     this._options = options
-    this._obj = new Draw(this._product, options)
+    this._obj = new Draw(this._rootSVG, options)
     this._currentPoint++
     this.callStartEvent()
   },
