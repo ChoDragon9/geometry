@@ -9,7 +9,6 @@ const ArrowImageHelper = require('./arrow-image-helper')
 const ElementController = require('../../common/ElementController')
 const FunnyMath = require('../../common/FunnyMath')
 const EventController = require('../../common/EventController')
-const CommonUtils = require('../../common/CommonUtils')
 const _ = require('../../common/fp')
 const {MOVED_ATTR} = require('../../modules/constants')
 
@@ -288,7 +287,7 @@ module.exports = function DrawView (draw, rootSVG) { // eslint-disable-line
   }
   this.createArrow = function (arrowOptions) {
     draw.useArrow = true
-    draw.options.arrow = CommonUtils.cloneObject(arrowOptions)
+    draw.options.arrow = _.clone(arrowOptions)
     draw.arrowImageHelper.addImage()
     draw.changeAxis()
     draw.arrowImageHelper.append()

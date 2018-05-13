@@ -53,6 +53,32 @@ const divEq = (...fns) => val => { // Divided Equal
 }
 const isUndefined = (obj) => typeof obj === 'undefined'
 const negate = v => !v
+const clone = (obj) => {
+  if (typeof (obj) !== 'object') {
+    return obj
+  }
+
+  var copiedObj = obj.constructor()
+
+  for (var attr in obj) {
+    if (obj.hasOwnProperty(attr)) {
+      copiedObj[attr] = clone(obj[attr])
+    }
+  }
+
+  return copiedObj
+}
+const merge = (defaultOptions, _options) => {
+  var newOptions = clone(_options)
+
+  for (var keyName in defaultOptions) {
+    if (isUndefined(newOptions[keyName])) {
+      newOptions[keyName] = defaultOptions[keyName]
+    }
+  }
+
+  return newOptions
+}
 
 module.exports = {
   each,
@@ -65,5 +91,7 @@ module.exports = {
   pipe,
   divEq,
   isUndefined,
-  negate
+  negate,
+  clone,
+  merge
 }

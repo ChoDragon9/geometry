@@ -2,7 +2,6 @@
 const SVGGeometry = require('../../modules/svg_geometry')
 const EventController = require('../../common/EventController')
 const ElementController = require('../../common/ElementController')
-const CommonUtils = require('../../common/CommonUtils')
 const FixedRatioState = require('./fixed_ratio_state')
 const RectangleState = require('./ractangle_state')
 const LineState = require('./line_state')
@@ -76,7 +75,7 @@ CustomEditor.prototype = {
     this.unbindESCkeyEvent()
   },
   setOptions: function (options) {
-    this._options = CommonUtils.getOptions({
+    this._options = _.merge({
       minPoint: 4,
       event: {},
       fixedRatio: false,

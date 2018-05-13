@@ -1,10 +1,9 @@
-const CommonUtils = require('../../common/CommonUtils')
 const ElementController = require('../../common/ElementController')
 const _ = require('../../common/fp')
 
 function DrawModel (draw, rootSVG) {
   var self = this
-  this.points = CommonUtils.cloneObject(draw.options.points)
+  this.points = _.clone(draw.options.points)
   this.isAllSelected = false
   this.setIsAllSelectedState = function (state) {
     this.isAllSelected = state
@@ -47,10 +46,10 @@ function DrawModel (draw, rootSVG) {
     draw.changeAxis()
   }
   this.changeMinSizeOption = function (newMinSize) {
-    draw.options.minSize = CommonUtils.cloneObject(newMinSize)
+    draw.options.minSize = _.clone(newMinSize)
   }
   this.changeMaxSizeOption = function (newMaxSize) {
-    draw.options.maxSize = CommonUtils.cloneObject(newMaxSize)
+    draw.options.maxSize = _.clone(newMaxSize)
   }
   this.addAxis = function (xAxis, yAxis, appendIndex) {
     var lastPoint = null
@@ -111,10 +110,10 @@ function DrawModel (draw, rootSVG) {
 }
 DrawModel.prototype = {
   setPoints: function (points) {
-    this.points = CommonUtils.cloneObject(points)
+    this.points = _.clone(points)
   },
   getPoints: function () {
-    return CommonUtils.cloneObject(this.points)
+    return _.clone(this.points)
   },
   getPointsLength: function () {
     return this.points.length

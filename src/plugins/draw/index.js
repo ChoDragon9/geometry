@@ -35,7 +35,6 @@ svgGeometry.draw({
  * TextView - TextController
  * WiseFaceDetectionView - WiseFaceDetectionController
  */
-const CommonUtils = require('../../common/CommonUtils')
 const FunnyMath = require('../../common/FunnyMath')
 const DrawModel = require('./DrawModel')
 const DrawView = require('./DrawView')
@@ -46,7 +45,7 @@ module.exports = function Draw (rootSVG, options) {
 
   var MINIMUM_ANGLE = 1
 
-  draw.options = CommonUtils.getOptions({
+  draw.options = _.merge({
     fillColor: '#cccccc',
     lineColor: '#cccccc',
     pointColor: '#cccccc',
@@ -150,8 +149,8 @@ module.exports = function Draw (rootSVG, options) {
 
     try {
       points = _.isUndefined(prevPoints)
-        ? CommonUtils.cloneObject(draw.drawModel.getPoints())
-        : CommonUtils.cloneObject(prevPoints)
+        ? _.clone(draw.drawModel.getPoints())
+        : _.clone(prevPoints)
       pointsLength = points.length
 
       /**
@@ -187,8 +186,8 @@ module.exports = function Draw (rootSVG, options) {
 
     try {
       points = _.isUndefined(prevPoints)
-        ? CommonUtils.cloneObject(draw.drawModel.getPoints())
-        : CommonUtils.cloneObject(prevPoints)
+        ? _.clone(draw.drawModel.getPoints())
+        : _.clone(prevPoints)
       pointsLength = points.length
 
       for (var i = 0; i < pointsLength - 1; i++) {
@@ -225,8 +224,8 @@ module.exports = function Draw (rootSVG, options) {
   // @DrawUtil
   function validateStabilization (prevPoints) {
     var points = _.isUndefined(prevPoints)
-      ? CommonUtils.cloneObject(draw.drawModel.getPoints())
-      : CommonUtils.cloneObject(prevPoints)
+      ? _.clone(draw.drawModel.getPoints())
+      : _.clone(prevPoints)
     var returnVal = true
 
     if (validateMinimumAngle(points) === false || validateIntersection(points) === false) {
