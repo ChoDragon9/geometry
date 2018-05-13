@@ -4,7 +4,7 @@
  * Plugin 중 'draw'를 통해서 영역을 조작한다.
  *
  * @class
- * @param {Object} svgTag svg tag
+ * @param {Object} rootSVG svg tag
  * @example
 <caption>HTML Resource</caption>
 <script src="./svg_drawing/modules/svg_geometry_product.js"></script>
@@ -32,8 +32,8 @@
 
  * @example
 <caption>Javascript</caption>
-var svgTag = document.getElementById("svg_polygon");
-var svgGeometry = new SVGGeometry(svgTag);
+var rootSVG = document.getElementById("svg_polygon");
+var svgGeometry = new SVGGeometry(rootSVG);
 svgGeometry.draw({
   color: '#ff9832',
   selectedColor: '#ff5732',
@@ -60,44 +60,28 @@ const CustomEditorV2 = require('../plugins/svg_geometry_plugin_customeditor_v2')
 const ElementController = require('../common/ElementController')
 const _ = require('../common/fp')
 
-function SVGGeometry (svgTag) {
-  _.divEq(
-    ElementController.setAttr('draggable', false),
-    ElementController.style('cursor', 'normal'),
-    ElementController.style('userSelect', 'none'),
-    ElementController.style('mozUserSelect', 'none'),
-    ElementController.style('webkitUserSelect', 'none'),
-    ElementController.style('msUserSelect', 'none')
-  )(svgTag)
-
-  this.svgTag = svgTag
-}
-
-/**
- * Plugin 추가 함수
- *
- * @param {String} name 플러그인 이름
- * @param {Function} Constructor 플러그인 호출 시 사용될 Callback 함수
- * @example
-<caption>정의</caption>
-SVGGeometry.addPlugin('draw', function(number){
-  console.log(number);
-});
-
-<caption>사용</caption>
-var svgTag = document.getElementById("svg_polygon");
-var svgGeometry = new SVGGeometry(svgTag);
-svgGeometry.draw(0);
-svgGeometry.draw(1);
- */
-SVGGeometry.addPlugin = function (name, Constructor) {
-  SVGGeometry.prototype[name] = function (options) {
-    return new Constructor(this.svgTag, options)
+class SVGGeometry {
+  constructor(rootSVG) {
+    _.divEq(
+      ElementController.setAttr('draggable', false),
+      ElementController.style('cursor', 'normal'),
+      ElementController.style('userSelect', 'none'),
+      ElementController.style('mozUserSelect', 'none'),
+      ElementController.style('webkitUserSelect', 'none'),
+      ElementController.style('msUserSelect', 'none')
+    )(rootSVG)
+  
+    this._rootSVG = rootSVG
+  }
+  draw (options) {
+    return new Draw(this._rootSVG, options)
+  }
+  customEditor (options) {
+    return new CustomEditor(this._rootSVG, options)
+  }
+  customEditorV2 (options) {
+    return new CustomEditorV2(this._rootSVG, options)
   }
 }
-
-SVGGeometry.addPlugin('draw', Draw)
-SVGGeometry.addPlugin('customEditor', CustomEditor)
-SVGGeometry.addPlugin('customEditorV2', CustomEditorV2)
 
 module.exports = SVGGeometry
