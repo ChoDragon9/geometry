@@ -1,79 +1,85 @@
 'use strict'
 const EventController = require('../../common/EventController')
 const ElementController = require('../../common/ElementController')
+const _ = require('../../common/fp')
 const FixedRatioState = require('./fixed_ratio_state')
 const RectangleState = require('./ractangle_state')
 const LineState = require('./line_state')
 const {MOVED_ATTR} = require('../../modules/constants')
 
-function CustomEditor (rootSVG, options) {
-  var self = this
+class CustomEditor {
+  constructor(rootSVG, options) {
+    this._rootSVG = rootSVG
+    this._options = null
+    this._state = null
+    this.parentSVGClickHandle = this.createParentSVGClickHandle()
+    this.removeDrawingGeometry = this.createRemoveDrawingGeometry()
+    this.handleESCKey = this.createHandleESCKey()
 
-  this._rootSVG = rootSVG
-  this._options = null
-  this._state = null
-
-  this.parentSVGClickHandleProxy = function (event) {
-    self.parentSVGClickHandle(event)
-  }
-
-  this.removeDrawingGeometryProxy = function () {
-    self.removeDrawingGeometry()
-  }
-
-  this.setOptions(options)
-  this.bindEvent()
-}
-
-CustomEditor.prototype = {
-  constructor: CustomEditor,
-  destroy: function () {
-    this.unbindEvent()
-  },
-  stop: function () {
-    this.unbindEvent()
-  },
-  start: function () {
+    this.setOptions(options)
     this.bindEvent()
-  },
-  unbindEvent: function () {
-    EventController.unbindEvent('click', this.parentSVGClickHandleProxy)(this._rootSVG)
-  },
-  bindEvent: function () {
-    EventController.bindEvent('click', this.parentSVGClickHandleProxy)(this._rootSVG)
-  },
-  handleESCKey: function (event) {
-    if (event.keyCode === 27) {
-      this.removeDrawingGeometry()
+  }
+  destroy() {
+    return this.unbindEvent();
+  }
+  stop() {
+    return this.unbindEvent();
+  }
+  start() {
+    return this.bindEvent();
+  }
+  unbindEvent() {
+    EventController.unbindEvent('click', this.parentSVGClickHandle)(this._rootSVG)
+  }
+
+  bindEvent() {
+    EventController.bindEvent('click', this.parentSVGClickHandle)(this._rootSVG)
+  }
+
+  createHandleESCKey () {
+    return (event) => {
+      if (event.keyCode === 27) {
+        this.removeDrawingGeometry()
+      }
     }
-  },
-  bindContextMenu: function () {
-    EventController.bindEvent('contextmenu', this.removeDrawingGeometryProxy)(this._rootSVG)
-  },
-  unbindContextMenu: function () {
-    EventController.unbindEvent('contextmenu', this.removeDrawingGeometryProxy)(this._rootSVG)
-  },
-  bindESCkeyEvent: function () {
-    document.addEventListener('keyup', this.handleESCKey.bind(this))
-  },
-  unbindESCkeyEvent: function () {
-    document.removeEventListener('keyup', this.handleESCKey.bind(this))
-  },
-  removeDrawingGeometry: function () {
-    if (this._state.isFirst() === false) {
-      this._state.destroy()
-      this.endDraw()
+  }
+
+  bindContextMenu() {
+    EventController.bindEvent('contextmenu', this.removeDrawingGeometry)(this._rootSVG)
+  }
+
+  unbindContextMenu() {
+    EventController.unbindEvent('contextmenu', this.removeDrawingGeometry)(this._rootSVG)
+  }
+
+  bindESCkeyEvent() {
+    document.addEventListener('keyup', this.handleESCKey)
+  }
+
+  unbindESCkeyEvent() {
+    document.removeEventListener('keyup', this.handleESCKey)
+  }
+
+  createRemoveDrawingGeometry () {
+    return () => {
+      if (this._state.isFirst() === false) {
+        this._state.destroy()
+        this.endDraw()
+      }
     }
-  },
-  startDraw: function () {
+  }
+
+  startDraw() {
     this.bindContextMenu()
     this.bindESCkeyEvent()
-  },
-  endDraw: function () {
+  }
+
+  endDraw() {
     this.unbindContextMenu()
     this.unbindESCkeyEvent()
-  },
-  setOptions: function (options) {
+  }
+
+  setOptions(options) {
     this._options = _.merge({
       minPoint: 4,
       event: {},
@@ -88,6 +94,7 @@ CustomEditor.prototype = {
       this._options.useOnlyRectangle = true
     }
 
+    this._options.flag = new Date().getTime()
     this._options.customDraw = true
 
     if (this._options.useOnlyRectangle === true) {
@@ -99,29 +106,35 @@ CustomEditor.prototype = {
     } else {
       this._state = new LineState(this._rootSVG)
     }
-  },
-  parentSVGClickHandle: function (event) {
-    if (
-      ElementController.getAttr(MOVED_ATTR)(this._rootSVG) === 'true'
-    ) {
-      return
-    }
+  }
 
-    var axis = ElementController.getPageAxis(this._rootSVG, event)
+  createParentSVGClickHandle () {
+    return (event) => {
+      if (
+        ElementController.getAttr(MOVED_ATTR)(this._rootSVG) === 'true'
+      ) {
+        return
+      }
 
-    if (this._state.isFirst()) {
-      this.startDraw()
-      this._state.start(this._options, axis)
-    } else if (this._state.isLast()) {
-      this.endDraw()
-      this._state.end()
-    } else {
-      this._state.add(axis)
+      var axis = ElementController.getPageAxis(this._rootSVG, event)
+
+      if (this._state.isFirst()) {
+        this.startDraw()
+        this._state.start(this._options, axis)
+      } else if (this._state.isLast()) {
+        this.endDraw()
+        this._state.end()
+      } else {
+        this._state.add(axis)
+      }
     }
-  },
-  getParentSvg: function () {
+  }
+
+  getParentSvg() {
     return this._rootSVG
   }
 }
+
+
 
 module.exports = CustomEditor

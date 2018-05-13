@@ -1,49 +1,57 @@
 const Draw = require('../draw')
 
-function State (rootSVG) {
-  this._rootSVG = rootSVG
-  this._obj = null
-  this._currentPoint = 0
-  this._options = null
-}
+class State {
+  constructor(rootSVG) {
+    this._rootSVG = rootSVG
+    this._obj = null
+    this._currentPoint = 0
+    this._options = null
+  }
 
-State.prototype = {
-  start: function (options, axis) {
+  start(options, axis) {
     this._options = options
     this._obj = new Draw(this._rootSVG, options)
     this._currentPoint++
     this.callStartEvent()
-  },
-  end: function () {
+  }
+
+  end() {
     this._obj.endDraw()
     this.callEndEvent()
 
     this._obj = null
     this._currentPoint = 0
     this._options = null
-  },
-  add: function () {},
-  isFirst: function () {
+  }
+
+  add() {}
+  isLast() {}
+
+  isFirst() {
     return this._currentPoint === 0
-  },
-  isLast: function () {},
-  destroy: function () {
+  }
+
+
+  destroy() {
     this._obj.destroy()
     this._obj = null
     this._currentPoint = 0
     this._options = null
-  },
-  convertRectanglePoints: function (x1, y1, x2, y2) {
+  }
+
+  convertRectanglePoints(x1, y1, x2, y2) {
     return [
       [x1, y1], [x1, y2], [x2, y2], [x2, y1]
     ]
-  },
-  callStartEvent: function () {
+  }
+
+  callStartEvent() {
     if ('start' in this._options.event) {
       this._options.event.start(this._obj)
     }
-  },
-  callEndEvent: function () {
+  }
+
+  callEndEvent() {
     if ('end' in this._options.event) {
       this._options.event.end(this._obj)
     }
