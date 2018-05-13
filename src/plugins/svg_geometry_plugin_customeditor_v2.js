@@ -1,11 +1,13 @@
 'use strict'
 const CustomEditor = require('./customeditor')
 const Draw = require('./draw')
-const {MOVED_ATTR} = require('../modules/constants')
 const EventController = require('../common/EventController')
 const ElementController = require('../common/ElementController')
 const _ = require('../common/fp')
-const {CLICK_DETECTION_TIME} = require('../modules/constants')
+const {
+  MOVED_ATTR,
+  CLICK_DETECTION_TIME
+} = require('../modules/constants')
 
 function CustomEditorV2 (rootSVG, options) {
   var self = this

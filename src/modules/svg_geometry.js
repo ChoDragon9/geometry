@@ -61,7 +61,7 @@ const ElementController = require('../common/ElementController')
 const _ = require('../common/fp')
 
 class SVGGeometry {
-  constructor(rootSVG) {
+  constructor (rootSVG) {
     _.divEq(
       ElementController.setAttr('draggable', false),
       ElementController.style('cursor', 'normal'),
@@ -70,7 +70,6 @@ class SVGGeometry {
       ElementController.style('webkitUserSelect', 'none'),
       ElementController.style('msUserSelect', 'none')
     )(rootSVG)
-  
     this._rootSVG = rootSVG
   }
   draw (options) {

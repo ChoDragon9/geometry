@@ -3,14 +3,7 @@ var svgGeometryArr = [
     className: 'SVG Geometry',
     respon: [
       'SVG 기술을 사용한 Geometry 드로윙 도구'
-    ],
-    collabo: [
-      'SVG Geometry Product'
     ]
-  },
-  {
-    className: 'SVG Geometry Product',
-    respon: ['<svg> 태그를 직접 컨트롤']
   },
   '--',
   {
@@ -22,8 +15,8 @@ var svgGeometryArr = [
     respon: ['이벤트 함수 객체']
   },
   {
-    className: 'CommonUtils',
-    respon: ['유틸 객체']
+    className: 'fp',
+    respon: ['함수형 프로그래밍 유틸']
   },
   {
     className: 'ElementController',
@@ -36,14 +29,17 @@ var customEditorArr = [
     className: 'CustomEditor',
     respon: ['마우스 이벤트를 통해 SVG를 추가함'],
     collabo: [
-      '(State)FixedRatioState',
-      '(State)RectangleState',
-      '(State)LineState'
+      'FixedRatioState',
+      'RectangleState',
+      'LineState',
     ]
   },
   {
     className: 'State',
-    respon: ['상태패턴 최상위 클래스']
+    respon: ['상태패턴 최상위 클래스'],
+    collabo: [
+      'Draw'
+    ]
   },
   {
     className: 'FixedRatioState',
@@ -62,8 +58,12 @@ var customEditorArr = [
   },
   '--',
   {
-    className: '(CustomEditor)CustomEditorV2',
-    respon: ['마우스 이벤트를 통해 SVG를 추가함', '드래그 이벤트 추가됨']
+    className: 'CustomEditorV2',
+    respon: ['마우스 이벤트를 통해 SVG를 추가함', '드래그 이벤트 추가됨'],
+    collabo: [
+      'Draw',
+      'CustomEditor',
+    ]
   }
 ]
 
@@ -77,9 +77,6 @@ var drawArr = [
     collabo: [
       'DrawModel',
       'DrawView',
-      '-',
-      'CommonUtils',
-      'FunnyMath'
     ]
   },
   '--',
@@ -104,52 +101,30 @@ var drawArr = [
       'TextTagHelper',
       'PolygonHelper',
       'ArrowImageHelper',
-      '--',
-      'FunnyMath',
-      'EventController',
-      'ElementController',
-      'CommonUtils'
     ]
   },
   '--',
   {
     className: 'IconHelper',
     respon: ['아이콘 생성 및 조작'],
-    collabo: [
-      'GroupHelper',
-      '-',
-      'ElementController'
-    ]
   },
   {
     className: 'LineHelper',
     respon: ['line 태그 조작'],
     collabo: [
-      'GroupHelper',
       'IconHelper',
-      'DrawModel',
-      '-',
-      'ElementController',
-      'FunnyMath'
     ]
   },
   {
     className: 'CircleHelper',
     respon: ['circle 태그 조작'],
     collabo: [
-      'GroupHelper',
       'IconHelper',
-      'DrawModel',
-      '-',
-      'ElementController'
     ]
   },
   {
     className: 'GroupHelper',
-    respon: ['g 태그 조작'],
-    collabo: [
-      'ElementController'
-    ]
+    respon: ['g 태그 조작']
   },
   {
     className: 'WiseFaceDetectionHelper',
@@ -157,134 +132,15 @@ var drawArr = [
   },
   {
     className: 'TextTagHelper',
-    respon: ['text 태그 조작'],
-    collabo: [
-      'GroupHelper',
-      'CircleHelper',
-      'DrawModel',
-      '-',
-      'ElementController'
-    ]
+    respon: ['text 태그 조작']
   },
   {
     className: 'PolygonHelper',
-    respon: ['polygon 태그 조작'],
-    collabo: [
-      'GroupHelper',
-      '-',
-      'ElementController'
-    ]
+    respon: ['polygon 태그 조작']
   },
   {
     className: 'ArrowImageHelper',
-    respon: ['image 태그 조작'],
-    collabo: [
-      'GroupHelper',
-      '-',
-      'ElementController',
-      'FunnyMath'
-    ]
-  },
-  '--',
-  {
-    className: 'DrawModel',
-    respon: ['model'],
-    collabo: [
-      'CommonUtils',
-      'FunnyMath'
-    ]
-  },
-  {
-    className: 'DrawView',
-    respon: [
-      'view-controller'
-    ],
-    collabo: [
-      '[DrawModel]',
-      'GroupHelper',
-      'WiseFaceDetectionHelper',
-      'LineHelper',
-      'CircleHelper',
-      'TextTagHelper',
-      'PolygonHelper',
-      'ArrowImageHelper',
-      '--',
-      'FunnyMath',
-      'EventController',
-      'ElementController',
-      'CommonUtils'
-    ]
-  },
-  '--',
-  {
-    className: 'IconHelper',
-    respon: ['아이콘 생성 및 조작'],
-    collabo: [
-      '[DrawModel]',
-      '-',
-      'ElementController'
-    ]
-  },
-  {
-    className: 'LineHelper',
-    respon: ['line 태그 조작'],
-    collabo: [
-      '[DrawModel]',
-      'IconHelper',
-      '-',
-      'ElementController',
-      'FunnyMath'
-    ]
-  },
-  {
-    className: 'CircleHelper',
-    respon: ['circle 태그 조작'],
-    collabo: [
-      '[DrawModel]',
-      'IconHelper',
-      '-',
-      'ElementController'
-    ]
-  },
-  {
-    className: 'GroupHelper',
-    respon: ['g 태그 조작'],
-    collabo: [
-      'ElementController'
-    ]
-  },
-  {
-    className: 'WiseFaceDetectionHelper',
-    respon: ['wise facedetection 관련']
-  },
-  {
-    className: 'TextTagHelper',
-    respon: ['text 태그 조작'],
-    collabo: [
-      '[DrawModel]',
-      'CircleHelper',
-      '-',
-      'ElementController'
-    ]
-  },
-  {
-    className: 'PolygonHelper',
-    respon: ['polygon 태그 조작'],
-    collabo: [
-      '[DrawModel]',
-      '-',
-      'ElementController'
-    ]
-  },
-  {
-    className: 'ArrowImageHelper',
-    respon: ['image 태그 조작'],
-    collabo: [
-      '[DrawModel]',
-      '-',
-      'ElementController',
-      'FunnyMath'
-    ]
+    respon: ['image 태그 조작']
   },
   '-',
   {
@@ -659,9 +515,9 @@ var drawArr = [
 ]
 
 var crccs = [].concat(
-  // svgGeometryArr, ['-'],
+  svgGeometryArr, ['-'],
   drawArr,
-  // ['-'], customEditorArr
+  ['-'], customEditorArr
 )
 
 Vue.component('omt', {

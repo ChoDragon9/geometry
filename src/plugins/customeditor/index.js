@@ -1,5 +1,4 @@
 'use strict'
-const SVGGeometry = require('../../modules/svg_geometry')
 const EventController = require('../../common/EventController')
 const ElementController = require('../../common/ElementController')
 const FixedRatioState = require('./fixed_ratio_state')
