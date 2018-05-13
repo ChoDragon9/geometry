@@ -1,4 +1,6 @@
-function UWAPrivacyPolygon(){
+const SVGGeometry = require('../../src/modules/svg_geometry')
+
+module.exports = function UWAPrivacyPolygon(){
 	var svgTag = document.getElementById('svg_privacy_polygon');
 	var selectTag = document.getElementById("svg_privacy_polygon_list");
 	var svgGeometry = new SVGGeometry(svgTag);

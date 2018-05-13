@@ -1,4 +1,6 @@
-function Polygon(){
+const SVGGeometry = require('../../src/modules/svg_geometry')
+
+module.exports = function Polygon(){
 	var svgTag = document.getElementById('svg_polygon');
 	var svgGeometry = new SVGGeometry(svgTag);
 	var polygonObject = null;

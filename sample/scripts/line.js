@@ -1,4 +1,6 @@
-function Line(){
+const SVGGeometry = require('../../src/modules/svg_geometry')
+
+module.exports = function Line(){
 	var svgTag = document.getElementById('svg_line');
 	var svgGeometry = new SVGGeometry(svgTag);
 	var lineObject = [];

@@ -1,4 +1,6 @@
-function FixedRatio(){
+const SVGGeometry = require('../../src/modules/svg_geometry')
+
+module.exports = function FixedRatio(){
 	var svgTag = document.getElementById('svg_fixed_ratio');
 	var svgGeometry = new SVGGeometry(svgTag);
 	var kindSVGObj = [];

@@ -1,4 +1,6 @@
-function UWAPrivacyRectangle(){
+const SVGGeometry = require('../../src/modules/svg_geometry')
+
+module.exports = function UWAPrivacyRectangle(){
 	var svgTag = document.getElementById('svg_privacy_rectangle');
 	var svgGeometry = new SVGGeometry(svgTag);
 	var svgDrawingObj = [];

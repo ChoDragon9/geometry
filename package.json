@@ -4,8 +4,10 @@
   "description": "SVG 를 사용한 Geometry 그리기 도구",
   "main": "index.js",
   "scripts": {
-    "lint": "standard ./modules/*.js ./modules/**/*.js ./plugins/*.js ./plugins/**/*.js ./common/*.js ./common/**/*.js",
-    "lint:fix": "standard --fix ./modules/*.js ./modules/**/*.js ./plugins/*.js ./plugins/**/*.js ./common/*.js ./common/**/*.js"
+    "dev": "parcel ./sample/index.html",
+    "test": "mocha",
+    "lint": "standard ./src/*.js ./src/**/*.js ./test/*.js ./test/**/*.js",
+    "lint:fix": "standard --fix ./src/*.js ./src/**/*.js ./test/*.js ./test/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -18,30 +20,16 @@
   },
   "homepage": "https://github.com/ChoDragon9/dragonjs-geometry#readme",
   "devDependencies": {
+    "expect": "^22.4.3",
+    "mocha": "^5.1.1",
+    "parcel-bundler": "^1.8.1",
     "standard": "^11.0.1"
   },
   "standard": {
     "globals": [
-      "CommonUtils",
-      "ElementController",
-      "EventController",
-      "CustomEditor",
-      "GroupHelper",
-      "WiseFaceDetectionHelper",
-      "LineHelper",
-      "CircleHelper",
-      "TextTagHelper",
-      "PolygonHelper",
-      "ArrowImageHelper",
-      "SVGGeometry",
-      "DrawModel",
-      "DrawView",
-      "FunnyMath",
-      "IconHelper",
-      "State",
-      "FixedRatioState",
-      "RectangleState",
-      "LineState"
+      "expect",
+      "describe",
+      "it"
     ]
   }
 }
