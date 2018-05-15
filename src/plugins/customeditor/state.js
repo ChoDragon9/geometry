@@ -1,6 +1,5 @@
 const Draw = require('../draw')
 
-
 const convertRectanglePoints = (x1, y1, x2, y2) => {
   return [
     [x1, y1], [x1, y2], [x2, y2], [x2, y1]
@@ -49,6 +48,8 @@ const destroy = (obj) => {
   return init()
 }
 
+const isFirst = (currentPoint) => currentPoint === 0
+
 class State {
   constructor(rootSVG) {
     const {
@@ -86,7 +87,7 @@ class State {
   isLast() {}
 
   isFirst() {
-    return this._currentPoint === 0
+    return isFirst(this._currentPoint)
   }
 
   destroy() {
