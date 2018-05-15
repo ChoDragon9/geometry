@@ -5,9 +5,6 @@ const _ = require('../../common/fp')
 class LineState extends State {
   constructor(rootSVG) {
     super(rootSVG)
-    this._obj = null
-    this._currentPoint = 0
-    this._options = null
   }
 
   start(options, axis) {
