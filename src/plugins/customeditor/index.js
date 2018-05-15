@@ -7,134 +7,109 @@ const RectangleState = require('./ractangle_state')
 const LineState = require('./line_state')
 const {MOVED_ATTR} = require('../../modules/constants')
 
-class CustomEditor {
-  constructor(rootSVG, options) {
-    this._rootSVG = rootSVG
-    this._options = null
-    this._state = null
-    this.parentSVGClickHandle = this.createParentSVGClickHandle()
-    this.removeDrawingGeometry = this.createRemoveDrawingGeometry()
-    this.handleESCKey = this.createHandleESCKey()
+/**
+ * 하고 싶은 것
+ * OOP -> FP
+ * 1. 모두 순수 함수로 변경
+ * 2. 클로저 사용으로 변경
+ * 
+ * 함수 실행 => 역할부여
+ * 1. create instance
+ * 2. bindevent
+ * 3. trigger click
+ * 4. bind cancel event
+ * 5. trigger click
+ * 6. unbind cancel event
+ */
 
-    this.setOptions(options)
-    this.bindEvent()
-  }
-  destroy() {
-    return this.unbindEvent();
-  }
-  stop() {
-    return this.unbindEvent();
-  }
-  start() {
-    return this.bindEvent();
-  }
-  unbindEvent() {
-    EventController.unbindEvent('click', this.parentSVGClickHandle)(this._rootSVG)
-  }
-
-  bindEvent() {
-    EventController.bindEvent('click', this.parentSVGClickHandle)(this._rootSVG)
-  }
-
-  createHandleESCKey () {
-    return (event) => {
-      if (event.keyCode === 27) {
-        this.removeDrawingGeometry()
-      }
+const getState = (options) => {
+  if (options.useOnlyRectangle === true) {
+    if (options.fixedRatio === true) {
+      return FixedRatioState
     }
+    return RectangleState
   }
+  return LineState
+}
 
-  bindContextMenu() {
-    EventController.bindEvent('contextmenu', this.removeDrawingGeometry)(this._rootSVG)
-  }
+const calibrateOptions = (options) => {
+  const newOptions = _.merge({
+    minPoint: 4,
+    event: {},
+    fixedRatio: false,
+    useOnlyRectangle: false,
+    ratio: false,
+    minLineLength: 20,
+    minSize: false
+  }, options)
 
-  unbindContextMenu() {
-    EventController.unbindEvent('contextmenu', this.removeDrawingGeometry)(this._rootSVG)
-  }
+  newOptions.fixedRatio && (newOptions.useOnlyRectangle = true)
+  newOptions.customDraw = true
 
-  bindESCkeyEvent() {
-    document.addEventListener('keyup', this.handleESCKey)
-  }
+  return newOptions
+}
 
-  unbindESCkeyEvent() {
-    document.removeEventListener('keyup', this.handleESCKey)
-  }
+const addEventListener = (element, eventName, eventListener) => {
+  EventController.bindEvent(eventName, eventListener)(element)
 
-  createRemoveDrawingGeometry () {
-    return () => {
-      if (this._state.isFirst() === false) {
-        this._state.destroy()
-        this.endDraw()
-      }
-    }
-  }
-
-  startDraw() {
-    this.bindContextMenu()
-    this.bindESCkeyEvent()
-  }
-
-  endDraw() {
-    this.unbindContextMenu()
-    this.unbindESCkeyEvent()
-  }
-
-  setOptions(options) {
-    this._options = _.merge({
-      minPoint: 4,
-      event: {},
-      fixedRatio: false,
-      useOnlyRectangle: false,
-      ratio: false,
-      minLineLength: 20,
-      minSize: false
-    }, options)
-
-    if (this._options.fixedRatio === true) {
-      this._options.useOnlyRectangle = true
-    }
-
-    this._options.flag = new Date().getTime()
-    this._options.customDraw = true
-
-    if (this._options.useOnlyRectangle === true) {
-      if (this._options.fixedRatio === true) {
-        this._state = new FixedRatioState(this._rootSVG)
-      } else {
-        this._state = new RectangleState(this._rootSVG)
-      }
-    } else {
-      this._state = new LineState(this._rootSVG)
-    }
-  }
-
-  createParentSVGClickHandle () {
-    return (event) => {
-      if (
-        ElementController.getAttr(MOVED_ATTR)(this._rootSVG) === 'true'
-      ) {
-        return
-      }
-
-      var axis = ElementController.getPageAxis(this._rootSVG, event)
-
-      if (this._state.isFirst()) {
-        this.startDraw()
-        this._state.start(this._options, axis)
-      } else if (this._state.isLast()) {
-        this.endDraw()
-        this._state.end()
-      } else {
-        this._state.add(axis)
-      }
-    }
-  }
-
-  getParentSvg() {
-    return this._rootSVG
+  return () => {
+    EventController.unbindEvent(eventName, eventListener)(element)
   }
 }
 
+const bindEvent = (rootSVG, state, options) => {
+  let unbindContextMenu
+  let unbindESCkeyEvent
+  const bindContextMenu = () => {
+    return addEventListener(rootSVG, 'contextmenu', stopDrawing)
+  }
+  const bindESCkeyEvent = () => {
+    return addEventListener(document, 'keyup', ({keyCode}) => {
+      keyCode === 27 && (stopDrawing())
+    })
+  }
+  const stopDrawing  = () => {
+    if (state.isFirst() === false) {
+      state.destroy()
+      endDraw()
+    }
+  }
 
+  const startDraw = () => {
+    unbindContextMenu = bindContextMenu()
+    unbindESCkeyEvent = bindESCkeyEvent()
+  }
 
-module.exports = CustomEditor
+  const endDraw = () => {
+    unbindContextMenu()
+    unbindESCkeyEvent()
+  }
+
+  return addEventListener(rootSVG, 'click', (event) => {
+    if (ElementController.getAttr(MOVED_ATTR)(rootSVG) === 'true') {
+      return
+    }
+    const axis = ElementController.getPageAxis(rootSVG, event)
+
+    if (state.isFirst()) {
+      startDraw()
+      state.start(options, axis)
+    } else if (state.isLast()) {
+      endDraw()
+      state.end()
+    } else {
+      state.add(axis)
+    }
+  })
+}
+
+module.exports = (rootSVG, _options) => {
+  const options = calibrateOptions(_options)
+  const StateConstructor = getState(options)
+  const state = new StateConstructor(rootSVG)
+  const unbindEvent = bindEvent(rootSVG, state, options)
+
+  return {
+    destroy: unbindEvent
+  }
+}

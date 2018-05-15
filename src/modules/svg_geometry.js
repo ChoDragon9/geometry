@@ -54,7 +54,7 @@ svgGeometry.draw({
 });
  */
 const Draw = require('../plugins/draw')
-const CustomEditor = require('../plugins/customeditor')
+const customEditor = require('../plugins/customeditor')
 const CustomEditorV2 = require('../plugins/svg_geometry_plugin_customeditor_v2')
 
 const ElementController = require('../common/ElementController')
@@ -76,10 +76,11 @@ class SVGGeometry {
     return new Draw(this._rootSVG, options)
   }
   customEditor (options) {
-    return new CustomEditor(this._rootSVG, options)
+    return customEditor(this._rootSVG, options)
   }
   customEditorV2 (options) {
-    return new CustomEditorV2(this._rootSVG, options)
+    return this.customEditor (options)
+    // return new CustomEditorV2(this._rootSVG, options)
   }
 }
 
