@@ -50,6 +50,10 @@ const destroy = (obj) => {
 
 const isFirst = (currentPoint) => currentPoint === 0
 
+/**
+ * @todo
+ * State 상속으로 사용했던 부분 함수로 교체
+ */
 class State {
   constructor(rootSVG) {
     const {
