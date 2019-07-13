@@ -1,4 +1,4 @@
-const SVGGeometry = require('../../src/modules/svg_geometry')
+const SVGGeometry = require('../src/modules/svg_geometry')
 
 module.exports = function Line(){
 	var svgTag = document.getElementById('svg_line');
