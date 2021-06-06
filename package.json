@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "parcel ./src/index.html --no-hmr",
-    "build": "parcel build ./src/index.html --public-url ./ --out-dir docs",
+    "build": "parcel build ./src/index.html --public-url ./ --out-dir ./",
     "test": "mocha",
     "lint": "standard ./src/*.js ./src/**/*.js ./test/*.js ./test/**/*.js",
     "lint:fix": "standard --fix ./src/*.js ./src/**/*.js ./test/*.js ./test/**/*.js"
