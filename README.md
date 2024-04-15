@@ -5,3 +5,9 @@
 ## 스킬셋
 - 언어: ES5 / CommonJs 모듈
 - 번들러: Parcel 
+
+## 설치 및 개발 서버 실행
+```bash
+$ npm i
+$ npm run dev
+```

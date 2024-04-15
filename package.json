@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "parcel ./src/index.html --no-hmr",
-    "build": "parcel build ./src/index.html --public-url ./ --out-dir ./",
-    "test": "mocha",
-    "lint": "standard ./src/*.js ./src/**/*.js ./test/*.js ./test/**/*.js",
-    "lint:fix": "standard --fix ./src/*.js ./src/**/*.js ./test/*.js ./test/**/*.js"
+    "build": "parcel build ./src/index.html --public-url ./ --out-dir ./"
   },
   "repository": {
     "type": "git",
@@ -22,15 +19,6 @@
   "homepage": "https://github.com/ChoDragon9/dragonjs-geometry#readme",
   "devDependencies": {
     "expect": "^22.4.3",
-    "mocha": "^5.1.1",
-    "parcel-bundler": "^1.8.1",
-    "standard": "^11.0.1"
-  },
-  "standard": {
-    "globals": [
-      "expect",
-      "describe",
-      "it"
-    ]
+    "parcel-bundler": "^1.8.1"
   }
 }
