@@ -672,9 +672,9 @@ module.exports = function WiseFaceDetectionHelper(draw) {
   }
 };
 },{"../../common/ElementController":"Uh1v","../../common/fp":"KjOz"}],"EMQ7":[function(require,module,exports) {
-module.exports = "demo/plus.5e0664fe.svg";
+module.exports = "plus.5e0664fe.svg";
 },{}],"wiLd":[function(require,module,exports) {
-module.exports = "demo/minus.d81cff20.svg";
+module.exports = "minus.d81cff20.svg";
 },{}],"Jb2g":[function(require,module,exports) {
 /**
  * 포인트 추가/삭제 아이콘
@@ -1305,13 +1305,13 @@ module.exports = function PolygonHelper(draw, rootSVG) {
   this.setPolygon = setPolygon;
 };
 },{"../../common/ElementController":"Uh1v","../../common/fp":"KjOz"}],"UKN0":[function(require,module,exports) {
-module.exports = "demo/btn_in-out_normal.fdb8c67a.png";
+module.exports = "btn_in-out_normal.fdb8c67a.png";
 },{}],"OVyW":[function(require,module,exports) {
-module.exports = "demo/btn_in-out_press.dffd9e67.png";
+module.exports = "btn_in-out_press.dffd9e67.png";
 },{}],"jXEY":[function(require,module,exports) {
-module.exports = "demo/btn_all_normal.ebffad16.png";
+module.exports = "btn_all_normal.ebffad16.png";
 },{}],"aWwW":[function(require,module,exports) {
-module.exports = "demo/btn_all_press.815fb70d.png";
+module.exports = "btn_all_press.815fb70d.png";
 },{}],"xUQg":[function(require,module,exports) {
 /**
  * 화살표 이미지 Helper
@@ -3614,4 +3614,4 @@ window.addEventListener('load', function () {
   commonCalibrationEditor.draw(commonCalibrationOptions);
 });
 },{"./src/modules/svg_geometry":"DyCu","./scripts/polygon.js":"k3zf","./scripts/uwa_privacy_polygon.js":"jNjG","./scripts/uwa_privacy_rectangle.js":"XSyp","./scripts/line.js":"HlDc","./scripts/fixedratio.js":"rqhg"}]},{},["Focm"], null)
-//# sourceMappingURL=demo/src.c467248b.js.map
+//# sourceMappingURL=src.c467248b.js.map

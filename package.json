@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "parcel ./src/index.html --no-hmr",
-    "build": "parcel build --no-minify ./src/index.html --public-url ./demo --out-dir ./demo"
+    "build": "parcel build --no-minify ./src/index.html --public-url ./ --out-dir ./demo"
   },
   "repository": {
     "type": "git",
