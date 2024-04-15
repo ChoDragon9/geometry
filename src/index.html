@@ -135,87 +135,6 @@ svgGeometry.customEditor({
       </article>
     </section>
     <section>
-      <h1>UWA Rectangle</h1>
-      <article>
-        <figure>
-          <svg width="500" height="500" id="svg_privacy_rectangle" xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
-          </svg>
-        </figure>
-        <pre>
-var uwaPrivacyRectangle = new UWAPrivacyRectangle();
-uwaPrivacyRectangle.startDrawing();
-
-function UWAPrivacyRectangle(){
-  var svgTag = document.getElementById('svg_privacy_rectangle');
-  var kindSVGDrawing = new KindSVGDrawing(svgTag);
-  var svgDrawingObj = [];
-
-  var startDrawing = function(){
-    var options = {
-      lineStrokeWidth: 5,
-      circleRadius: 8,
-      useEvent: true,
-      useOnlyRectangle: true,
-      fill: true,
-      fillOpacity: 0,
-      event: {
-        mouseUp: updatelog
-      }
-    };
-
-    options.event.added = function(obj){
-      svgDrawingObj.push(obj);
-      updatelog();
-    };
-
-    kindSVGDrawing.custom(options);
-
-    options.points = [
-       [184, 310],
-       [184, 433],
-       [343, 433],
-       [343, 310]
-    ];
-
-    svgDrawingObj.push(kindSVGDrawing.draw(options));
-  };
-
-  var updatelog = function(){
-    var svgPrivacyLog = document.getElementById("svg_privacy_rectangle_log");
-    var logStr = '';
-
-    for(var i = 0, len = svgDrawingObj.length; i < len; i++){
-      var data = svgDrawingObj[i].getData().points;
-      logStr += "index : " + i + " data: ";
-
-      for(var j = 0, jLen = data.length; j < jLen; j++){
-        logStr += "[" + data[j][0] + ", " + data[j][1] + "],";
-      }
-
-      logStr += "&lt;br&gt;";
-    }
-
-    svgPrivacyLog.innerHTML = logStr;
-  };
-
-  return {
-    startDrawing: startDrawing
-  }
-}
-          </pre>
-        <div>
-          Minimum Size :
-          <input type="number" min="50" max="100" value="50" id="svg_privacy_rectangle_min">(50~100)
-          Maximum Size :
-          <input type="number" min="250" max="500" value="250" id="svg_privacy_rectangle_max">(250~500)
-          <button type="button" id="svg_privacy_rectangle_change_min">Change Rectangle to Mininum Size</button>
-          <button type="button" id="svg_privacy_rectangle_change_max">Change Rectangle to Maxinum Size</button>
-        </div>
-        <div id="svg_privacy_rectangle_log"></div>
-      </article>
-    </section>
-    <section>
       <h1>UWA Privacy Polygon</h1>
       <article>
         <figure>
@@ -295,17 +214,6 @@ function UWAPrivacyPolygon(){
         <div id="svg_privacy_polygon_log"></div>
       </article>
     </section>
-    <section>
-      <h1>[Face Detection] Wise FaceDetection ROI</h1>
-      <article>
-        <figure>
-          <svg width="960" height="500" id="wfd_roi" xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
-          </svg>
-        </figure>
-      </article>
-    </section>
-    <section>
       <h1>[MD, IVA] ROI v2</h1>
       <article>
         <figure>

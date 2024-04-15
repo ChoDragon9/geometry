@@ -1,7 +1,6 @@
 const SVGGeometry = require('./src/modules/svg_geometry')
 const Polygon = require('./scripts/polygon.js')
 const UWAPrivacyPolygon = require('./scripts/uwa_privacy_polygon.js')
-const UWAPrivacyRectangle = require('./scripts/uwa_privacy_rectangle.js')
 const Line = require('./scripts/line.js')
 const FixedRatio = require('./scripts/fixedratio.js')
 
@@ -26,13 +25,6 @@ window.onload = function () {
   getElem('svg_privacy_polygon_start_drawing').onclick = uwaPrivacyPolygon.startDrawing
   getElem('svg_privacy_polygon_list').onchange = uwaPrivacyPolygon.selectShape
   getElem('svg_privacy_polygon_add_point').onclick = uwaPrivacyPolygon.addPoint
-
-  var uwaPrivacyRectangle = new UWAPrivacyRectangle()
-  uwaPrivacyRectangle.startDrawing()
-  getElem('svg_privacy_rectangle_min').onchange = uwaPrivacyRectangle.changeMinMaxSize
-  getElem('svg_privacy_rectangle_max').onchange = uwaPrivacyRectangle.changeMinMaxSize
-  getElem('svg_privacy_rectangle_change_min').onclick = uwaPrivacyRectangle.changeRectangleToMinSize
-  getElem('svg_privacy_rectangle_change_max').onclick = uwaPrivacyRectangle.changeRectangleToMaxSize
 }
 
 function getElem (id) {
@@ -89,26 +81,6 @@ function getLineOptions () {
 }
 
 window.addEventListener('load', function () {
-  // [Face Detection] Wise FaceDetection ROI
-  var wiseFDROI = document.getElementById('wfd_roi')
-  var wiseFDROIEditor = new SVGGeometry(wiseFDROI)
-  var wiseFDOptions = getROIOptions()
-  wiseFDOptions.points = [
-    [0, 0],
-    [0, 480],
-    [854, 480],
-    [854, 0]
-  ]
-  wiseFDOptions.ratio = [1.77, 1]
-  wiseFDOptions.fixedRatio = true
-  wiseFDOptions.wiseFaceDetection = {
-    strokeWidth: 2,
-    strokeColor: colorFactory.includeArea.line,
-    fillOpacity: 0,
-    heightRatio: 4 // Wise Face Detection에 표현되는 원의 반지름 %
-  }
-  wiseFDROIEditor.draw(wiseFDOptions)
-
   // [MD, IVA] ROI
   var roi = document.getElementById('roi')
   var roiEditor = new SVGGeometry(roi)
