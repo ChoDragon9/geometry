@@ -55,10 +55,13 @@ svg text::selection {
 	float: right;
 	background-color: #fff;
 	border: solid 1px #ddd;
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 150%;
 }
 
 pre {
 	overflow-y: auto;
 }
 
-/*# sourceMappingURL=style.5863716a.css.map */
+/*# sourceMappingURL=style.af19195b.css.map */

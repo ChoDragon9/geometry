@@ -3437,7 +3437,6 @@ window.onload = function () {
   line.draw();
   var uwaPrivacyPolygon = new UWAPrivacyPolygon();
   uwaPrivacyPolygon.init();
-  getElem('svg_privacy_polygon_remove_drawing_geometry').onclick = uwaPrivacyPolygon.removeDrawingGeometry;
   getElem('svg_privacy_polygon_stop_drawing').onclick = uwaPrivacyPolygon.stopDrawing;
   getElem('svg_privacy_polygon_start_drawing').onclick = uwaPrivacyPolygon.startDrawing;
   getElem('svg_privacy_polygon_list').onchange = uwaPrivacyPolygon.selectShape;
@@ -3614,4 +3613,4 @@ window.addEventListener('load', function () {
   commonCalibrationEditor.draw(commonCalibrationOptions);
 });
 },{"./src/modules/svg_geometry":"DyCu","./scripts/polygon.js":"k3zf","./scripts/uwa_privacy_polygon.js":"jNjG","./scripts/uwa_privacy_rectangle.js":"XSyp","./scripts/line.js":"HlDc","./scripts/fixedratio.js":"rqhg"}]},{},["Focm"], null)
-//# sourceMappingURL=src.c467248b.js.map
+//# sourceMappingURL=src.5ce38664.js.map
