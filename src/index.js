@@ -1,6 +1,5 @@
 const SVGGeometry = require('./src/modules/svg_geometry')
 const Polygon = require('./scripts/polygon.js')
-const UWAPrivacyPolygon = require('./scripts/uwa_privacy_polygon.js')
 const Line = require('./scripts/line.js')
 const FixedRatio = require('./scripts/fixedratio.js')
 
@@ -18,13 +17,6 @@ window.onload = function () {
 
   var line = new Line()
   line.draw()
-
-  var uwaPrivacyPolygon = new UWAPrivacyPolygon()
-  uwaPrivacyPolygon.init()
-  getElem('svg_privacy_polygon_stop_drawing').onclick = uwaPrivacyPolygon.stopDrawing
-  getElem('svg_privacy_polygon_start_drawing').onclick = uwaPrivacyPolygon.startDrawing
-  getElem('svg_privacy_polygon_list').onchange = uwaPrivacyPolygon.selectShape
-  getElem('svg_privacy_polygon_add_point').onclick = uwaPrivacyPolygon.addPoint
 }
 
 function getElem (id) {
@@ -127,9 +119,6 @@ window.addEventListener('load', function () {
   roiEditor.customEditorV2(roiOptions)
   for (var i = 0, ii = defaultROIPoints.length; i < ii; i++) {
     roiOptions.points = defaultROIPoints[i]
-    roiOptions.fillColor = i === 0 ? colorFactory.includeArea.fill : colorFactory.excludeArea.fill
-    roiOptions.pointColor = i === 0 ? colorFactory.includeArea.point : colorFactory.excludeArea.point
-    roiOptions.lineColor = i === 0 ? colorFactory.includeArea.line : colorFactory.excludeArea.line
     roiObj.push(roiEditor.draw(roiOptions))
   }
   selectROIObj(roiObj[0])
@@ -178,40 +167,4 @@ window.addEventListener('load', function () {
     virtualLineObj.push(virtualLineEditor.draw(virtualLineOptions))
   }
   selectLineObj(virtualLineObj[0])
-
-  // [IVA] Common Calibration
-  var commonCalibration = document.getElementById('common_calibration')
-  var commonCalibrationEditor = new SVGGeometry(commonCalibration)
-  var commonCalibrationOptions = getROIOptions()
-  commonCalibrationOptions.initCenter = true
-  commonCalibrationOptions.notUseMoveTopLayer = true
-  commonCalibrationOptions.useOnlyRectangle = true
-  commonCalibrationOptions.minSize = {
-    width: 100,
-    height: 100
-  }
-  commonCalibrationOptions.maxSize = {
-    width: 854,
-    height: 480
-  }
-  commonCalibrationOptions.points = [
-    [0, 0],
-    [0, 480],
-    [854, 480],
-    [854, 0]
-  ]
-  commonCalibrationOptions.fillColor = colorFactory.red
-  commonCalibrationOptions.lineColor = colorFactory.red
-  commonCalibrationOptions.pointColor = colorFactory.red
-  commonCalibrationEditor.draw(commonCalibrationOptions)
-  commonCalibrationOptions.points = [
-    [0, 0],
-    [0, 100],
-    [100, 100],
-    [100, 0]
-  ]
-  commonCalibrationOptions.fillColor = colorFactory.blue
-  commonCalibrationOptions.lineColor = colorFactory.blue
-  commonCalibrationOptions.pointColor = colorFactory.blue
-  commonCalibrationEditor.draw(commonCalibrationOptions)
 })

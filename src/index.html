@@ -10,6 +10,26 @@
 <body>
   <div id="wrapper">
     <section>
+      <h1>CCTV 화면에 움직임 감지 영역 설정</h1>
+      <article>
+        <figure>
+          <svg width="960" height="500" id="roi" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink">
+          </svg>
+        </figure>
+      </article>
+    </section>
+    <section>
+      <h1>People Count</h1>
+      <article>
+        <figure>
+          <svg width="960" height="500" id="virtual_line" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink">
+          </svg>
+        </figure>
+      </article>
+    </section>
+    <section>
       <h1>Polygon</h1>
       <article>
         <figure>
@@ -122,115 +142,6 @@ svgGeometry.customEditor({
   useEvent: true
 });
           </pre>
-      </article>
-    </section>
-    <section>
-      <h1>People Count</h1>
-      <article>
-        <figure>
-          <svg width="960" height="500" id="virtual_line" xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
-          </svg>
-        </figure>
-      </article>
-    </section>
-    <section>
-      <h1>UWA Privacy Polygon</h1>
-      <article>
-        <figure>
-          <svg width="500" height="500" id="svg_privacy_polygon" xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
-          </svg>
-        </figure>
-        <pre>
-var uwaPrivacyPolygon = new UWAPrivacyPolygon();
-uwaPrivacyPolygon.startDrawing();
-
-function UWAPrivacyPolygon(){
-  var svgTag = document.getElementById('svg_privacy_polygon');
-  var kindSVGDrawing = new KindSVGDrawing(svgTag);
-  var svgDrawingObj = [];
-
-  var startDrawing = function(){
-    var options = {
-      lineStrokeWidth: 5,
-      circleRadius: 8,
-      useEvent: true,
-      maxPoint: 4,
-      fill: true,
-      fillOpacity: 0,
-      event: {
-        added: function(obj){
-          svgDrawingObj.push(obj);
-          updatelog();
-        },
-        mouseUp: updatelog
-      }
-    };
-
-    kindSVGDrawing.custom(options);
-
-    options.points = [
-      [219, 59],[80, 109],[96, 238],[190, 189]
-    ];
-
-    svgDrawingObj.push(kindSVGDrawing.draw(options));
-
-    options.points = [
-      [363, 81],[302, 133],[348, 217],[466, 160]
-    ];
-
-    svgDrawingObj.push(kindSVGDrawing.draw(options));
-  };
-
-  var updatelog = function(){
-    var svgPrivacyLog = document.getElementById("svg_privacy_polygon_log");
-    var logStr = '';
-
-    for(var i = 0, len = svgDrawingObj.length; i < len; i++){
-      var data = svgDrawingObj[i].getData().points;
-      logStr += "index : " + i + " data: ";
-
-      for(var j = 0, jLen = data.length; j < jLen; j++){
-        logStr += "[" + data[j][0] + ", " + data[j][1] + "],";
-      }
-
-      logStr += "&lt;br&gt;";
-    }
-
-    svgPrivacyLog.innerHTML = logStr;
-  };
-
-  return {
-    startDrawing: startDrawing
-  }
-}
-          </pre>
-        <button type="button" id="svg_privacy_polygon_stop_drawing">Stop Drawing</button>
-        <button type="button" id="svg_privacy_polygon_start_drawing">Start Drawing</button>
-        <select id="svg_privacy_polygon_list">
-        </select>
-        <button type="button" id="svg_privacy_polygon_add_point">Add Point</button>
-        <div id="svg_privacy_polygon_log"></div>
-      </article>
-    </section>
-      <h1>[MD, IVA] ROI v2</h1>
-      <article>
-        <figure>
-          <svg width="960" height="500" id="roi" xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
-          </svg>
-        </figure>
-      </article>
-    </section>
-    <section>
-      <h1>[IVA] Common Calibration</h1>
-      <article>
-        <figure>
-          <svg width="960" height="500" id="common_calibration" xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
-          </svg>
-        </figure>
       </article>
     </section>
   </div>
