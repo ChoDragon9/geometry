@@ -22,7 +22,6 @@ window.onload = function () {
 
   var uwaPrivacyPolygon = new UWAPrivacyPolygon()
   uwaPrivacyPolygon.init()
-  getElem('svg_privacy_polygon_remove_drawing_geometry').onclick = uwaPrivacyPolygon.removeDrawingGeometry
   getElem('svg_privacy_polygon_stop_drawing').onclick = uwaPrivacyPolygon.stopDrawing
   getElem('svg_privacy_polygon_start_drawing').onclick = uwaPrivacyPolygon.startDrawing
   getElem('svg_privacy_polygon_list').onchange = uwaPrivacyPolygon.selectShape
