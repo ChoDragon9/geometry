@@ -3,6 +3,7 @@
 - CCTV 웹뷰어 플랫폼 개발 당시 구현했던 SVG Tool API 재현
 - 재사용을 위한 `SVGGeometry` 플러그인 코드 개발 
 - [데모보기](https://chodragon9.github.io/geometry/demo/)
+- [데모영상](https://chodragon9.github.io/geometry/데모영상.mp4)
 
 ## 스킬셋
 - 언어: ES5 / CommonJs 모듈
