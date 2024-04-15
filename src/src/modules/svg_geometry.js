@@ -79,7 +79,7 @@ class SVGGeometry {
     return customEditor(this._rootSVG, options)
   }
   customEditorV2 (options) {
-    return this.customEditor (options)
+    return this.customEditor(options)
     // return new CustomEditorV2(this._rootSVG, options)
   }
 }

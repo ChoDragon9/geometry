@@ -55,6 +55,9 @@ svg text::selection {
 	float: right;
 	background-color: #fff;
 	border: solid 1px #ddd;
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 150%;
 }
 
 pre {
